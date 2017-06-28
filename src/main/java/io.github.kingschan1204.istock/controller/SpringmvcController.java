@@ -2,6 +2,7 @@ package io.github.kingschan1204.istock.controller;
 
 import io.github.kingschan1204.istock.model.po.StockMasterEntity;
 import io.github.kingschan1204.istock.repository.StockMasterRepository;
+import io.github.kingschan1204.istock.services.StockMasterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpringmvcController {
 
     @Autowired
-    private StockMasterRepository stockRepository;
+    private StockMasterService stockServ;
 
-    @RequestMapping("/")
-    public String index(Model model){
-        model.addAttribute("name","kingschan");
-        return "/freemarker/index";
-    }
-
-    @RequestMapping("/stock_list")
-    public StockMasterEntity stockList(){
-        return stockRepository.findOne("000568");
+    @RequestMapping("/add-stock")
+    public String addStock(String code){
+        String msg="success";
+        try {
+            stockServ.addStock(code);
+        } catch (Exception e) {
+            msg=e.getMessage();
+            e.printStackTrace();
+        }
+        return msg;
     }
 }

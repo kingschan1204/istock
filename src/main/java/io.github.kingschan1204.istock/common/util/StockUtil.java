@@ -147,6 +147,7 @@ public class StockUtil {
                     list.add(new ThsStockDividendRate(data[0], data[6], data[4], value));
                 }
             }
+            return list;
         }
         return null;
     }
