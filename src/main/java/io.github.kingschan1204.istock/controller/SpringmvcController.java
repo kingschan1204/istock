@@ -1,4 +1,4 @@
-package com.kingschan1204.istock.controller;
+package io.github.kingschan1204.istock.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
