@@ -26,10 +26,9 @@ CREATE TABLE `stock_master` (
   `s_roe` decimal(8,2) NOT NULL COMMENT '净资产收益率',
   `s_dividend_rate` decimal(5,2) NOT NULL COMMENT '分红率',
   `s_dividend_year` int(4) DEFAULT NULL COMMENT '分红年份',
-  `s_version` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `s_version` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`s_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 
 ```
 

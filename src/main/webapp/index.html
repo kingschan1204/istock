@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stock</title>
+    <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Architects+Daughter" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/sweetalert2/6.6.0/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/2.2.0/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/sweetalert2/6.6.0/sweetalert2.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
+    <script src="https://cdn.bootcss.com/mouse0270-bootstrap-notify/3.1.7/bootstrap-notify.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+    <!-- 调整表格列宽需要的插件 -->
+    <script src="/www/plugs/bootstrap-table/extend/resizable/colResizable-1.5.min.js"></script>
+    <script src="/www/plugs/bootstrap-table/extend/resizable/bootstrap-table-resizable.js"></script>
+</head>
+<body>
+<table id="table"  class="table table-striped table-hover" data-toggle="table"
+       data-side-pagination="server" data-pagination="true" data-checkbox-header="true"
+       data-click-to-select="true" data-sort-stable="true" 	data-toolbar="#toolbar"
+       data-pagination-loop="false" data-page-number="1" data-page-list="[10,20]"
+       data-toolbar-align="right" data-sort-name="true"
+>
+
+    <thead>
+    <tr>
+        <th data-field="sCode" data-sortable="true">代码</th>
+        <th data-field="sStockName" data-sortable="true">名称</th>
+        <th data-field="sCurrentPrice">当前价格</th>
+        <th data-field="sYesterdayPrice">昨收</th>
+        <th data-field="sRangePrice">涨幅</th>
+        <th data-field="sMainBusiness">主营业务</th>
+        <th data-field="sIndustry" data-sortable="true">所属行业</th>
+        <th data-field="sPeDynamic">市盈率(动态)</th>
+        <th data-field="sPeStatic">市盈率(静态)</th>
+        <th data-field="sPb">市净率</th>
+        <th data-field="sTotalValue">总市值</th>
+        <th data-field="sRoe">净资产收益率</th>
+        <th data-field="sDividendRate">分红率</th>
+        <th data-field="sDividendYear">分红年份</th>
+        <th data-field="sVersion">s_version</th>
+    </tr>
+    </thead>
+</table>
+<script>
+    $('#table').bootstrapTable({
+        url: "/stock/list",                     //请求后台的URL（*）
+        queryParams: function (params) { //重写提交的数据
+            return {
+                // 这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit, // 页面大小
+                offset: params.offset, // 页码数 * 页面大小
+                order: params.order, // 排序方式
+                sort: params.sort, //排序的字段
+                code:""
+            };
+        },
+
+        resizable: true,  //启动表格可拖动调整列宽效果,需要bootstrap-table-resizable插件已经其依赖的colResizable-1.5插件
+        liveDrag: true,   // 表格拖动时的随动效果
+        headerOnly: true  // 设定拖动表头操作,能优化点击选行的体验
+    });
+</script>
+</body>
+</html>

@@ -5,11 +5,25 @@ import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
 import io.github.kingschan1204.istock.model.po.StockMasterEntity;
+import io.github.kingschan1204.istock.model.vo.StockMasterVo;
 import io.github.kingschan1204.istock.repository.StockMasterRepository;
+import org.springframework.beans.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +33,18 @@ import java.util.List;
 public class StockMasterService {
     @Autowired
     private StockMasterRepository stockRepository;
+
+
+    public StockMasterVo getStock(String code){
+        StockMasterEntity sme =stockRepository.findOne(code);
+        if(null!=sme){
+            StockMasterVo vo =new StockMasterVo();
+            BeanUtils.copyProperties(sme,vo);
+            return vo ;
+        }
+        return null;
+    }
+
 
     public void addStock(String code) throws Exception {
         StockMasterEntity stock = stockRepository.findOne(code);
@@ -58,4 +84,44 @@ public class StockMasterService {
         stock.setsRoe(smd.getsRoe());
         stockRepository.save(stock);
     }
+
+    public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize,final String code) {
+        Pageable pageable = null;
+        // 判断是否包含排序信息,生产对应的Pageable查询条件
+       /* if (null != sortStyle && null != orderField) {
+            Sort sort = new Sort(
+                    sortStyle.equalsIgnoreCase("asc") ?
+                            Sort.Direction.ASC : Sort.Direction.DESC
+                    , orderField);
+            pageable = new PageRequest(pageindex - 1, pagesize, sort);
+        } else {
+            Sort sort = new Sort(Sort.Direction.DESC,"sCode");
+            pageable = new PageRequest(pageindex - 1, pagesize, sort);
+        }*/
+        pageable = new PageRequest(pageindex - 1, pagesize);
+        // 获取包含分页信息和UserVo集合的Page<UserVo>对象
+        Page<StockMasterVo> data=stockRepository.findAll(new Specification<StockMasterEntity>() {
+                                              @Override
+                                              public Predicate toPredicate(Root<StockMasterEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+                                                  List<Predicate> predicates = new ArrayList<Predicate>();
+                                                  // 判断字段是否存在来决定添加的条件
+                                                  if (StringUtils.isNotBlank(code)){
+                                                      predicates.add(criteriaBuilder.like(root.<String>get("sCode"), "%"+code+"%"));
+                                                  }
+                                                  if (predicates.size()==0)return null;
+                                                  return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
+                                              }
+                                          },pageable
+        ).map(new Converter<StockMasterEntity, StockMasterVo>() {
+            @Override
+            public StockMasterVo convert(StockMasterEntity entity) {
+                StockMasterVo vo = new StockMasterVo();
+                BeanUtils.copyProperties(entity,vo);
+                return vo;
+            }
+        });
+        return data;
+    }
+
 }
