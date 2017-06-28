@@ -1,4 +1,4 @@
-http://localhost/freemarker/fmtest.do freemarker 测试
+
 
 由于电脑上装了几个jdk 所以运行的时候临时设置一下对应的jdk版本：(我设置为jdk 1.7 运行maven)
 set path=C:\Program Files\Java\jdk1.7.0_21\bin

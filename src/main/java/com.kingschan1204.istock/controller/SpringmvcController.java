@@ -1,6 +1,7 @@
-package com.kingschan.spring.boot.pritice.controller;
+package com.kingschan1204.istock.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -10,9 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class SpringmvcController {
 
-    @ResponseBody
-    @RequestMapping("/sayhi")
-    public String sayHellow(){
-        return "hello world.";
+    @RequestMapping("/")
+    public String index(Model model){
+        model.addAttribute("name","kingschan");
+        return "/freemarker/index";
     }
 }
