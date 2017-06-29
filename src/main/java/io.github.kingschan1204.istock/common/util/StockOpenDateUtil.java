@@ -54,10 +54,5 @@ public class StockOpenDateUtil {
         return false;
 
     }
-    public static void main(String[] args) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date(System.currentTimeMillis()));
-        System.out.println(c.get(Calendar.HOUR_OF_DAY));
-        System.out.println(c.get(Calendar.MINUTE));
-    }
+
 }
