@@ -37,7 +37,7 @@ public class StockMasterController {
     public String addStock(@PathVariable String code) {
         String msg = "success";
         try {
-            stockServ.addStock(code);
+            stockServ.saveStock(code);
         } catch (Exception e) {
             msg = e.getMessage();
             e.printStackTrace();
@@ -73,4 +73,17 @@ public class StockMasterController {
         }
         return vo;
     }
+
+    @RequestMapping("/refresh")
+    public String stockRefresh() {
+        String msg = "success";
+        try {
+            stockServ.stockRefresh();
+        } catch (Exception e) {
+            msg = e.getMessage();
+            e.printStackTrace();
+        }
+        return msg;
+    }
+
 }

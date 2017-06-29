@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +44,13 @@ public class StockUtil {
 
     /**
      * 格式化数据，如果不是数字全部返回-1
+     *
      * @param value
      * @return
      */
-    public static Double mathFormat(String value){
-        String v=value.replaceAll("\\%","").replace("亿","");
-        if (v.matches(regexNumber)){
+    public static Double mathFormat(String value) {
+        String v = value.replaceAll("\\%", "").replace("亿", "");
+        if (v.matches(regexNumber)) {
             return Double.valueOf(v);
         }
         return -1D;
@@ -70,6 +73,7 @@ public class StockUtil {
         }
         String queryCode = queryStr.toString().replaceAll("\\,$", "");
         String query = String.format("http://hq.sinajs.cn/list=%s", queryCode);
+        log.info(query);
         String content = Jsoup.connect(query).ignoreContentType(true).get().text();
         String[] line = content.split(";");
         List<SinaStockPriceDto> list = new ArrayList<SinaStockPriceDto>();
@@ -81,7 +85,12 @@ public class StockUtil {
             double zf = (xj - zs) / zs * 100;
             log.info(String.format("%s %s 现价:%s 昨收:%s 涨幅:%.2f%s", data[0], data[1], data[3], data[2], zf, "%"));
             //String code,String name,Double price,Double yprice,Double rangePrice
-            list.add(new SinaStockPriceDto(data[0], data[1], xj, zs, zf));
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            // 保留两位小数
+            nf.setMaximumFractionDigits(2);
+            // 如果不需要四舍五入，可以使用RoundingMode.DOWN
+            nf.setRoundingMode(RoundingMode.UP);
+            list.add(new SinaStockPriceDto(data[0], data[1], xj, zs, Double.valueOf(nf.format(zf))));
         }
         return list;
     }
@@ -98,16 +107,16 @@ public class StockUtil {
         Elements table = doc.getElementsByTag("table");
         //第一个表格的第一行
         Elements tds = table.get(0).select("tr").get(0).select("td");
-        String zyyw=tds.get(0).text().split("： ")[1];//主营业务
-        String sshy=tds.get(1).text().split("： ")[1];//所属行业
+        String zyyw = tds.get(0).text().split("： ")[1];//主营业务
+        String sshy = tds.get(1).text().split("： ")[1];//所属行业
 
         Elements tds1 = table.get(1).select("td");
-        String dtsyl=tds1.get(0).text().split("： ")[1];//市盈率(动态)
+        String dtsyl = tds1.get(0).text().split("： ")[1];//市盈率(动态)
         //每股收益： System.out.println(tds1.get(1).select("span").get(0).text() + tds1.get(1).select("span").get(1).text());
-        String sjljt=tds1.get(4).text().split("： ")[1];//市盈率(静态)
-        String sjl=tds1.get(8).text().split("： ")[1];//市净率
-        String zsz=tds1.get(11).text().replaceAll("\\D+","");//总市值
-        String jzcsyl=tds1.get(14).select("span").get(1).text();//净资产收益率
+        String sjljt = tds1.get(4).text().split("： ")[1];//市盈率(静态)
+        String sjl = tds1.get(8).text().split("： ")[1];//市净率
+        String zsz = tds1.get(11).text().replaceAll("\\D+", "");//总市值
+        String jzcsyl = tds1.get(14).select("span").get(1).text();//净资产收益率
         StockMasterDto dto = new StockMasterDto();
         dto.setsMainBusiness(zyyw);
         dto.setsIndustry(sshy);
@@ -116,7 +125,7 @@ public class StockUtil {
         dto.setsPb(BigDecimal.valueOf(mathFormat(sjl)));
         dto.setsTotalValue(BigDecimal.valueOf(mathFormat(zsz)));
         dto.setsRoe(BigDecimal.valueOf(mathFormat(jzcsyl)));
-      return dto;
+        return dto;
     }
 
     /**

@@ -24,6 +24,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,21 +36,22 @@ public class StockMasterService {
     private StockMasterRepository stockRepository;
 
 
-    public StockMasterVo getStock(String code){
-        StockMasterEntity sme =stockRepository.findOne(code);
-        if(null!=sme){
-            StockMasterVo vo =new StockMasterVo();
-            BeanUtils.copyProperties(sme,vo);
-            return vo ;
+    public StockMasterVo getStock(String code) {
+        StockMasterEntity sme = stockRepository.findOne(code);
+        if (null != sme) {
+            StockMasterVo vo = new StockMasterVo();
+            BeanUtils.copyProperties(sme, vo);
+            return vo;
         }
         return null;
     }
 
 
-    public void addStock(String code) throws Exception {
+    public void saveStock(String code) throws Exception {
         StockMasterEntity stock = stockRepository.findOne(code);
-        if (null != stock) {
-            throw new Exception("已存在，不要重复添加！");
+        if (null == stock) {
+            //   throw new Exception("已存在，不要重复添加！");
+            stock = new StockMasterEntity();
         }
         List<SinaStockPriceDto> lis = StockUtil.getStockPrice(new String[]{code});
         if (null == lis || lis.size() == 0) {
@@ -57,14 +59,14 @@ public class StockMasterService {
         }
         StockMasterDto smd = StockUtil.getStockInfo(code);
         List<ThsStockDividendRate> drs = StockUtil.getStockDividendRate(code);
-        stock = new StockMasterEntity();
+
         stock.setsDividendYear(-1);
         stock.setsDividendRate(BigDecimal.valueOf(-1d));
-        if(null!=drs){
-            for (int i=0;i<drs.size();i++) {
-                ThsStockDividendRate item=drs.get(i);
-                if(item.getPercent()!=-1){
-                    stock.setsDividendYear(Integer.valueOf(item.getDividendYear().replaceAll("\\D+","")));
+        if (null != drs) {
+            for (int i = 0; i < drs.size(); i++) {
+                ThsStockDividendRate item = drs.get(i);
+                if (item.getPercent() != -1) {
+                    stock.setsDividendYear(Integer.valueOf(item.getDividendYear().replaceAll("\\D+", "")));
                     stock.setsDividendRate(BigDecimal.valueOf(item.getPercent()));
                     break;
                 }
@@ -85,7 +87,7 @@ public class StockMasterService {
         stockRepository.save(stock);
     }
 
-    public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize,final String code,String orderfidld,String sort) {
+    public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize, final String code, String orderfidld, String sort) {
         Pageable pageable = null;
         // 判断是否包含排序信息,生产对应的Pageable查询条件
         if (null != orderfidld && null != sort) {
@@ -95,33 +97,55 @@ public class StockMasterService {
                     , orderfidld);
             pageable = new PageRequest(pageindex - 1, pagesize, s);
         } else {
-            Sort s = new Sort(Sort.Direction.DESC,"sCode");
+            Sort s = new Sort(Sort.Direction.DESC, "sCode");
             pageable = new PageRequest(pageindex - 1, pagesize, s);
         }
         //pageable = new PageRequest(pageindex - 1, pagesize);
         // 获取包含分页信息和UserVo集合的Page<UserVo>对象
-        Page<StockMasterVo> data=stockRepository.findAll(new Specification<StockMasterEntity>() {
-                                              @Override
-                                              public Predicate toPredicate(Root<StockMasterEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+        Page<StockMasterVo> data = stockRepository.findAll(new Specification<StockMasterEntity>() {
+                                                               @Override
+                                                               public Predicate toPredicate(Root<StockMasterEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-                                                  List<Predicate> predicates = new ArrayList<Predicate>();
-                                                  // 判断字段是否存在来决定添加的条件
-                                                  if (StringUtils.isNotBlank(code)){
-                                                      predicates.add(criteriaBuilder.like(root.<String>get("sCode"), "%"+code+"%"));
-                                                  }
-                                                  if (predicates.size()==0)return null;
-                                                  return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
-                                              }
-                                          },pageable
+                                                                   List<Predicate> predicates = new ArrayList<Predicate>();
+                                                                   // 判断字段是否存在来决定添加的条件
+                                                                   if (StringUtils.isNotBlank(code)) {
+                                                                       predicates.add(criteriaBuilder.like(root.<String>get("sCode"), "%" + code + "%"));
+                                                                   }
+                                                                   if (predicates.size() == 0) return null;
+                                                                   return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
+                                                               }
+                                                           }, pageable
         ).map(new Converter<StockMasterEntity, StockMasterVo>() {
             @Override
             public StockMasterVo convert(StockMasterEntity entity) {
                 StockMasterVo vo = new StockMasterVo();
-                BeanUtils.copyProperties(entity,vo);
+                BeanUtils.copyProperties(entity, vo);
                 return vo;
             }
         });
         return data;
+    }
+
+    public void stockRefresh() throws Exception{
+        String[] codes = stockRepository.getAllStockCode();
+        List<SinaStockPriceDto> stocks=StockUtil.getStockPrice(codes);
+        for (SinaStockPriceDto dto :stocks) {
+            StockMasterDto smd = StockUtil.getStockInfo(dto.getsCode());
+            StockMasterEntity stock = stockRepository.findOne(dto.getsCode());
+            stock.setsCode(dto.getsCode());
+            stock.setsStockName(dto.getsStockName());
+            stock.setsCurrentPrice(dto.getsCurrentPrice());
+            stock.setsYesterdayPrice(dto.getsYesterdayPrice());
+            stock.setsRangePrice(dto.getsRangePrice());
+            stock.setsMainBusiness(smd.getsMainBusiness());
+            stock.setsIndustry(smd.getsIndustry());
+            stock.setsPeDynamic(smd.getsPeDynamic());
+            stock.setsPeStatic(smd.getsPeStatic());
+            stock.setsPb(smd.getsPb());
+            stock.setsTotalValue(smd.getsTotalValue());
+            stock.setsRoe(smd.getsRoe());
+            stockRepository.save(stock);
+        }
     }
 
 }

@@ -38,6 +38,7 @@
              <input type="text" class="form-control" placeholder="股票代码" aria-describedby="basic-addon1" name="stock" id="stock">
          </div>
          <button class="btn btn-default"  type="button" id="queryBtn"><span class="glyphicon glyphicon-search"></span>&nbsp;查询</button>
+         <button class="btn btn-default"  type="button" id="updateBtn"><span class="glyphicon glyphicon-refresh"></span>&nbsp;更新</button>
      </form>
 
  </div>
@@ -51,6 +52,7 @@
 
     <thead>
     <tr>
+        <th  data-field="index" data-formatter="indexFormatter" >序号</th>
         <th data-field="sCode" data-sortable="true">代码</th>
         <th data-field="sStockName" data-sortable="true">名称</th>
         <th data-field="sCurrentPrice" data-sortable="true" data-align="right">当前价格</th>
@@ -70,8 +72,14 @@
     </thead>
 </table>
 <script>
+    function indexFormatter(value, row, index) {
+        return index+1;
+    }
     $('#table').bootstrapTable({
         url: "/stock/list",                     //请求后台的URL（*）
+        pageSize: 20,
+        //可供选择的每页的行数（*）
+        pageList: [10, 20, 30, 100],
         queryParams: function (params) { //重写提交的数据
             return {
                 // 这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
@@ -82,6 +90,8 @@
                 code:""
             };
         },
+        cache: false,
+        pagination: true,
         resizable: true,  //启动表格可拖动调整列宽效果,需要bootstrap-table-resizable插件已经其依赖的colResizable-1.5插件
         liveDrag: true,   // 表格拖动时的随动效果
         headerOnly: true,  // 设定拖动表头操作,能优化点击选行的体验
@@ -138,6 +148,28 @@
             }
         });
     }
+    function update(){
+        $.ajax({
+            type: "POST",
+            url: "/stock/refresh",
+            success: function(data) {
+                if(data == 'success') {
+                    console.info("ok");
+                    reload();
+                }else {
+                    messageBox.error('提示', data);
+                }
+
+            },
+            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+                messageBox.error('提示','数据提交错误，请联系系统管理员.');
+            }
+        });
+    }
+    $("#updateBtn").click(function() {
+        update();
+    });
+
     // 提交按钮事件
     $("#queryBtn").click(function() {
         //获取表单对象
@@ -187,6 +219,7 @@
     }
     window.onload=function(){
         initValidator();
+        window.setInterval("reload()",2000);
     }
 </script>
 </body>
