@@ -63,8 +63,8 @@
         <th data-field="sRoe" data-sortable="true" data-align="right">净资产收益率</th>
         <th data-field="sDividendRate" data-sortable="true" data-align="right">分红率</th>
         <th data-field="sDividendYear" data-sortable="true" data-align="right">分红年份</th>
-        <th data-field="sMainBusiness" >主营业务</th>
         <th data-field="sIndustry" data-sortable="true" >所属行业</th>
+        <th data-field="sMainBusiness" >主营业务</th>
         <th data-field="sVersion">s_version</th>
     </tr>
     </thead>
@@ -98,9 +98,13 @@
             row.sTotalValue=row.sTotalValue+"亿";
             if(row.sRoe==-1){
                 row.sRoe="--";
+            }else{
+                row.sRoe=row.sRoe+"%";
             }
             if(row.sDividendRate==-1){
                 row.sDividendRate="--";
+            }else{
+                row.sDividendRate=row.sDividendRate+"%";
             }
             if(row.sDividendYear==-1){
                 row.sDividendYear="--";
