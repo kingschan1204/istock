@@ -44,6 +44,16 @@ public class StockMasterController {
         }
         return msg;
     }
+
+    /**
+     *
+     * @param offset
+     * @param limit
+     * @param code
+     * @param sort 排序的字段
+     * @param order 排序的方式
+     * @return
+     */
     @RequestMapping("/list")
     public StockMasterPagingVo stockList(Integer offset,Integer limit,String code,String sort,String order){
         Page<StockMasterVo> p = null;
@@ -52,7 +62,10 @@ public class StockMasterController {
             p= stockServ.stockMasterList(
                     null==offset?1:offset/limit+1,
                     limit,
-                    code);
+                    code,
+                    sort.equals("true")?null:sort, //默认会传true过来
+                    order
+            );
             vo.setRows(p.getContent());
             vo.setTotal(p.getTotalElements());
         }catch (Exception ex){

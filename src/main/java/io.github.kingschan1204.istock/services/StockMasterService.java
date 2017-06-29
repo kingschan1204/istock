@@ -85,20 +85,20 @@ public class StockMasterService {
         stockRepository.save(stock);
     }
 
-    public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize,final String code) {
+    public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize,final String code,String orderfidld,String sort) {
         Pageable pageable = null;
         // 判断是否包含排序信息,生产对应的Pageable查询条件
-       /* if (null != sortStyle && null != orderField) {
-            Sort sort = new Sort(
-                    sortStyle.equalsIgnoreCase("asc") ?
+        if (null != orderfidld && null != sort) {
+            Sort s = new Sort(
+                    sort.equalsIgnoreCase("asc") ?
                             Sort.Direction.ASC : Sort.Direction.DESC
-                    , orderField);
-            pageable = new PageRequest(pageindex - 1, pagesize, sort);
+                    , orderfidld);
+            pageable = new PageRequest(pageindex - 1, pagesize, s);
         } else {
-            Sort sort = new Sort(Sort.Direction.DESC,"sCode");
-            pageable = new PageRequest(pageindex - 1, pagesize, sort);
-        }*/
-        pageable = new PageRequest(pageindex - 1, pagesize);
+            Sort s = new Sort(Sort.Direction.DESC,"sCode");
+            pageable = new PageRequest(pageindex - 1, pagesize, s);
+        }
+        //pageable = new PageRequest(pageindex - 1, pagesize);
         // 获取包含分页信息和UserVo集合的Page<UserVo>对象
         Page<StockMasterVo> data=stockRepository.findAll(new Specification<StockMasterEntity>() {
                                               @Override
