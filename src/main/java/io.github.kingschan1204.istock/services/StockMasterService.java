@@ -1,12 +1,14 @@
 package io.github.kingschan1204.istock.services;
 
-import io.github.kingschan1204.istock.common.util.StockUtil;
+import io.github.kingschan1204.istock.common.util.StockSpilderUtil;
 import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
 import io.github.kingschan1204.istock.model.po.StockMasterEntity;
 import io.github.kingschan1204.istock.model.vo.StockMasterVo;
 import io.github.kingschan1204.istock.repository.StockMasterRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,7 +27,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,6 +34,8 @@ import java.util.List;
  */
 @Service
 public class StockMasterService {
+
+    private static Logger log = LoggerFactory.getLogger(StockMasterService.class);
     @Autowired
     private StockMasterRepository stockRepository;
 
@@ -53,12 +57,12 @@ public class StockMasterService {
             //   throw new Exception("已存在，不要重复添加！");
             stock = new StockMasterEntity();
         }
-        List<SinaStockPriceDto> lis = StockUtil.getStockPrice(new String[]{code});
+        List<SinaStockPriceDto> lis = StockSpilderUtil.getStockPrice(new String[]{code});
         if (null == lis || lis.size() == 0) {
             throw new Exception("代码不存在！");
         }
-        StockMasterDto smd = StockUtil.getStockInfo(code);
-        List<ThsStockDividendRate> drs = StockUtil.getStockDividendRate(code);
+        StockMasterDto smd = StockSpilderUtil.getStockInfo(code);
+        List<ThsStockDividendRate> drs = StockSpilderUtil.getStockDividendRate(code);
 
         stock.setsDividendYear(-1);
         stock.setsDividendRate(BigDecimal.valueOf(-1d));
@@ -105,16 +109,15 @@ public class StockMasterService {
         Page<StockMasterVo> data = stockRepository.findAll(new Specification<StockMasterEntity>() {
                                                                @Override
                                                                public Predicate toPredicate(Root<StockMasterEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-
-                                                                   List<Predicate> predicates = new ArrayList<Predicate>();
-                                                                   // 判断字段是否存在来决定添加的条件
-                                                                   if (StringUtils.isNotBlank(code)) {
-                                                                       predicates.add(criteriaBuilder.like(root.<String>get("sCode"), "%" + code + "%"));
-                                                                   }
-                                                                   if (predicates.size() == 0) return null;
-                                                                   return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
-                                                               }
-                                                           }, pageable
+               List<Predicate> predicates = new ArrayList<Predicate>();
+               // 判断字段是否存在来决定添加的条件
+               if (StringUtils.isNotBlank(code)) {
+                   predicates.add(criteriaBuilder.like(root.<String>get("sCode"), "%" + code + "%"));
+               }
+               if (predicates.size() == 0) return null;
+               return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
+           }
+       }, pageable
         ).map(new Converter<StockMasterEntity, StockMasterVo>() {
             @Override
             public StockMasterVo convert(StockMasterEntity entity) {
@@ -126,11 +129,11 @@ public class StockMasterService {
         return data;
     }
 
-    public void stockRefresh() throws Exception{
+    public void stockRefresh() throws Exception {
         String[] codes = stockRepository.getAllStockCode();
-        List<SinaStockPriceDto> stocks=StockUtil.getStockPrice(codes);
-        for (SinaStockPriceDto dto :stocks) {
-            StockMasterDto smd = StockUtil.getStockInfo(dto.getsCode());
+        List<SinaStockPriceDto> stocks = StockSpilderUtil.getStockPrice(codes);
+        for (SinaStockPriceDto dto : stocks) {
+            StockMasterDto smd = StockSpilderUtil.getStockInfo(dto.getsCode());
             StockMasterEntity stock = stockRepository.findOne(dto.getsCode());
             stock.setsCode(dto.getsCode());
             stock.setsStockName(dto.getsStockName());
@@ -145,6 +148,31 @@ public class StockMasterService {
             stock.setsTotalValue(smd.getsTotalValue());
             stock.setsRoe(smd.getsRoe());
             stockRepository.save(stock);
+        }
+    }
+
+
+    /**
+     * 根据新浪数据接口更新股票价格
+     */
+    @Transactional
+    public void updateStockPriceBySina() throws Exception {
+        log.info("update sina stock ipo");
+        String[] codes = stockRepository.getAllStockCode();
+        List<SinaStockPriceDto> stocks = StockSpilderUtil.getStockPrice(codes);
+        for (SinaStockPriceDto dto : stocks) {
+            /*log.info("{} {} {} {} {}",
+                    dto.getsStockName(),
+                    dto.getsCurrentPrice().doubleValue(),
+                    dto.getsYesterdayPrice().doubleValue(),
+                    dto.getsRangePrice().doubleValue(),
+                    dto.getsCode());*/
+            stockRepository.updateIPO(
+                    dto.getsStockName(),
+                    dto.getsCurrentPrice(),
+                    dto.getsYesterdayPrice(),
+                    dto.getsRangePrice(),
+                    dto.getsCode());
         }
     }
 

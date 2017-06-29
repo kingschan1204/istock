@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.common.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
@@ -10,7 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,9 +19,9 @@ import java.util.List;
 /**
  * Created by kingschan on 2017/6/28.
  */
-public class StockUtil {
+public class StockSpilderUtil {
 
-    private static Logger log = LoggerFactory.getLogger(StockUtil.class);
+    private static Logger log = LoggerFactory.getLogger(StockSpilderUtil.class);
     public static final String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
 
     /**

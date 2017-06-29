@@ -1,10 +1,10 @@
 package io.github.kingschan1204.istock.task;
 
-import io.github.kingschan1204.istock.common.util.StockUtil;
+import io.github.kingschan1204.istock.common.util.StockOpenDateUtil;
+import io.github.kingschan1204.istock.common.util.StockSpilderUtil;
 import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
-import io.github.kingschan1204.istock.model.dto.StockMasterDto;
-import io.github.kingschan1204.istock.model.po.StockMasterEntity;
 import io.github.kingschan1204.istock.repository.StockMasterRepository;
+import io.github.kingschan1204.istock.services.StockMasterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,28 +22,16 @@ public class UpdatePriceScheduler {
 
     private static Logger log = LoggerFactory.getLogger(UpdatePriceScheduler.class);
     @Autowired
-    private StockMasterRepository stockRepository;
+    private StockMasterService stockServ;
 
-    @Transactional
+
     @Scheduled(cron="0/4 * * * * ?")
     public void updateStockIPO() throws Exception {
-        log.info("update sina stock ipo");
-        String[] codes = stockRepository.getAllStockCode();
-        List<SinaStockPriceDto> stocks= StockUtil.getStockPrice(codes);
-        for (SinaStockPriceDto dto :stocks) {
-            /*log.info("{} {} {} {} {}",
-                    dto.getsStockName(),
-                    dto.getsCurrentPrice().doubleValue(),
-                    dto.getsYesterdayPrice().doubleValue(),
-                    dto.getsRangePrice().doubleValue(),
-                    dto.getsCode());*/
-            stockRepository.updateIPO(
-                    dto.getsStockName(),
-                    dto.getsCurrentPrice(),
-                    dto.getsYesterdayPrice(),
-                    dto.getsRangePrice(),
-                    dto.getsCode());
+        if(!StockOpenDateUtil.stockOpenTime()){
+            log.info("现在非开市时间，不更新数据!");
+            return ;
         }
+        stockServ.updateStockPriceBySina();
     }
 
 }
