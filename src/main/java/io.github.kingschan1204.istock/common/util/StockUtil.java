@@ -34,9 +34,20 @@ public class StockUtil {
      * @return
      */
     public static String formatSinaQuryStockCode(String code) {
+        //上证
         if (code.startsWith("60")) {
             return String.format("sh%s", code);
-        } else if (code.startsWith("000")) {
+        }
+        //5开头，沪市基金或权证
+        else if(code.startsWith("5")){
+            return String.format("sh%s", code);
+        }
+        //1开头的，是深市基金
+        else if(code.startsWith("1")){
+            return String.format("sz%s", code);
+        }
+        //深证
+        else if (code.startsWith("00")) {
             return String.format("sz%s", code);
         }
         return null;
@@ -107,16 +118,20 @@ public class StockUtil {
         Elements table = doc.getElementsByTag("table");
         //第一个表格的第一行
         Elements tds = table.get(0).select("tr").get(0).select("td");
-        String zyyw = tds.get(0).text().split("： ")[1];//主营业务
-        String sshy = tds.get(1).text().split("： ")[1];//所属行业
+        String zyyw = tds.get(0).text().replaceAll(".*\\：|\\s*", "");//主营业务
+
+        String sshy = tds.get(1).text().replaceAll(".*\\：|\\s*", "");//所属行业
 
         Elements tds1 = table.get(1).select("td");
-        String dtsyl = tds1.get(0).text().split("： ")[1];//市盈率(动态)
+        String dtsyl = tds1.get(0).text().replaceAll(".*\\：|\\s*", "");//市盈率(动态)
         //每股收益： System.out.println(tds1.get(1).select("span").get(0).text() + tds1.get(1).select("span").get(1).text());
-        String sjljt = tds1.get(4).text().split("： ")[1];//市盈率(静态)
-        String sjl = tds1.get(8).text().split("： ")[1];//市净率
+        String sjljt = tds1.get(4).text().replaceAll(".*\\：|\\s*", "");//市盈率(静态)
+        String sjl = tds1.get(8).text().replaceAll(".*\\：|\\s*", "");//市净率
         String zsz = tds1.get(11).text().replaceAll("\\D+", "");//总市值
-        String jzcsyl = tds1.get(14).select("span").get(1).text();//净资产收益率
+        String jzcsyl = "-1";
+        if(tds1.size()>14){
+            jzcsyl=tds1.get(14).select("span").get(1).text();//净资产收益率
+        }
         StockMasterDto dto = new StockMasterDto();
         dto.setsMainBusiness(zyyw);
         dto.setsIndustry(sshy);

@@ -21,59 +21,68 @@
     <script src="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.js"></script>
     <script src="/www/js/messageBox.js"></script>
     <!-- 调整表格列宽需要的插件 -->
-   <!-- <script src="/www/plugs/bootstrap-table/extend/resizable/colResizable-1.5.min.js"></script>
-    <script src="/www/plugs/bootstrap-table/extend/resizable/bootstrap-table-resizable.js"></script>-->
+    <!-- <script src="/www/plugs/bootstrap-table/extend/resizable/colResizable-1.5.min.js"></script>
+     <script src="/www/plugs/bootstrap-table/extend/resizable/bootstrap-table-resizable.js"></script>-->
     <style>
-        .stock-up{color: red;}
-        .stock-down{color:#009900;}
+        .stock-up {
+            color: red;
+        }
+
+        .stock-down {
+            color: #009900;
+        }
     </style>
 </head>
 <body style="padding: 30px 0px 0px 0px;">
 
 
+<div class="col-md-10">
+    <form id="stockForm" class="form-inline">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="股票代码" aria-describedby="basic-addon1" name="stock"
+                   id="stock">
+        </div>
+        <button class="btn btn-default" type="button" id="queryBtn"><span class="glyphicon glyphicon-search"></span>&nbsp;查询
+        </button>
+        <button class="btn btn-default" type="button" id="addBtn"><span class="glyphicon glyphicon-plus"></span>&nbsp;添加
+        </button>
+        <button class="btn btn-default" type="button" id="updateBtn"><span class="glyphicon glyphicon-refresh"></span>&nbsp;更新
+        </button>
+    </form>
 
- <div class="col-md-10">
-     <form id="stockForm"  class="form-inline">
-         <div class="form-group">
-             <input type="text" class="form-control" placeholder="股票代码" aria-describedby="basic-addon1" name="stock" id="stock">
-         </div>
-         <button class="btn btn-default"  type="button" id="queryBtn"><span class="glyphicon glyphicon-search"></span>&nbsp;查询</button>
-         <button class="btn btn-default"  type="button" id="updateBtn"><span class="glyphicon glyphicon-refresh"></span>&nbsp;更新</button>
-     </form>
-
- </div>
+</div>
 <br>
-<table id="table"  class="table table-hover" data-toggle="table"
+<table id="table" class="table table-hover" data-toggle="table"
        data-side-pagination="server" data-pagination="true" data-checkbox-header="true"
-       data-click-to-select="true" data-sort-stable="true" 	data-toolbar="#toolbar"
+       data-click-to-select="true" data-sort-stable="true" data-toolbar="#toolbar"
        data-pagination-loop="false" data-page-number="1" data-page-list="[10,20]"
        data-toolbar-align="right" data-sort-name="true"
 >
 
     <thead>
     <tr>
-        <th  data-field="index" data-formatter="indexFormatter" >序号</th>
+        <th data-field="index" data-formatter="indexFormatter">序号</th>
         <th data-field="sCode" data-sortable="true">代码</th>
         <th data-field="sStockName" data-sortable="true">名称</th>
         <th data-field="sCurrentPrice" data-sortable="true" data-align="right">当前价格</th>
         <th data-field="sYesterdayPrice" data-sortable="true" data-align="right">昨收</th>
         <th data-field="sRangePrice" data-sortable="true" data-align="right">涨幅</th>
-        <th data-field="sPeDynamic" data-sortable="true" data-align="right">市盈率(动态)</th>
-        <th data-field="sPeStatic" data-sortable="true" data-align="right">市盈率(静态)</th>
+        <th data-field="sPeDynamic" data-sortable="true" data-align="right">PE(动态)</th>
+        <th data-field="sPeStatic" data-sortable="true" data-align="right">PE(静态)</th>
         <th data-field="sPb" data-sortable="true" data-align="right">市净率</th>
         <th data-field="sTotalValue" data-sortable="true" data-align="right">总市值</th>
         <th data-field="sRoe" data-sortable="true" data-align="right">净资产收益率</th>
         <th data-field="sDividendRate" data-sortable="true" data-align="right">分红率</th>
         <th data-field="sDividendYear" data-sortable="true" data-align="right">分红年份</th>
-        <th data-field="sIndustry" data-sortable="true" >所属行业</th>
-        <th data-field="sMainBusiness" >主营业务</th>
+        <th data-field="sIndustry" data-sortable="true">所属行业</th>
+        <th data-field="sMainBusiness">主营业务</th>
         <th data-field="sVersion">s_version</th>
     </tr>
     </thead>
 </table>
 <script>
     function indexFormatter(value, row, index) {
-        return index+1;
+        return index + 1;
     }
     $('#table').bootstrapTable({
         url: "/stock/list",                     //请求后台的URL（*）
@@ -87,7 +96,7 @@
                 offset: params.offset, // 页码数 * 页面大小
                 order: params.order, // 排序方式
                 sort: params.sort, //排序的字段
-                code:""
+                code: $("#stock").val()
             };
         },
         cache: false,
@@ -96,30 +105,45 @@
         liveDrag: true,   // 表格拖动时的随动效果
         headerOnly: true,  // 设定拖动表头操作,能优化点击选行的体验
         clickToSelect: true,                //是否启用点击选中行
-        rowStyle: function (row, index,value) {
+        rowStyle: function (row, index, value) {
             //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
             var strclass = "";
-            if(row.sRangePrice<0){
-                strclass="stock-down";
+            if (row.sRangePrice < 0) {
+                strclass = "stock-down";
+            } else {
+                strclass = "stock-up";
+            }
+            row.sRangePrice = row.sRangePrice + "%";
+            if(row.sPeDynamic==-1){
+                row.sPeDynamic="--";
+            }
+            if(row.sPeStatic==-1){
+                row.sPeStatic="--";
+            }
+            if(row.sPb==-1){
+                row.sPb="--";
+            }
+
+            if( row.sTotalValue!=-1){
+                row.sTotalValue = row.sTotalValue + "亿";
             }else{
-                strclass="stock-up";
+                row.sTotalValue="--";
             }
-            row.sRangePrice=row.sRangePrice+"%";
-            row.sTotalValue=row.sTotalValue+"亿";
-            if(row.sRoe==-1){
-                row.sRoe="--";
-            }else{
-                row.sRoe=row.sRoe+"%";
+
+            if (row.sRoe == -1) {
+                row.sRoe = "--";
+            } else {
+                row.sRoe = row.sRoe + "%";
             }
-            if(row.sDividendRate==-1){
-                row.sDividendRate="--";
-            }else{
-                row.sDividendRate=row.sDividendRate+"%";
+            if (row.sDividendRate == -1) {
+                row.sDividendRate = "--";
+            } else {
+                row.sDividendRate = row.sDividendRate + "%";
             }
-            if(row.sDividendYear==-1){
-                row.sDividendYear="--";
+            if (row.sDividendYear == -1) {
+                row.sDividendYear = "--";
             }
-            return { classes: strclass };
+            return {classes: strclass};
         }
 
     });
@@ -136,9 +160,9 @@
             fields: {
                 stock: {
                     validators: {
-                        notEmpty: {
-                            message: '代码不能为空'
-                        },
+                        /* notEmpty: {
+                         message: '代码不能为空'
+                         },*/
                         regexp: {
                             regexp: /^[0-9]{6}$/,
                             message: '必须为6位有效数字'
@@ -148,30 +172,30 @@
             }
         });
     }
-    function update(){
+    function update() {
         $.ajax({
             type: "POST",
             url: "/stock/refresh",
-            success: function(data) {
-                if(data == 'success') {
+            success: function (data) {
+                if (data == 'success') {
                     console.info("ok");
                     reload();
-                }else {
+                } else {
                     messageBox.error('提示', data);
                 }
 
             },
             error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
-                messageBox.error('提示','数据提交错误，请联系系统管理员.');
+                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
             }
         });
     }
-    $("#updateBtn").click(function() {
+    $("#updateBtn").click(function () {
         update();
     });
 
-    // 提交按钮事件
-    $("#queryBtn").click(function() {
+
+    $("#addBtn").click(function () {
         //获取表单对象
         var $bootstrapValidator = $("#stockForm").data('bootstrapValidator');
         //手动触发验证
@@ -180,31 +204,42 @@
         if (!$bootstrapValidator.isValid()) {
             return;
         }
-
         messageBox.showLoading('正在加载数据请稍后...');
         $.ajax({
             type: "POST",
-            url: "/stock/add/"+$("#stock").val(),
+            url: "/stock/add/" + $("#stock").val(),
             /*data: $("#form").serialize(),*/
-            success: function(data) {
+            success: function (data) {
                 messageBox.closeLoading();
-                if(data == 'success') {
+                if (data == 'success') {
                     $('#stock').val("");
                     resetValidator();
                     reload();
-                }else {
+                } else {
                     messageBox.error('提示', data);
                 }
 
             },
             error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
-                messageBox.error('提示','数据提交错误，请联系系统管理员.');
+                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
             }
         });
     });
+    // 提交按钮事件
+    $("#queryBtn").click(function () {
+        //获取表单对象
+        var $bootstrapValidator = $("#stockForm").data('bootstrapValidator');
+        //手动触发验证
+        $bootstrapValidator.validate();
+        // 如果验证未通过,则不继续提交
+        if (!$bootstrapValidator.isValid()) {
+            return;
+        }
+        reload();
+    });
     function reload() {
         // 表格自带的刷新方法
-        $('#table').bootstrapTable('refresh',{
+        $('#table').bootstrapTable('refresh', {
             url: '/stock/list'
         });
     }
@@ -217,9 +252,9 @@
         // 再重新初始化
         initValidator();
     }
-    window.onload=function(){
+    window.onload = function () {
         initValidator();
-        window.setInterval("reload()",2000);
+        // window.setInterval("reload()",2000);
     }
 </script>
 </body>
