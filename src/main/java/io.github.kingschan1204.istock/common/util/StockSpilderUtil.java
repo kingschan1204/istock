@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.common.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
@@ -174,14 +175,14 @@ public class StockSpilderUtil {
         return null;
     }
 
-   /* public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         String[] stockCode = {"600741"};//股票代码
         for (String s : stockCode) {
-            StockUtil.getStockPrice(new String[]{s});
-            System.out.println(new ObjectMapper().writeValueAsString(StockUtil.getStockInfo(s)));
+            /*StockSpilderUtil.getStockPrice(new String[]{s});
+            System.out.println(new ObjectMapper().writeValueAsString(StockSpilderUtil.getStockInfo(s)));*/
             getStockDividendRate(s);
         }
 
 
-    }*/
+    }
 }

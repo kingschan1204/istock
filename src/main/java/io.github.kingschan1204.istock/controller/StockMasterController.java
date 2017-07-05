@@ -1,5 +1,7 @@
 package io.github.kingschan1204.istock.controller;
 
+import io.github.kingschan1204.istock.common.util.StockSpilderUtil;
+import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
 import io.github.kingschan1204.istock.model.po.StockMasterEntity;
 import io.github.kingschan1204.istock.model.vo.StockMasterPagingVo;
 import io.github.kingschan1204.istock.model.vo.StockMasterVo;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by kingschan on 2017/3/9.
@@ -96,5 +100,19 @@ public class StockMasterController {
             e.printStackTrace();
         }
         return msg;
+    }
+
+
+    @RequestMapping("/dividendRate/{code}")
+    public List<ThsStockDividendRate> dividendRate(@PathVariable String code){
+        String msg = "success";
+        List<ThsStockDividendRate> lis=null;
+        try {
+            lis=StockSpilderUtil.getStockDividendRate(code);
+        } catch (Exception e) {
+            msg = e.getMessage();
+            e.printStackTrace();
+        }
+        return lis;
     }
 }

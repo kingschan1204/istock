@@ -42,13 +42,14 @@
             <input type="text" class="form-control" placeholder="股票代码" aria-describedby="basic-addon1" name="stock"
                    id="stock">
         </div>
-        <button class="btn btn-default" type="button" id="queryBtn"><span class="glyphicon glyphicon-search"></span>&nbsp;查询
-        </button>
-        <button class="btn btn-default" type="button" id="addBtn"><span class="glyphicon glyphicon-plus"></span>&nbsp;添加
-        </button>
-        <button class="btn btn-default" type="button" id="updateBtn"><span class="glyphicon glyphicon-refresh"></span>&nbsp;更新
-    </button>
+        <!--<button class="btn btn-default" type="button" id="queryBtn"><span class="glyphicon glyphicon-search"></span>&nbsp;查询        </button>-->
+        <button class="btn btn-primary" type="button" id="addBtn"><span class="glyphicon glyphicon-plus"></span>&nbsp;添加        </button>
+        <button class="btn btn-warning" type="button" id="updateBtn"><span class="glyphicon glyphicon-refresh"></span>&nbsp;更新    </button>
         <button class="btn btn-danger" type="button" id="delBtn"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
+        <button class="btn btn-success" type="button" id="hisSylBtn"><span class="glyphicon glyphicon-usd"></span>&nbsp;历史市盈率</button>
+        <button class="btn btn-success" type="button" id="hisSjlBtn"><span class="glyphicon glyphicon-usd"></span>&nbsp;历史市净率</button>
+        <button class="btn btn-success" type="button" id="hisFhBtn"><span class="glyphicon glyphicon-usd"></span>&nbsp;历史分红</button>
+
     </form>
 
 </div>
@@ -76,16 +77,29 @@
         <th data-field="sDividendRate" data-sortable="true" data-align="right">分红率</th>
         <th data-field="sDividendYear" data-sortable="true" data-align="right">分红年份</th>
         <th data-field="sIndustry" data-sortable="true">所属行业</th>
-       <!-- <th data-field="sMainBusiness">主营业务</th>
-        <th data-field="sVersion">s_version</th>-->
+        <th data-field="sMainBusiness" data-width="500">主营业务</th>
+        <th data-field="sVersion">s_version</th>
     </tr>
     </thead>
 </table>
 <script>
+    function timeStamp2String (time){
+        var datetime = new Date();
+        datetime.setTime(time);
+        var year = datetime.getFullYear();
+        var month = datetime.getMonth() + 1;
+        var date = datetime.getDate();
+        var hour = datetime.getHours();
+        var minute = datetime.getMinutes();
+        var second = datetime.getSeconds();
+        //var mseconds = datetime.getMilliseconds();
+        return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+    };
     function indexFormatter(value, row, index) {
         return index + 1;
     }
     var current_code=null;
+    var rowindex=null;
     $('#table').bootstrapTable({
         url: "/stock/list",                     //请求后台的URL（*）
         pageSize: 20,
@@ -103,6 +117,8 @@
         },
         cache: false,
         pagination: true,
+        detailView:true,
+        detailFormatter:detailFormatter,
         resizable: true,  //启动表格可拖动调整列宽效果,需要bootstrap-table-resizable插件已经其依赖的colResizable-1.5插件
         liveDrag: true,   // 表格拖动时的随动效果
         headerOnly: true,  // 设定拖动表头操作,能优化点击选行的体验
@@ -145,19 +161,46 @@
             if (row.sDividendYear == -1) {
                 row.sDividendYear = "--";
             }
+            row.sVersion= timeStamp2String(row.sVersion);
             return {classes: strclass};
         },
         onClickRow: function(row, $element) {
             //设置所有行样式
             $(".fixed-table-container tbody tr").css("background-color","rgb(255,255,255)");
-            $element.css("background-color","#CC99CC");
+            $element.css("background-color","#FFFFCC");
             current_code=row.sCode;
+            rowindex=$element.data('index');
         }
 
 
     });
 
-
+    function detailFormatter(index, row) {
+       /* var html = [];
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+        });
+        return html.join('');*/
+        messageBox.showLoading('正在处理请稍后...');
+        var html="<p style='padding-left: 10%;font-weight: bold;color: darkviolet;'>分红年度&emsp;&emsp;除权日&emsp;&emsp;&emsp;&emsp;分红方案&emsp;&emsp;分红率</p>";
+        $.ajax({
+            url: "http://localhost/stock/dividendRate/"+row.sCode,
+            dataType:"json",
+            async:false,
+            success: function(data){
+                for (var i=0;i<data.length;i++){
+                    var item=data[i];
+                    var percent="--";
+                    if(item.percent!=-1){
+                        percent="<strong>"+item.percent+"%</strong>";
+                    }
+                    html+="<p style='padding-left: 10%;'>"+item.dividendYear+"&emsp;"+item.sdDate+"&emsp;"+item.plan+"&emsp;"+percent+"</p>";
+                }
+            }
+        });
+        messageBox.closeLoading();
+        return html;
+    }
     function initValidator() {
         $('#stockForm').bootstrapValidator({
             message: 'This value is not valid',
@@ -169,9 +212,9 @@
             fields: {
                 stock: {
                     validators: {
-                        /* notEmpty: {
+                         notEmpty: {
                          message: '代码不能为空'
-                         },*/
+                         },
                         regexp: {
                             regexp: /^[0-9]{6}$/,
                             message: '必须为6位有效数字'
@@ -270,6 +313,50 @@
             }
         });
     });
+    $("#hisSylBtn").click(function () {
+        if (current_code==null) {
+            messageBox.notify("请股票!","danger");
+            return;
+        }
+        var imgurl="http://biz.finance.sina.com.cn/company/compare/img_syl_compare.php?stock_code="+current_code+"&limit=3650";
+        swal({
+            width: 660,
+            title: '历史市盈率',
+            text: '过去10年数据',
+            imageUrl: imgurl,
+            imageWidth: 600,
+            imageHeight: 400,
+            showCloseButton: true,
+            allowOutsideClick:false,
+            animation: true
+        })
+    });
+    $("#hisSjlBtn").click(function () {
+        if (current_code==null) {
+            messageBox.notify("请股票!","danger");
+            return;
+        }
+        var imgurl="http://biz.finance.sina.com.cn/company/compare/img_sjl_compare.php?stock_code="+current_code+"&limit=3650";
+        swal({
+            width: 660,
+            title: '历史市净率',
+            text: '过去10年数据',
+            imageUrl: imgurl,
+            imageWidth: 600,
+            imageHeight: 400,
+            showCloseButton: true,
+            allowOutsideClick:false,
+            animation: true
+        })
+    });
+    $("#hisFhBtn").click(function () {
+        if (rowindex==null) {
+            messageBox.notify("请选择需要查看的股票!","danger");
+            return;
+        }
+        $('#table').bootstrapTable('expandRow', rowindex);
+    });
+
     function reload() {
         // 表格自带的刷新方法
         $('#table').bootstrapTable('refresh', {

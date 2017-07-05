@@ -168,10 +168,6 @@
         <level value="ERROR"/>
         <appender-ref ref="console"/>
     </logger>
-    <logger name="org.hibernate.engine.transaction">
-        <level value="DEBUG"/>
-        <appender-ref ref="console"/>
-    </logger>
     <logger name="org.springframework.transaction">
         <level value="DEBUG"/>
         <appender-ref ref="console"/>
