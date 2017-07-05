@@ -111,18 +111,21 @@
                 limit: params.limit, // 页面大小
                 offset: params.offset, // 页码数 * 页面大小
                 order: params.order, // 排序方式
-                sort: params.sort, //排序的字段
-                code: $("#stock").val()
+                sort: params.sort //排序的字段
+               // code: $("#stock").val()
             };
         },
+        idField:"sCode",
         cache: false,
         pagination: true,
         detailView:true,
+        showColumns:true,
+        showRefresh:true,
         detailFormatter:detailFormatter,
         resizable: true,  //启动表格可拖动调整列宽效果,需要bootstrap-table-resizable插件已经其依赖的colResizable-1.5插件
         liveDrag: true,   // 表格拖动时的随动效果
         headerOnly: true,  // 设定拖动表头操作,能优化点击选行的体验
-        clickToSelect: true,                //是否启用点击选中行
+        clickToSelect: true,
         rowStyle: function (row, index, value) {
             //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
             var strclass = "";
@@ -131,7 +134,9 @@
             } else {
                 strclass = "stock-up";
             }
-            row.sRangePrice = row.sRangePrice + "%";
+            if(row.sRangePrice.toString().indexOf("%")==-1){
+                row.sRangePrice = row.sRangePrice + "%";
+            }
             if(row.sPeDynamic==-1){
                 row.sPeDynamic="--";
             }
@@ -143,7 +148,10 @@
             }
 
             if( row.sTotalValue!=-1){
-                row.sTotalValue = row.sTotalValue + "亿";
+                if(row.sTotalValue.toString().indexOf("亿")==-1){
+                    row.sTotalValue = row.sTotalValue + "亿";
+                }
+
             }else{
                 row.sTotalValue="--";
             }
@@ -151,12 +159,18 @@
             if (row.sRoe == -1) {
                 row.sRoe = "--";
             } else {
-                row.sRoe = row.sRoe + "%";
+                if(row.sRoe.toString().indexOf("%")==-1){
+                    row.sRoe = row.sRoe + "%";
+                }
+
             }
             if (row.sDividendRate == -1) {
                 row.sDividendRate = "--";
             } else {
-                row.sDividendRate = row.sDividendRate + "%";
+                if(row.sDividendRate.toString().indexOf("%")==-1){
+                    row.sDividendRate = row.sDividendRate + "%";
+                }
+
             }
             if (row.sDividendYear == -1) {
                 row.sDividendYear = "--";
