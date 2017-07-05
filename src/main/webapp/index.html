@@ -47,7 +47,8 @@
         <button class="btn btn-default" type="button" id="addBtn"><span class="glyphicon glyphicon-plus"></span>&nbsp;添加
         </button>
         <button class="btn btn-default" type="button" id="updateBtn"><span class="glyphicon glyphicon-refresh"></span>&nbsp;更新
-        </button>
+    </button>
+        <button class="btn btn-danger" type="button" id="delBtn"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
     </form>
 
 </div>
@@ -75,8 +76,8 @@
         <th data-field="sDividendRate" data-sortable="true" data-align="right">分红率</th>
         <th data-field="sDividendYear" data-sortable="true" data-align="right">分红年份</th>
         <th data-field="sIndustry" data-sortable="true">所属行业</th>
-        <th data-field="sMainBusiness">主营业务</th>
-        <th data-field="sVersion">s_version</th>
+       <!-- <th data-field="sMainBusiness">主营业务</th>
+        <th data-field="sVersion">s_version</th>-->
     </tr>
     </thead>
 </table>
@@ -84,6 +85,7 @@
     function indexFormatter(value, row, index) {
         return index + 1;
     }
+    var current_code=null;
     $('#table').bootstrapTable({
         url: "/stock/list",                     //请求后台的URL（*）
         pageSize: 20,
@@ -144,7 +146,14 @@
                 row.sDividendYear = "--";
             }
             return {classes: strclass};
+        },
+        onClickRow: function(row, $element) {
+            //设置所有行样式
+            $(".fixed-table-container tbody tr").css("background-color","rgb(255,255,255)");
+            $element.css("background-color","#CC99CC");
+            current_code=row.sCode;
         }
+
 
     });
 
@@ -236,6 +245,30 @@
             return;
         }
         reload();
+    });
+    $("#delBtn").click(function () {
+        if (current_code==null) {
+            messageBox.notify("请选择要删除的股票!","danger");
+            return;
+        }
+        messageBox.showLoading('正在处理请稍后...');
+        $.ajax({
+            type: "POST",
+            url: "/stock/del/" +current_code,
+            /*data: $("#form").serialize(),*/
+            success: function (data) {
+                messageBox.closeLoading();
+                if (data == 'success') {
+                    reload();
+                } else {
+                    messageBox.error('提示', data);
+                }
+
+            },
+            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
+            }
+        });
     });
     function reload() {
         // 表格自带的刷新方法

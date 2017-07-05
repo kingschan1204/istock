@@ -86,4 +86,15 @@ public class StockMasterController {
         return msg;
     }
 
+    @RequestMapping("/del/{code}")
+    public String stockDel(@PathVariable String code){
+        String msg = "success";
+        try {
+            stockServ.delStock(code);
+        } catch (Exception e) {
+            msg = e.getMessage();
+            e.printStackTrace();
+        }
+        return msg;
+    }
 }

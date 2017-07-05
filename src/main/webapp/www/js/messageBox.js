@@ -63,7 +63,7 @@ var messageBox = {
             title: '',
             text: msg,
             width:'300px',
-            imageUrl: '/www/res/tms/global/img/loading.gif',
+            imageUrl: '/www/img/loading.gif',
             showConfirmButton:false,
             showLoaderOnConfirm:true,
             allowOutsideClick:false

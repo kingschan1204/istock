@@ -176,4 +176,9 @@ public class StockMasterService {
         }
     }
 
+    @Transactional
+    public void delStock(String code){
+        stockRepository.delete(code);
+    }
+
 }
