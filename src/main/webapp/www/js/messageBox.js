@@ -15,9 +15,8 @@ var messageBox = {
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             cancelButtonText: "否",
-            confirmButtonText: "是",
-            closeOnConfirm: false
-        },funcallback);
+            confirmButtonText: "是"
+        }).then(funcallback);
     },
     error:function(title,text){
         swal

@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -90,11 +87,14 @@ public class StockMasterController {
         return msg;
     }
 
-    @RequestMapping("/del/{code}")
-    public String stockDel(@PathVariable String code){
+    @RequestMapping("/del")
+    public String stockDel(@RequestParam("codes[]") String[] codes){
         String msg = "success";
         try {
-            stockServ.delStock(code);
+            if(codes.length==0){
+               return "null";
+            }
+            stockServ.delStock(codes);
         } catch (Exception e) {
             msg = e.getMessage();
             e.printStackTrace();

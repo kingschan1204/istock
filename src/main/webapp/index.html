@@ -63,7 +63,7 @@
 
     <thead>
     <tr>
-        <th data-field="index" data-formatter="indexFormatter">序号</th>
+        <th data-field="index" data-checkbox="true"></th>
         <th data-field="sCode" data-sortable="true">代码</th>
         <th data-field="sStockName" data-sortable="true">名称</th>
         <th data-field="sCurrentPrice" data-sortable="true" data-align="right">当前价格</th>
@@ -180,15 +180,27 @@
         },
         onClickRow: function(row, $element) {
             //设置所有行样式
-            $(".fixed-table-container tbody tr").css("background-color","rgb(255,255,255)");
-            $element.css("background-color","#FFFFCC");
+           // $(".fixed-table-container tbody tr").css("background-color","rgb(255,255,255)");
+          //  $element.css("background-color","#FFFFCC");
             current_code=row.sCode;
             rowindex=$element.data('index');
         }
 
 
     });
+function getChk(){
+    var ids="";
+   var rows= $('#table').bootstrapTable('getSelections');
+   for(var i=0;i<rows.length;i++){
+    ids+=rows[i].sCode;
+       if(i!=rows.length-1){
+           ids+=",";
+       }
+   }
+    console.info(ids);
+    return ids;
 
+}
     function detailFormatter(index, row) {
        /* var html = [];
         $.each(row, function (key, value) {
@@ -304,39 +316,48 @@
         reload();
     });
     $("#delBtn").click(function () {
-        if (current_code==null) {
+        if (getChk()=="") {
             messageBox.notify("请选择要删除的股票!","danger");
             return;
         }
-        messageBox.showLoading('正在处理请稍后...');
-        $.ajax({
-            type: "POST",
-            url: "/stock/del/" +current_code,
-            /*data: $("#form").serialize(),*/
-            success: function (data) {
-                messageBox.closeLoading();
-                if (data == 'success') {
-                    reload();
-                } else {
-                    messageBox.error('提示', data);
-                }
 
-            },
-            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
-                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
-            }
+        messageBox.confirm("是否删除选中的股票？",function(result){
+            messageBox.showLoading('正在处理请稍后...');
+            $.ajax({
+                type: "POST",
+                url: "/stock/del" ,
+                data:{codes:getChk().split(",")},
+                success: function (data) {
+                    messageBox.closeLoading();
+                    if (data == 'success') {
+                        reload();
+                    } else {
+                        messageBox.error('提示', data);
+                    }
+
+                },
+                error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+                    messageBox.error('提示', '数据提交错误，请联系系统管理员.');
+                }
+            });
         });
+
+
     });
     $("#hisSylBtn").click(function () {
-        if (current_code==null) {
-            messageBox.notify("请股票!","danger");
+        var ids=getChk().split(',');
+        if (getChk()=="") {
+            messageBox.notify("请选择股票!","danger");
+            return;
+        }else  if(ids.length>5){
+            messageBox.notify("最多选择5支股票对比!","danger");
             return;
         }
-        var imgurl="http://biz.finance.sina.com.cn/company/compare/img_syl_compare.php?stock_code="+current_code+"&limit=3650";
+        var imgurl="http://biz.finance.sina.com.cn/company/compare/img_syl_compare.php?stock_code="+getChk()+"&limit=2555";
         swal({
             width: 660,
             title: '历史市盈率',
-            text: '过去10年数据',
+            text: '过去7年数据',
             imageUrl: imgurl,
             imageWidth: 600,
             imageHeight: 400,
@@ -346,15 +367,19 @@
         })
     });
     $("#hisSjlBtn").click(function () {
-        if (current_code==null) {
-            messageBox.notify("请股票!","danger");
+        var ids=getChk().split(',');
+        if (getChk()=="") {
+            messageBox.notify("请选择股票!","danger");
+            return;
+        }else  if(ids.length>5){
+            messageBox.notify("最多选择5支股票对比!","danger");
             return;
         }
-        var imgurl="http://biz.finance.sina.com.cn/company/compare/img_sjl_compare.php?stock_code="+current_code+"&limit=3650";
+        var imgurl="http://biz.finance.sina.com.cn/company/compare/img_sjl_compare.php?stock_code="+getChk()+"&limit=2555";
         swal({
             width: 660,
             title: '历史市净率',
-            text: '过去10年数据',
+            text: '过去7年数据',
             imageUrl: imgurl,
             imageWidth: 600,
             imageHeight: 400,
