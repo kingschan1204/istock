@@ -11,7 +11,7 @@ var messageBox = {
         swal({
             title: "",
             text: msg,
-            type: "warning",
+            type: "info",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             cancelButtonText: "否",
