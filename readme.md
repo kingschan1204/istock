@@ -66,3 +66,7 @@ http://hq.sinajs.cn/list=
 ## 历史市盈率 历史市净率
 http://biz.finance.sina.com.cn/company/compare/img_syl_compare.php?stock_code=600036,&limit=3650
 600036改成想查的股票代码 2400改成任何你想查看的多少天 syl是查市盈率，如果查市净率就把syl的y改成j
+
+
+## 国内指数
+`http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300`
