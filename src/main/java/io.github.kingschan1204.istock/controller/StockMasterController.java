@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.controller;
 import io.github.kingschan1204.istock.common.util.StockSpilderUtil;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
 import io.github.kingschan1204.istock.model.po.StockMasterEntity;
+import io.github.kingschan1204.istock.model.vo.JqGridVo;
 import io.github.kingschan1204.istock.model.vo.StockMasterPagingVo;
 import io.github.kingschan1204.istock.model.vo.StockMasterVo;
 import io.github.kingschan1204.istock.repository.StockMasterRepository;
@@ -74,6 +75,31 @@ public class StockMasterController {
         }
         return vo;
     }
+
+
+    @RequestMapping("/list-jqgrid")
+    public JqGridVo stockListJqgrid(Integer page, Integer rows, String code, String sidx, String sord){
+        Page<StockMasterVo> p = null;
+        JqGridVo vo = new JqGridVo();
+        try{
+            p= stockServ.stockMasterList(
+                    page,
+                    rows,
+                    code,
+                    sidx, //默认会传true过来
+                    sord
+            );
+            vo.setRows(p.getContent());
+            vo.setPage(page);
+            vo.setRecords(p.getTotalElements());
+            vo.setTotal(p.getTotalPages());
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return vo;
+    }
+
+
 
     @RequestMapping("/refresh")
     public String stockRefresh() {

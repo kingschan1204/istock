@@ -9,19 +9,19 @@ import java.sql.Timestamp;
 public class StockMasterVo {
     private String sCode;
     private String sStockName;
-    private BigDecimal sCurrentPrice;
-    private BigDecimal sYesterdayPrice;
-    private BigDecimal sRangePrice;
+    private String sCurrentPrice;
+    private String sYesterdayPrice;
+    private String sRangePrice;
     private String sMainBusiness;
     private String sIndustry;
-    private BigDecimal sPeDynamic;
-    private BigDecimal sPeStatic;
-    private BigDecimal sPb;
-    private BigDecimal sTotalValue;
-    private BigDecimal sRoe;
-    private BigDecimal sDividendRate;
-    private Integer sDividendYear;
-    private Timestamp sVersion;
+    private String sPeDynamic;
+    private String sPeStatic;
+    private String sPb;
+    private String sTotalValue;
+    private String sRoe;
+    private String sDividendRate;
+    private String sDividendYear;
+    private String sVersion;
 
     public String getsCode() {
         return sCode;
@@ -39,27 +39,27 @@ public class StockMasterVo {
         this.sStockName = sStockName;
     }
 
-    public BigDecimal getsCurrentPrice() {
+    public String getsCurrentPrice() {
         return sCurrentPrice;
     }
 
-    public void setsCurrentPrice(BigDecimal sCurrentPrice) {
+    public void setsCurrentPrice(String sCurrentPrice) {
         this.sCurrentPrice = sCurrentPrice;
     }
 
-    public BigDecimal getsYesterdayPrice() {
+    public String getsYesterdayPrice() {
         return sYesterdayPrice;
     }
 
-    public void setsYesterdayPrice(BigDecimal sYesterdayPrice) {
+    public void setsYesterdayPrice(String sYesterdayPrice) {
         this.sYesterdayPrice = sYesterdayPrice;
     }
 
-    public BigDecimal getsRangePrice() {
+    public String getsRangePrice() {
         return sRangePrice;
     }
 
-    public void setsRangePrice(BigDecimal sRangePrice) {
+    public void setsRangePrice(String sRangePrice) {
         this.sRangePrice = sRangePrice;
     }
 
@@ -79,67 +79,67 @@ public class StockMasterVo {
         this.sIndustry = sIndustry;
     }
 
-    public BigDecimal getsPeDynamic() {
+    public String getsPeDynamic() {
         return sPeDynamic;
     }
 
-    public void setsPeDynamic(BigDecimal sPeDynamic) {
+    public void setsPeDynamic(String sPeDynamic) {
         this.sPeDynamic = sPeDynamic;
     }
 
-    public BigDecimal getsPeStatic() {
+    public String getsPeStatic() {
         return sPeStatic;
     }
 
-    public void setsPeStatic(BigDecimal sPeStatic) {
+    public void setsPeStatic(String sPeStatic) {
         this.sPeStatic = sPeStatic;
     }
 
-    public BigDecimal getsPb() {
+    public String getsPb() {
         return sPb;
     }
 
-    public void setsPb(BigDecimal sPb) {
+    public void setsPb(String sPb) {
         this.sPb = sPb;
     }
 
-    public BigDecimal getsTotalValue() {
+    public String getsTotalValue() {
         return sTotalValue;
     }
 
-    public void setsTotalValue(BigDecimal sTotalValue) {
+    public void setsTotalValue(String sTotalValue) {
         this.sTotalValue = sTotalValue;
     }
 
-    public BigDecimal getsRoe() {
+    public String getsRoe() {
         return sRoe;
     }
 
-    public void setsRoe(BigDecimal sRoe) {
+    public void setsRoe(String sRoe) {
         this.sRoe = sRoe;
     }
 
-    public BigDecimal getsDividendRate() {
+    public String getsDividendRate() {
         return sDividendRate;
     }
 
-    public void setsDividendRate(BigDecimal sDividendRate) {
+    public void setsDividendRate(String sDividendRate) {
         this.sDividendRate = sDividendRate;
     }
 
-    public Integer getsDividendYear() {
+    public String getsDividendYear() {
         return sDividendYear;
     }
 
-    public void setsDividendYear(Integer sDividendYear) {
+    public void setsDividendYear(String sDividendYear) {
         this.sDividendYear = sDividendYear;
     }
 
-    public Timestamp getsVersion() {
+    public String getsVersion() {
         return sVersion;
     }
 
-    public void setsVersion(Timestamp sVersion) {
+    public void setsVersion(String sVersion) {
         this.sVersion = sVersion;
     }
 }

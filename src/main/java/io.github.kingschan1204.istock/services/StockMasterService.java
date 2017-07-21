@@ -94,15 +94,15 @@ public class StockMasterService {
     public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize, final String code, String orderfidld, String sort) {
         Pageable pageable = null;
         // 判断是否包含排序信息,生产对应的Pageable查询条件
-        if (null != orderfidld && null != sort) {
+        if (null != orderfidld && !orderfidld.isEmpty()&& null != sort) {
             Sort s = new Sort(
                     sort.equalsIgnoreCase("asc") ?
                             Sort.Direction.ASC : Sort.Direction.DESC
                     , orderfidld);
-            pageable = new PageRequest(pageindex - 1, pagesize, s);
+            pageable = new PageRequest(pageindex-1, pagesize, s);
         } else {
             Sort s = new Sort(Sort.Direction.DESC, "sCode");
-            pageable = new PageRequest(pageindex - 1, pagesize, s);
+            pageable = new PageRequest(pageindex-1, pagesize, s);
         }
         //pageable = new PageRequest(pageindex - 1, pagesize);
         // 获取包含分页信息和UserVo集合的Page<UserVo>对象
@@ -123,6 +123,30 @@ public class StockMasterService {
             public StockMasterVo convert(StockMasterEntity entity) {
                 StockMasterVo vo = new StockMasterVo();
                 BeanUtils.copyProperties(entity, vo);
+                vo.setsCurrentPrice(entity.getsCurrentPrice().toString());
+                vo.setsYesterdayPrice(entity.getsYesterdayPrice().toString());
+                vo.setsRangePrice(String.format("%s%s",entity.getsRangePrice(),"%"));
+
+                String ped =entity.getsPeDynamic().intValue()==-1?"--":entity.getsPeDynamic().toString();
+                vo.setsPeDynamic(ped);
+
+                String pes=entity.getsPeStatic().intValue()==-1?"--":entity.getsPeStatic().toString();
+                vo.setsPeStatic(pes);
+
+                String pb=entity.getsPb().intValue()==-1?"--":entity.getsPb().toString();
+                vo.setsPb(pb);
+
+                String tv=entity.getsTotalValue().intValue()==-1?"--":entity.getsTotalValue().intValue()+"亿";
+                vo.setsTotalValue(tv);
+
+                String roe =entity.getsRoe().intValue()==-1?"--":entity.getsRoe().toString().concat("%");
+                vo.setsRoe(roe);
+
+                String dy=entity.getsDividendYear()==-1?"--":entity.getsDividendYear().toString();
+                vo.setsDividendYear(dy);
+
+                String dr=entity.getsDividendRate().intValue()==-1?"--":entity.getsDividendRate().toString().concat("%");
+                vo.setsDividendRate(dr);
                 return vo;
             }
         });
