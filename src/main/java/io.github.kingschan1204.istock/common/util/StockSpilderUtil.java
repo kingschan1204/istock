@@ -175,14 +175,45 @@ public class StockSpilderUtil {
         return null;
     }
 
-   /* public static void main(String[] args) throws Exception {
-        String[] stockCode = {"600741"};//股票代码
+
+    public static void guzhi(String code,String date)throws  Exception{
+        String url=String.format(
+                "http://www.csindex.com.cn/sseportal/csiportal/syl/indexsyl.do?indexCode=%s%s",
+                code,null==date?"":"&date="+date);
+        System.out.println(url);
+        Elements content = Jsoup.connect(url)
+                .ignoreContentType(true)
+                .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36")
+                .referrer("http://www.csindex.com.cn/sseportal/csiportal/hy_syl/syl.jsp")
+                .timeout(3000)
+                .get()
+                .getElementsByTag("tr");
+        if(content.size()==2){
+            String row=content.get(1).text();
+            String data[]=row.split("\\s");
+            System.out.println(row);
+            //倒数： 最新市盈率   最新滚动市盈率   最新市净率    最新股息率
+        }else {
+            System.out.println("没数据啊");
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        /*String[] stockCode = {"600741"};//股票代码
         for (String s : stockCode) {
-            *//*StockSpilderUtil.getStockPrice(new String[]{s});
-            System.out.println(new ObjectMapper().writeValueAsString(StockSpilderUtil.getStockInfo(s)));*//*
+            StockSpilderUtil.getStockPrice(new String[]{s});
+            System.out.println(new ObjectMapper().writeValueAsString(StockSpilderUtil.getStockInfo(s)));
             getStockDividendRate(s);
+        }*/
+
+        String [] date =StockDateUtil.getTimeLine(15);
+        for (String day:date ) {
+            try{
+                StockSpilderUtil.guzhi("000568",day);
+            }catch (Exception ex){
+                ex.fillInStackTrace();
+            }
         }
 
-
-    }*/
+    }
 }
