@@ -2,6 +2,10 @@
 
 > 本应用是一个基于Spring boot 实现的股票指数爬虫工具，数据来源于`同花顺`,`新浪财经`
 
+## Demo 效果
+
+[点我查看效果](http://www.gelinzhijia.com/stock/) (初版)
+
 ##表结构
 
 ```
