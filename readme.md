@@ -14,6 +14,13 @@
 
 [点我查看效果](http://www.gelinzhijia.com/stock/) (初版)
 
+## 效果图
+
+![](https://kingschan1204.github.io/istock/readme-res/stock-list.png )
+![](https://kingschan1204.github.io/istock/readme-res/share-money.png )
+![](https://kingschan1204.github.io/istock/readme-res/history-pb.png )
+
+
 ##表结构
 
 ```
