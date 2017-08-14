@@ -21,7 +21,7 @@
 ![](https://kingschan1204.github.io/istock/readme-res/history-pb.png )
 
 
-##表结构
+## 表结构
 
 ```
 CREATE TABLE `stock_master` (
