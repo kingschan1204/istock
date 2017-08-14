@@ -1,14 +1,8 @@
+## 前言
 
+> 本应用是一个基于Spring boot 实现的股票指数爬虫工具，数据来源于`同花顺`,`新浪财经`
 
-由于电脑上装了几个jdk 所以运行的时候临时设置一下对应的jdk版本：(我设置为jdk 1.7 运行maven)
-set path=C:\Program Files\Java\jdk1.7.0_21\bin
-
-C:\Users\kingschan\Documents\apache-maven-3.3.9\bin\mvn package
-
-## spring boot maven 常用命令
-cd C:\Users\kingschan\Documents\GitHub\SpringBoot-Pritice 进入项目目录下
-- mvn package  打包
-- mvn spring-boot:run  运行spring boot
+##表结构
 
 ```
 CREATE TABLE `stock_master` (
@@ -31,6 +25,7 @@ CREATE TABLE `stock_master` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ```
+# 依赖的数据接口
 
 ## 新浪实时价格接口
 
