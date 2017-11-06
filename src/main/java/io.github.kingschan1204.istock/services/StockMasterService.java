@@ -112,7 +112,7 @@ public class StockMasterService {
                List<Predicate> predicates = new ArrayList<Predicate>();
                // 判断字段是否存在来决定添加的条件
                if (StringUtils.isNotBlank(code)) {
-                   predicates.add(criteriaBuilder.like(root.<String>get("sCode"), "%" + code + "%"));
+                   predicates.add(criteriaBuilder.like(root.<String>get("sCode"),  code + "%"));
                }
                if (predicates.size() == 0) return null;
                return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));

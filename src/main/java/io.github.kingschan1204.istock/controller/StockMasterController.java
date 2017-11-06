@@ -26,6 +26,7 @@ public class StockMasterController {
     @Autowired
     private StockMasterService stockServ;
 
+
     @RequestMapping("/get/{code}")
     public StockMasterVo getStock(@PathVariable String code) {
         return stockServ.getStock(code);

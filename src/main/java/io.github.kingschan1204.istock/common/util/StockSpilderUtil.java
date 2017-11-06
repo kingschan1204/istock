@@ -93,7 +93,7 @@ public class StockSpilderUtil {
             double xj = Double.parseDouble(data[4]);
             double zs = Double.parseDouble(data[3]);
             double zf = (xj - zs) / zs * 100;
-            log.info(String.format("%s %s 现价:%s 昨收:%s 涨幅:%.2f%s", data[0], data[1], data[3], data[2], zf, "%"));
+            //log.info(String.format("%s %s 现价:%s 昨收:%s 涨幅:%.2f%s", data[0], data[1], data[3], data[2], zf, "%"));
             //String code,String name,Double price,Double yprice,Double rangePrice
             NumberFormat nf = NumberFormat.getNumberInstance();
             // 保留两位小数
@@ -198,13 +198,13 @@ public class StockSpilderUtil {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        /*String[] stockCode = {"600741"};//股票代码
+   /* public static void main(String[] args) throws Exception {
+        *//*String[] stockCode = {"600741"};//股票代码
         for (String s : stockCode) {
             StockSpilderUtil.getStockPrice(new String[]{s});
             System.out.println(new ObjectMapper().writeValueAsString(StockSpilderUtil.getStockInfo(s)));
             getStockDividendRate(s);
-        }*/
+        }*//*
 
         String [] date =StockDateUtil.getTimeLine(15);
         for (String day:date ) {
@@ -215,5 +215,5 @@ public class StockSpilderUtil {
             }
         }
 
-    }
+    }*/
 }

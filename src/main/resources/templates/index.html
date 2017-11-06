@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stock</title>
+    <!-- The jQuery library is a prerequisite for all jqSuite products -->
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/jquery.min.js"></script>
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-en.js"></script>
+    <!-- This is the Javascript file of jqGrid -->
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/src/jquery.jqGrid.js"></script>
+    <!-- This is the localization file of the grid controlling messages, labels, etc.
+    <!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <!-- The link to the CSS that the grid needs -->
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="http://www.guriddo.net/demo/css/trirand/ui.jqgrid-bootstrap.css"/>
+    <script>
+        $.jgrid.defaults.width = 780;
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <link href="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.js"></script>
+
+    <script src="/js/util.js"></script>
+    <script src="/js/messageBox.js"></script>
+    <style>
+        div.header
+        　　 {
+            　　text-align: center;
+        }
+    </style>
+</head>
+<body style="padding: 20px 0px 0px 0px;">
+
+<div class="row" style="margin-bottom: 10px;">
+    <div class="col-md-12">
+        <form class="form-inline">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                    <input type="text" class="form-control" id="stockCode" placeholder="代码" min="6" max="6">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="search_btn">查询</button>
+            <button type="button" class="btn btn-success" id="add_btn">新增</button>
+            <!--<button type="button" class="btn btn-info">Info</button>-->
+            <button type="button" class="btn btn-warning" id="refresh_data_btn">更新</button>
+            <button type="button" class="btn btn-danger" id="del_btn">删除</button>
+        </form>
+    </div>
+</div>
+
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+
+</body>
+</html>
+<script type="text/javascript">
+    $.jgrid.defaults.width = 780;
+    $.jgrid.defaults.responsive = true;
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+    $(document).ready(function () {
+
+        $("#jqGrid").jqGrid({
+            url: basepath + "/stock/list-jqgrid",
+            width: window.screen.availWidth - 20,
+            multiselect: true,//复选框
+            shrinkToFit: false,
+            rownumbers: true,
+            loadtext: '正在加载数据请稍后...',
+            mtype: "GET",
+            styleUI: 'Bootstrap',
+            datatype: "json",
+            colNames: ['代码', '名称', '当前价格', '昨收', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '分红率', '分红年份'
+                , '所属行业', '主营业务'],
+            colModel: [
+                {label: 'sCode', name: 'sCode', width: 100, frozen: true},
+                {label: 'sStockName', name: 'sStockName', width: 150, frozen: true},
+                {label: 'sCurrentPrice', name: 'sCurrentPrice', width: 70, align: 'right', frozen: true},
+                {label: 'sYesterdayPrice', name: 'sYesterdayPrice', width: 60, align: 'right'},
+
+                {label: 'sRangePrice', name: 'sRangePrice', width: 70, align: 'right', cellattr: addCellAttr},
+                {label: 'sPeDynamic', name: 'sPeDynamic', width: 75, align: 'right'},
+                {label: 'sPeStatic', name: 'sPeStatic', width: 75, align: 'right'},
+                {label: 'sPb', name: 'sPb', width: 70, align: 'right'},
+                {label: 'sTotalValue', name: 'sTotalValue', width: 80, align: 'right'},
+                {label: 'sRoe', name: 'sRoe', width: 100, align: 'right'},
+                {label: 'sDividendRate', name: 'sDividendRate', width: 80, align: 'right'},
+                {label: 'sDividendYear', name: 'sDividendYear', width: 70},
+                {label: 'sIndustry', name: 'sIndustry', width: 200},
+                {label: 'sMainBusiness', name: 'sMainBusiness', width: 650}
+//                {label: 'sVersion', name: 'sVersion', width: 650}
+            ],
+            viewrecords: true,
+            rowList: [10, 20, 30, 60],
+            height: '700',
+            rowNum: 30,
+            pager: "#jqGridPager"
+        });
+        $("#jqGrid").jqGrid("setFrozenColumns");
+        function addCellAttr(rowId, val, rawObject, cm, rdata) {
+            if (parseFloat(rawObject.sRangePrice) < 0) {
+                return "style='color:green'";
+            } else if (parseFloat(rawObject.sRangePrice) > 0) {
+                return "style='color:red'";
+            }
+        }
+
+    });
+    /*$(window).resize(function(){
+     $(window).unbind("onresize");
+     $("#jqGrid").setGridHeight($(window).height() - 190);
+     $(window).bind("onresize", this);
+     });*/
+
+    //刷新列表
+    function reloadStock(){
+        //此处可以添加对查询数据的合法验证
+        var code = $("#stockCode").val();
+        console.info(code);
+        $("#jqGrid").jqGrid('setGridParam',{
+            datatype:'json',
+            postData:{'code':code},
+            page:1
+        }).trigger("reloadGrid");
+    }
+
+    $("#search_btn").click(function(){
+        reloadStock();
+    });
+
+    /**
+     * 刷新财务数据
+     */
+    $("#refresh_data_btn").click(function(){
+        messageBox.showLoading('正在更新财务数据请稍后...');
+        $.ajax({
+            type: "POST",
+            url: basepath + "/stock/refresh",
+            success: function (data) {
+                if (data == 'success') {
+                    reloadStock();
+                } else {
+                    messageBox.error('提示', data);
+                }
+                messageBox.closeLoading();
+            },
+            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
+            }
+        });
+    });
+
+    /**
+     * 新增
+     */
+    $("#add_btn").click(function(){
+        messageBox.showLoading('正在加载数据请稍后...');
+        $.ajax({
+            type: "POST",
+            url: basepath + "/stock/add/" + $("#stockCode").val(),
+            /*data: $("#form").serialize(),*/
+            success: function (data) {
+                messageBox.closeLoading();
+                if (data == 'success') {
+                    reloadStock();
+                } else {
+                    messageBox.error('提示', data);
+                }
+
+            },
+            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
+            }
+        });
+    });
+
+    $("#del_btn").click(function () {
+        var ids = $("#jqGrid").jqGrid("getGridParam", "selarrrow");
+        if (ids.length==0) {
+            messageBox.notify("请选择要删除的股票!", "danger");
+            return;
+        }
+        var codes=new Array();
+        //遍历访问这个集合
+        $(ids).each(function (index, id){
+            //由id获得对应数据行
+            var row = $("#jqGrid").jqGrid('getRowData', id);
+            codes.push(row.sCode);
+        })
+        messageBox.confirm("是否删除选中的股票？", function (result) {
+            messageBox.showLoading('正在处理请稍后...');
+            $.ajax({
+                type: "POST",
+                url: basepath + "/stock/del",
+                data: {codes: codes},
+                success: function (data) {
+                    messageBox.closeLoading();
+                    if (data == 'success') {
+                        reloadStock();
+                    } else {
+                        messageBox.error('提示', data);
+                    }
+
+                },
+                error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
+                    messageBox.error('提示', '数据提交错误，请联系系统管理员.');
+                }
+            });
+        });
+
+
+    });
+</script>
