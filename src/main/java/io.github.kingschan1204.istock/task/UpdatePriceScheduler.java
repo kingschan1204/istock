@@ -22,7 +22,9 @@ public class UpdatePriceScheduler {
     @Scheduled(cron="0/4 * * * * ?")
     public void updateStockIPO() throws Exception {
         if(!StockDateUtil.stockOpenTime()){
-            log.info("现在非开市时间，不更新数据!");
+            if (log.isDebugEnabled()){
+                log.debug("现在非开市时间，不更新数据!");
+            }
             return ;
         }
         stockServ.updateStockPriceBySina();
