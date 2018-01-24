@@ -12,6 +12,11 @@ public class ThsStockDividendRate {
      * 除权日
      */
     private String sdDate;
+
+    /**
+     * 实施日期
+     */
+    private String executeDate;
     /**
      * 方案
      */
@@ -22,11 +27,12 @@ public class ThsStockDividendRate {
     private Double percent;
 
 
-    public ThsStockDividendRate(String year, String date, String plan, Double percent) {
+    public ThsStockDividendRate(String year, String date, String plan, Double percent,String executeDate) {
         this.dividendYear = year;
         this.sdDate = date;
         this.plan = plan;
         this.percent = percent;
+        this.executeDate=executeDate;
 
     }
 
@@ -61,5 +67,13 @@ public class ThsStockDividendRate {
 
     public void setPlan(String plan) {
         this.plan = plan;
+    }
+
+    public String getExecuteDate() {
+        return executeDate;
+    }
+
+    public void setExecuteDate(String executeDate) {
+        this.executeDate = executeDate;
     }
 }

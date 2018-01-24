@@ -1,6 +1,6 @@
 package io.github.kingschan1204.istock.services;
 
-import io.github.kingschan1204.istock.common.util.StockSpilderUtil;
+import io.github.kingschan1204.istock.common.util.stock.StockSpilderUtil;
 import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;

@@ -1,4 +1,4 @@
-package io.github.kingschan1204.istock.common.util;
+package io.github.kingschan1204.istock.common.util.stock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

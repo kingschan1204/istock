@@ -1,6 +1,6 @@
-package io.github.kingschan1204.istock.common.util;
+package io.github.kingschan1204.istock.common.util.stock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.kingschan1204.istock.common.util.file.FileCommonOperactionTool;
 import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 爬虫工具类
  * Created by kingschan on 2017/6/28.
  */
 public class StockSpilderUtil {
@@ -118,9 +120,7 @@ public class StockSpilderUtil {
         //第一个表格的第一行
         Elements tds = table.get(0).select("tr").get(0).select("td");
         String zyyw = tds.get(0).text().replaceAll(".*\\：|\\s*", "");//主营业务
-
         String sshy = tds.get(1).text().replaceAll(".*\\：|\\s*", "");//所属行业
-
         Elements tds1 = table.get(1).select("td");
         String dtsyl = tds1.get(0).text().replaceAll(".*\\：|\\s*", "");//市盈率(动态)
         //每股收益： System.out.println(tds1.get(1).select("span").get(0).text() + tds1.get(1).select("span").get(1).text());
@@ -143,13 +143,13 @@ public class StockSpilderUtil {
     }
 
     /**
-     * 分红列表
-     *
+     * 历史分红列表
      * @param code
      * @throws Exception
      */
     public static List<ThsStockDividendRate> getStockDividendRate(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/16/%s/bonus.html", code);
+        log.info("craw url :{}",url);
         Document doc = Jsoup.connect(url).get();
         Element table = doc.getElementById("bonus_table");
         if (null != table) {
@@ -159,7 +159,7 @@ public class StockSpilderUtil {
             for (int i = 1; i < rows.size(); i++) {
                 String[] data = rows.get(i).select("td").text().split(" ");
                 if (data[0].endsWith("年报")) {
-                    log.info(String.format("%s|%s|%s|%s", data[0], data[6], data[4], data[9]));
+                    log.info("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}",data[0], data[6],data[3], data[4], data[9]);
                     //String year, String date, String plan, Double percent
                     double value = -1;
                     if (null != data[9]) {
@@ -167,7 +167,7 @@ public class StockSpilderUtil {
                         if (temp.matches(regexNumber))
                             value = Double.parseDouble(temp);
                     }
-                    list.add(new ThsStockDividendRate(data[0], data[6], data[4], value));
+                    list.add(new ThsStockDividendRate(data[0], data[6], data[4],value,data[3]));
                 }
             }
             return list;
@@ -175,8 +175,21 @@ public class StockSpilderUtil {
         return null;
     }
 
+    /**
+     * 年度财务报表
+     * @param code
+     * @throws IOException
+     */
+    public static void getHistory(String code) throws Exception {
+       /* String url =String.format("http://basic.10jqka.com.cn/%s/finance.html",code);
+        log.info("craw url :{}",url);
+        Document doc = Jsoup.connect(url).get();
+        System.out.println(doc.html());*/
+        String url =String.format("http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=%s",code);
+        FileCommonOperactionTool.downloadFile(url,"./",null);
+    }
 
-    public static void guzhi(String code,String date)throws  Exception{
+   /* public static void guzhi(String code,String date)throws  Exception{
         String url=String.format(
                 "http://www.csindex.com.cn/sseportal/csiportal/syl/indexsyl.do?indexCode=%s%s",
                 code,null==date?"":"&date="+date);
@@ -196,24 +209,6 @@ public class StockSpilderUtil {
         }else {
             System.out.println("没数据啊");
         }
-    }
-
-   /* public static void main(String[] args) throws Exception {
-        *//*String[] stockCode = {"600741"};//股票代码
-        for (String s : stockCode) {
-            StockSpilderUtil.getStockPrice(new String[]{s});
-            System.out.println(new ObjectMapper().writeValueAsString(StockSpilderUtil.getStockInfo(s)));
-            getStockDividendRate(s);
-        }*//*
-
-        String [] date =StockDateUtil.getTimeLine(15);
-        for (String day:date ) {
-            try{
-                StockSpilderUtil.guzhi("000568",day);
-            }catch (Exception ex){
-                ex.fillInStackTrace();
-            }
-        }
-
     }*/
+
 }

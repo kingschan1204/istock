@@ -1,6 +1,6 @@
 package io.github.kingschan1204.istock.task;
 
-import io.github.kingschan1204.istock.common.util.StockDateUtil;
+import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.services.StockMasterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
