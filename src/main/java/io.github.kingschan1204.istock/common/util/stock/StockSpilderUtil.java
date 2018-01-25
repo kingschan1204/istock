@@ -11,9 +11,15 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,24 @@ public class StockSpilderUtil {
 
     private static Logger log = LoggerFactory.getLogger(StockSpilderUtil.class);
     public static final String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
+    private static final String useAgent="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
+
+    /**
+     * 启用https
+     * @throws KeyManagementException
+     * @throws NoSuchAlgorithmException
+     */
+    public static void enableSSLSocket() throws KeyManagementException, NoSuchAlgorithmException {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+            public X509Certificate[] getAcceptedIssuers(){return new X509Certificate[0];}
+            public void checkClientTrusted(X509Certificate[] certs, String authType){}
+            public void checkServerTrusted(X509Certificate[] certs, String authType){}
+        }};
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+    }
+
 
     /**
      * 将股票代码转换成新浪接口的格式http://hq.sinajs.cn/list=
@@ -70,7 +94,6 @@ public class StockSpilderUtil {
 
     /**
      * 调用新浪数据接口返回当前价格
-     *
      * @param stockCode
      * @return
      * @throws Exception
@@ -176,7 +199,7 @@ public class StockSpilderUtil {
     }
 
     /**
-     * 年度财务报表
+     * 年度财务报表 (年度净资产收益庇)
      * @param code
      * @throws IOException
      */
@@ -189,26 +212,45 @@ public class StockSpilderUtil {
         FileCommonOperactionTool.downloadFile(url,"./",null);
     }
 
-   /* public static void guzhi(String code,String date)throws  Exception{
-        String url=String.format(
-                "http://www.csindex.com.cn/sseportal/csiportal/syl/indexsyl.do?indexCode=%s%s",
-                code,null==date?"":"&date="+date);
-        System.out.println(url);
-        Elements content = Jsoup.connect(url)
-                .ignoreContentType(true)
-                .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36")
-                .referrer("http://www.csindex.com.cn/sseportal/csiportal/hy_syl/syl.jsp")
-                .timeout(3000)
-                .get()
-                .getElementsByTag("tr");
-        if(content.size()==2){
-            String row=content.get(1).text();
-            String data[]=row.split("\\s");
-            System.out.println(row);
-            //倒数： 最新市盈率   最新滚动市盈率   最新市净率    最新股息率
-        }else {
-            System.out.println("没数据啊");
+
+    /**
+     * 历史市盈率
+     * @param code
+     */
+    public static void getHistoryPE(String code) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+        String url =String.format("https://androidinvest.com/Stock/History/%s",formatSinaQuryStockCode(code).toUpperCase());
+        log.info("craw history pe :{}",url);
+        enableSSLSocket();
+        Document doc = null;
+        try{
+            doc = Jsoup.connect(url).userAgent(useAgent).get();
+            Element div = doc.getElementById("chart2");
+            System.out.println(div.text());
+        }catch(Exception e){
+            e.printStackTrace();
         }
-    }*/
+    }
+
+
+    /**
+     * 历史市净率
+     * @param code
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    public static void getHistoryPB(String code) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+        String url =String.format("https://androidinvest.com/Stock/HistoryPB/%s",formatSinaQuryStockCode(code).toUpperCase());
+        log.info("craw history pb :{}",url);
+        enableSSLSocket();
+        Document doc = null;
+        try{
+            doc = Jsoup.connect(url).userAgent(useAgent).get();
+            Element div = doc.getElementById("chart4");
+            System.out.println(div.text());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
 }

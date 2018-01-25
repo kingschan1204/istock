@@ -4,10 +4,19 @@ import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpilderUtil;
 import io.github.kingschan1204.istock.model.dto.StockMasterDto;
 import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
@@ -19,19 +28,19 @@ import java.util.List;
 @SpringBootTest
 public class SpiderTest {
 
-    String code="000568";
+    String code = "000568";
 
     @Ignore
     @Test
-    public void formatSinaQuryStockCode(){
+    public void formatSinaQuryStockCode() {
         System.out.println(StockSpilderUtil.formatSinaQuryStockCode(code));
     }
 
     @Ignore
     @Test
-    public void baseInfo(){
+    public void baseInfo() {
         try {
-            StockMasterDto vo =StockSpilderUtil.getStockInfo(code);
+            StockMasterDto vo = StockSpilderUtil.getStockInfo(code);
             System.out.println(JSONObject.toJSONString(vo));
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,13 +50,14 @@ public class SpiderTest {
 
     @Ignore
     @Test
-    public void getStockDividendRate(){
+    public void getStockDividendRate() {
         //年度财务数据 excel
         //http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=000568
         try {
-            List<ThsStockDividendRate> list =StockSpilderUtil.getStockDividendRate(code);
-            list.stream().forEach(t ->{
-                System.out.println(JSONObject.toJSONString(t));}
+            List<ThsStockDividendRate> list = StockSpilderUtil.getStockDividendRate(code);
+            list.stream().forEach(t -> {
+                        System.out.println(JSONObject.toJSONString(t));
+                    }
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,8 +65,9 @@ public class SpiderTest {
 
     }
 
+    @Ignore
     @Test
-    public void demo(){
+    public void demo() {
         try {
             StockSpilderUtil.getHistory(code);
         } catch (Exception e) {
@@ -64,4 +75,15 @@ public class SpiderTest {
         }
 
     }
+
+    @Test
+    public void getHistoryPE() throws NoSuchAlgorithmException {
+        try {
+            StockSpilderUtil.getHistoryPE(code);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
