@@ -150,6 +150,7 @@ public class StockSpilderUtil {
         String sjljt = tds1.get(4).text().replaceAll(".*\\：|\\s*", "");//市盈率(静态)
         String sjl = tds1.get(8).text().replaceAll(".*\\：|\\s*", "");//市净率
         String zsz = tds1.get(11).text().replaceAll("\\D+", "");//总市值
+        String mgjzc = tds1.get(12).text().replaceAll("[\\u4E00-\\u9FA5]", "");//每股净资产
         String jzcsyl = "-1";
         if(tds1.size()>14){
             jzcsyl=tds1.get(14).select("span").get(1).text();//净资产收益率
@@ -162,6 +163,7 @@ public class StockSpilderUtil {
         dto.setsPb(BigDecimal.valueOf(mathFormat(sjl)));
         dto.setsTotalValue(BigDecimal.valueOf(mathFormat(zsz)));
         dto.setsRoe(BigDecimal.valueOf(mathFormat(jzcsyl)));
+        dto.setSnetAssetsPerShare(Double.parseDouble(mgjzc));
         return dto;
     }
 
