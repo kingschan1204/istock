@@ -13,12 +13,17 @@ import java.util.List;
 
 /**
  * excel 操作工具类
- *
  * @author chenguoxiang
  * @create 2018-01-24 15:56
  **/
 public class ExcelOperactionTool {
 
+    /**
+     * 读取excel内容
+     * @param url
+     * @return
+     * @throws Exception
+     */
     public static List<Object[]> readExcelData(String url)throws Exception{
 
         // 从XLSX/ xls文件创建的输入流
