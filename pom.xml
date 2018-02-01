@@ -48,10 +48,10 @@
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
         <!--jpa-->
-        <dependency>
+      <!--  <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- MySQL的java驱动
         <dependency>

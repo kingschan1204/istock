@@ -11,11 +11,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +26,7 @@ import java.util.List;
  * @author chenguoxiang
  * @create 2018-01-31 14:02
  **/
+@Component
 public class DefaultSpiderImpl implements StockSpider {
 
     private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
@@ -63,10 +66,11 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("code", data[0]);//代码
             json.put("name", data[1]);//名称
             json.put("price", xj);//现价
-            json.put("today_max", today_max);//今日最高价
-            json.put("today_min", today_min);//今日最低价
+            json.put("todayMax", today_max);//今日最高价
+            json.put("todayMin", today_min);//今日最低价
             json.put("yesterdayPrice", zs);//昨收
             json.put("fluctuate", Double.valueOf(nf.format(zf)));//波动
+            json.put("date",new Date());
             rows.add(json);
 
         }
