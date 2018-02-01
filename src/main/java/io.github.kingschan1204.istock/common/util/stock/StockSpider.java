@@ -55,7 +55,8 @@ public interface StockSpider {
      * @return
      */
     public static Double mathFormat(String value) {
-        String v = value.replaceAll("\\%", "").replace("亿", "");
+        String v =value.replaceAll("[^0-9|\\.]","");
+        //value.replaceAll("\\%", "").replace("亿", "");
         if (v.matches(regexNumber)) {
             return Double.valueOf(v);
         }

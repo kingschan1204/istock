@@ -1,16 +1,12 @@
 package io.github.kingschan1204.istock.services;
 
-import io.github.kingschan1204.istock.common.util.stock.StockSpilderUtil;
-import io.github.kingschan1204.istock.model.dto.SinaStockPriceDto;
-import io.github.kingschan1204.istock.model.dto.StockMasterDto;
-import io.github.kingschan1204.istock.model.dto.ThsStockDividendRate;
 import io.github.kingschan1204.istock.model.po.StockMasterEntity;
 import io.github.kingschan1204.istock.model.vo.StockMasterVo;
 import io.github.kingschan1204.istock.repository.StockMasterRepository;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -25,7 +21,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +47,7 @@ public class StockMasterService {
 
 
     public void saveStock(String code) throws Exception {
-        StockMasterEntity stock = stockRepository.findOne(code);
+        /*StockMasterEntity stock = stockRepository.findOne(code);
         if (null == stock) {
             //   throw new Exception("已存在，不要重复添加！");
             stock = new StockMasterEntity();
@@ -88,7 +83,7 @@ public class StockMasterService {
         stock.setsPb(smd.getsPb());
         stock.setsTotalValue(smd.getsTotalValue());
         stock.setsRoe(smd.getsRoe());
-        stockRepository.save(stock);
+        stockRepository.save(stock);*/
     }
 
     public Page<StockMasterVo> stockMasterList(int pageindex, int pagesize, final String code, String orderfidld, String sort) {
@@ -154,7 +149,7 @@ public class StockMasterService {
     }
 
     public void stockRefresh() throws Exception {
-        String[] codes = stockRepository.getAllStockCode();
+        /*String[] codes = stockRepository.getAllStockCode();
         List<SinaStockPriceDto> stocks = StockSpilderUtil.getStockPrice(codes);
         for (SinaStockPriceDto dto : stocks) {
             StockMasterDto smd = StockSpilderUtil.getStockInfo(dto.getsCode());
@@ -172,7 +167,7 @@ public class StockMasterService {
             stock.setsTotalValue(smd.getsTotalValue());
             stock.setsRoe(smd.getsRoe());
             stockRepository.save(stock);
-        }
+        }*/
     }
 
 
@@ -181,23 +176,23 @@ public class StockMasterService {
      */
     @Transactional
     public void updateStockPriceBySina() throws Exception {
-        log.info("update sina stock ipo");
+       /* log.info("update sina stock ipo");
         String[] codes = stockRepository.getAllStockCode();
         List<SinaStockPriceDto> stocks = StockSpilderUtil.getStockPrice(codes);
         for (SinaStockPriceDto dto : stocks) {
-            /*log.info("{} {} {} {} {}",
+            *//*log.info("{} {} {} {} {}",
                     dto.getsStockName(),
                     dto.getsCurrentPrice().doubleValue(),
                     dto.getsYesterdayPrice().doubleValue(),
                     dto.getsRangePrice().doubleValue(),
-                    dto.getsCode());*/
+                    dto.getsCode());*//*
             stockRepository.updateIPO(
                     dto.getsStockName(),
                     dto.getsCurrentPrice(),
                     dto.getsYesterdayPrice(),
                     dto.getsRangePrice(),
                     dto.getsCode());
-        }
+        }*/
     }
 
     @Transactional
