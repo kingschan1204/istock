@@ -27,14 +27,14 @@ public class DefaultSpiderImplTest {
 
     @Test
     public void getStockPrice() throws Exception {
-       /* JSONObject json =spider.getStockPrice(new String[]{code}).getJSONObject(0);
+        JSONObject json =spider.getStockPrice(new String[]{code}).getJSONObject(0);
         StockPrice sp = JSON.parseObject(json.toJSONString() ,StockPrice.class);
         System.out.println(sp.toString());
         StockPrice temp=repository.save(sp);
-        System.out.println("save:"+temp.toString());*/
+        System.out.println("save:"+temp.toString());
 
-        StockPrice sp =repository.findOne("5a72cb690729c39a34fbb193");
-        System.out.println(sp);
+        /*StockPrice sp =repository.findOne("5a72cb690729c39a34fbb193");
+        System.out.println(sp);*/
     }
 
     @Test

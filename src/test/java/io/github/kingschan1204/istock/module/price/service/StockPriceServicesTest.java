@@ -23,7 +23,7 @@ public class StockPriceServicesTest {
 
     @Test
     public void addStock() throws Exception {
-        services.addStock(new String[]{"000568",""});
+        services.addStock(new String[]{"600016","601633","600548","600398"});
     }
 
 }

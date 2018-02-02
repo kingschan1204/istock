@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.price.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.module.info.service.StockInfoService;
 import io.github.kingschan1204.istock.module.price.po.StockPrice;
 import io.github.kingschan1204.istock.module.price.repository.StockPriceRepository;
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,8 @@ public class StockPriceServices {
     private MongoTemplate template;
     @Autowired
     private StockSpider spider;
+    @Autowired
+    private StockInfoService infoService;
 
     /**
      * add stock code
@@ -46,6 +48,7 @@ public class StockPriceServices {
         Long count = template.count(new Query(Criteria.where("code").in(listCode)), StockPrice.class);
         if(count>0){throw new Exception("要添加的代码已存在！");}
         lis.stream().forEach(stockPrice -> repository.save(stockPrice));
+        infoService.addStock(codes);
     }
 
 

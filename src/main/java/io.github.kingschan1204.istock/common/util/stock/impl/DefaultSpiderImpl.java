@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * 默认爬虫
@@ -63,6 +64,7 @@ public class DefaultSpiderImpl implements StockSpider {
             // 如果不需要四舍五入，可以使用RoundingMode.DOWN
             nf.setRoundingMode(RoundingMode.UP);
             json = new JSONObject();
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
             json.put("code", data[0]);//代码
             json.put("name", data[1]);//名称
             json.put("price", xj);//现价
@@ -107,6 +109,8 @@ public class DefaultSpiderImpl implements StockSpider {
         json.put("totalValue", BigDecimal.valueOf(StockSpider.mathFormat(zsz)));//总市值
         json.put("roe", BigDecimal.valueOf(StockSpider.mathFormat(jzcsyl)));//净资产收益率
         json.put("bvps",Double.parseDouble(mgjzc));//每股净资产
+        json.put("date",new Date());
+        json.put("code",code);
         return json;
     }
 
