@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.common.util.stock.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -235,5 +237,22 @@ public class DefaultSpiderImpl implements StockSpider {
             e.printStackTrace();
         }
         return jsons;
+    }
+
+    @Override
+    public List<String> getAllStockCode() throws Exception {
+        String url = "https://touzi.sina.com.cn/api/openapi.php/TzyFreeService.searchStocks?callback=jQuery11120012495474513398941_1520409064124&p1=CNSESH%2CCNSESZ";
+        log.info("craw all stock code :{}", url);
+        StockSpider.enableSSLSocket();
+        Document doc = null;
+        String[] codes = new String[0];
+        try {
+            doc = Jsoup.connect(url).userAgent(useAgent).ignoreContentType(true).get();
+            String text=doc.text().replaceAll(".*\\[|\\].*|\\\"","");
+            codes=text.split(",");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Arrays.asList(codes);
     }
 }

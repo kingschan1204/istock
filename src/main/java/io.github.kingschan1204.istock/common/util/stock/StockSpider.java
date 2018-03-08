@@ -1,9 +1,7 @@
 package io.github.kingschan1204.istock.common.util.stock;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -12,6 +10,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 /**
  * 爬虫接口定义
@@ -20,7 +19,7 @@ import java.security.cert.X509Certificate;
  **/
 public interface StockSpider {
 
-    public static final String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
+     static final String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
 
     /**
      * 将股票代码转换成新浪接口的格式http://hq.sinajs.cn/list=
@@ -28,7 +27,7 @@ public interface StockSpider {
      * @param code
      * @return
      */
-    public static String formatStockCode(String code) {
+     static String formatStockCode(String code) {
         //上证
         if (code.startsWith("60")) {
             return String.format("sh%s", code);
@@ -54,7 +53,7 @@ public interface StockSpider {
      * @param value
      * @return
      */
-    public static Double mathFormat(String value) {
+     static Double mathFormat(String value) {
         String v =value.replaceAll("[^0-9|\\.]","");
         //value.replaceAll("\\%", "").replace("亿", "");
         if (v.matches(regexNumber)) {
@@ -130,5 +129,13 @@ public interface StockSpider {
      * @throws Exception
      */
     JSONArray getHistoryPB(String code) throws Exception;
+
+
+    /**
+     * 得到所有代码
+     * @return
+     * @throws Exception
+     */
+    List<String> getAllStockCode()throws Exception;
 
 }
