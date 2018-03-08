@@ -32,6 +32,7 @@ public class DefaultSpiderImplTest {
         /*StockPrice sp =repository.findOne("5a72cb690729c39a34fbb193");
         System.out.println(sp);*/
     }
+
     @Ignore
     @Test
     public void getStockInfo() throws Exception {
@@ -57,6 +58,7 @@ public class DefaultSpiderImplTest {
     public void getHistoryPB() throws Exception {
         System.out.println(spider.getHistoryPB(code).toJSONString());
     }
+
     @Test
     public void getAllStockCode()throws Exception{
         Optional<List<String>> optional=Optional.of(spider.getAllStockCode());
@@ -64,10 +66,21 @@ public class DefaultSpiderImplTest {
            List<String> codes= optional.get();
             for (String code :
                     codes) {
-                System.out.println(code);
+                String temp=StockSpider.formatStockCode(code.replaceAll("\\D",""));
+                if(null==temp||!code.equals(temp)){
+                    throw new Exception(code);
+                }
+                System.out.println(String.format("%s | %s",code,temp));
             }
         }
 
+    }
+
+    @Ignore
+    @Test
+    public  void formatStockCode(){
+        String code =StockSpider.formatStockCode("300314");
+        System.out.println(code);
     }
 
 }
