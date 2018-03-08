@@ -28,20 +28,12 @@ public interface StockSpider {
      * @return
      */
      static String formatStockCode(String code) {
-        //上证
-        if (code.startsWith("60")) {
+        //5开头，沪市基金或权证 60开头上证
+        if (code.matches("^60.*|^5.*")) {
             return String.format("sh%s", code);
         }
-        //5开头，沪市基金或权证
-        else if(code.startsWith("5")){
-            return String.format("sh%s", code);
-        }
-        //1开头的，是深市基金
-        else if(code.startsWith("1")){
-            return String.format("sz%s", code);
-        }
-        //深证
-        else if (code.startsWith("00")) {
+        //1开头的，是深市基金 00开头是深圳
+        else if(code.matches("^1.*|^00.*|^300...")){
             return String.format("sz%s", code);
         }
         return null;
