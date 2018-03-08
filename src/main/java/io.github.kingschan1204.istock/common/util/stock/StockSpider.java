@@ -28,8 +28,11 @@ public interface StockSpider {
      * @return
      */
      static String formatStockCode(String code) {
+         if(code.matches("^(sz|sh)\\d{6}$")){
+             return code;
+         }
         //5开头，沪市基金或权证 60开头上证
-        if (code.matches("^60.*|^5.*")) {
+       else if (code.matches("^60.*|^5.*")) {
             return String.format("sh%s", code);
         }
         //1开头的，是深市基金 00开头是深圳

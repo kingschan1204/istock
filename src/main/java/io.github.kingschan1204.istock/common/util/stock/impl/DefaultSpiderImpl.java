@@ -33,7 +33,7 @@ import java.util.TimeZone;
 public class DefaultSpiderImpl implements StockSpider {
 
     private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
-    private static final String useAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
+    private static final String useAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36";
 
     @Override
     public JSONArray getStockPrice(String[] stockCode) throws Exception {
@@ -48,17 +48,18 @@ public class DefaultSpiderImpl implements StockSpider {
         String query = String.format("http://hq.sinajs.cn/list=%s", queryCode);
         log.info(query);
         String content = Jsoup.connect(query).ignoreContentType(true).get().text();
+        log.debug(content);
         String[] line = content.split(";");
         JSONArray rows = new JSONArray();
         JSONObject json;
         for (String s : line) {
             String row = s.trim().replaceAll("^var\\D+|\"", "").replace("=", ",");
             String data[] = row.split(",");
-            double xj = Double.parseDouble(data[4]);
-            double zs = Double.parseDouble(data[3]);
+            double xj = StockSpider.mathFormat(data[4]);
+            double zs = StockSpider.mathFormat(data[3]);
             double zf = (xj - zs) / zs * 100;
-            double today_max = Double.parseDouble(data[5]);
-            double today_min = Double.parseDouble(data[6]);
+            double today_max = StockSpider.mathFormat(data[5]);
+            double today_min = StockSpider.mathFormat(data[6]);
             //log.info(String.format("%s %s 现价:%s 昨收:%s 涨幅:%.2f%s", data[0], data[1], data[3], data[2], zf, "%"));
             NumberFormat nf = NumberFormat.getNumberInstance();
             // 保留两位小数
@@ -73,7 +74,7 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("todayMax", today_max);//今日最高价
             json.put("todayMin", today_min);//今日最低价
             json.put("yesterdayPrice", zs);//昨收
-            json.put("fluctuate", Double.valueOf(nf.format(zf)));//波动
+            json.put("fluctuate", StockSpider.mathFormat(nf.format(zf)));//波动
             json.put("date",new Date());
             rows.add(json);
 
@@ -83,7 +84,8 @@ public class DefaultSpiderImpl implements StockSpider {
 
     @Override
     public JSONObject getStockInfo(String code) throws Exception {
-        String url = String.format("http://basic.10jqka.com.cn/%s/", code);
+        String stockCode=code.replaceAll("\\D","");
+        String url = String.format("http://basic.10jqka.com.cn/%s/", stockCode);
         Document doc = Jsoup.connect(url).get();
         Elements table = doc.getElementsByTag("table");
         //第一个表格的第一行
@@ -110,9 +112,9 @@ public class DefaultSpiderImpl implements StockSpider {
         json.put("pb", BigDecimal.valueOf(StockSpider.mathFormat(sjl)));//市净率
         json.put("totalValue", BigDecimal.valueOf(StockSpider.mathFormat(zsz)));//总市值
         json.put("roe", BigDecimal.valueOf(StockSpider.mathFormat(jzcsyl)));//净资产收益率
-        json.put("bvps",Double.parseDouble(mgjzc));//每股净资产
+        json.put("bvps",StockSpider.mathFormat(mgjzc));//每股净资产
         json.put("date",new Date());
-        json.put("code",code);
+        json.put("code",stockCode);
         return json;
     }
 
