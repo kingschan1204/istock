@@ -38,6 +38,7 @@ public class StockInfo {
     private Double pes;
     private Double ped;
     private Date date;
+    private Date listingDate; //上市日期
 
     public String get_id() {
         return _id;
@@ -125,5 +126,13 @@ public class StockInfo {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getListingDate() {
+        return listingDate;
+    }
+
+    public void setListingDate(Date listingDate) {
+        this.listingDate = listingDate;
     }
 }

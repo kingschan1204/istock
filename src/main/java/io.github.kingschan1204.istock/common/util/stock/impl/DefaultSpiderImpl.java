@@ -86,7 +86,7 @@ public class DefaultSpiderImpl implements StockSpider {
     public JSONObject getStockInfo(String code) throws Exception {
         String stockCode=code.replaceAll("\\D","");
         String url = String.format("http://basic.10jqka.com.cn/%s/", stockCode);
-        Document doc = Jsoup.connect(url).get();
+        Document doc = Jsoup.connect(url).userAgent(useAgent).get();
         Elements table = doc.getElementsByTag("table");
         //第一个表格的第一行
         Elements tds = table.get(0).select("tr").get(0).select("td");
@@ -104,6 +104,15 @@ public class DefaultSpiderImpl implements StockSpider {
         if (tds1.size() > 14) {
             jzcsyl = tds1.get(14).select("span").get(1).text();//净资产收益率
         }
+        //公司详情
+        String companyInfoUrl=String.format("http://vip.stock.finance.sina.com.cn/corp/go.php/vCI_CorpInfo/stockid/%s.phtml",stockCode);
+        Document infoDoc = Jsoup.connect(companyInfoUrl).userAgent(useAgent).get();
+        Element infoTable = infoDoc.getElementById("con02-0");
+        Elements rows = infoTable.getElementsByTag("td");
+        //表格的第三行第四列是上市日期
+        String listingDate=rows.get(7).text().trim();//上市日期
+
+
         JSONObject json = new JSONObject();
         json.put("mainBusiness", zyyw);//主营业务
         json.put("industry", sshy);//所属行业
@@ -115,6 +124,7 @@ public class DefaultSpiderImpl implements StockSpider {
         json.put("bvps",StockSpider.mathFormat(mgjzc));//每股净资产
         json.put("date",new Date());
         json.put("code",stockCode);
+        json.put("listingDate",listingDate);//上市日期
         return json;
     }
 
@@ -122,7 +132,7 @@ public class DefaultSpiderImpl implements StockSpider {
     public JSONArray getHistoryDividendRate(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/16/%s/bonus.html", code);
         log.info("craw url :{}", url);
-        Document doc = Jsoup.connect(url).get();
+        Document doc = Jsoup.connect(url).userAgent(useAgent).get();
         Element table = doc.getElementById("bonus_table");
         if (null != table) {
             Elements rows = table.getElementsByTag("tr");
