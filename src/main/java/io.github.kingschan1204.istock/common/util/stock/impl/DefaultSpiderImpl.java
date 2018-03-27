@@ -146,9 +146,7 @@ public class DefaultSpiderImpl implements StockSpider {
                     //String year, String date, String plan, Double percent
                     double value = -1;
                     if (null != data[9]) {
-                        String temp = data[9].replace("%", "");
-                        if (temp.matches(regexNumber))
-                            value = Double.parseDouble(temp);
+                        value = StockSpider.mathFormat(data[9]);
                     }
                     //String , String , String plan, Double percent,String executeDate
                     // list.add(new ThsStockDividendRate(, , ,value,data[3]));

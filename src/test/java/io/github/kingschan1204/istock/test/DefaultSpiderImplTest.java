@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.test;
 
+import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import org.junit.Ignore;
@@ -25,22 +26,23 @@ public class DefaultSpiderImplTest {
     @Ignore
     @Test
     public void getStockPrice() throws Exception {
-
-
-        /*StockPrice sp =repository.findOne("5a72cb690729c39a34fbb193");
-        System.out.println(sp);*/
+        System.out.println(spider.getStockPrice(new String[]{"600741"}));
     }
 
 
     @Ignore
     @Test
     public void getHistoryDividendRate() throws Exception {
-        System.out.println(spider.getHistoryDividendRate(code).toJSONString());
+        JSONArray jsons =spider.getHistoryDividendRate(code);
+        System.out.println(jsons.getJSONObject(0));
+        System.out.println(jsons);
     }
     @Ignore
     @Test
     public void getHistoryROE() throws Exception {
-        System.out.println(spider.getHistoryROE(code));
+        JSONArray jsons =spider.getHistoryROE(code);
+        System.out.println(jsons.getJSONObject(0));
+        System.out.println(jsons);
     }
     @Ignore
     @Test

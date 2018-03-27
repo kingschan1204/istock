@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>stock</title>
+    <title>股票离线分析</title>
     <!-- The jQuery library is a prerequisite for all jqSuite products -->
     <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/jquery.min.js"></script>
     <!-- We support more than 40 localizations -->
@@ -47,7 +47,6 @@
             </div>
             <button type="button" class="btn btn-primary" id="search_btn">查询</button>
             <button type="button" class="btn btn-success" id="add_btn">新增</button>
-            <!--<button type="button" class="btn btn-info">Info</button>-->
             <button type="button" class="btn btn-warning" id="refresh_data_btn">更新</button>
             <button type="button" class="btn btn-danger" id="del_btn">删除</button>
         </form>
@@ -75,19 +74,19 @@
             mtype: "GET",
             styleUI: 'Bootstrap',
             datatype: "json",
-            colNames: ['代码', '名称','市场', '当前价格', '昨收','今日最高','今日最低', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '每股净资产', '所属行业', '主营业务'],
+            colNames: ['代码', '名称','市场', '当前价格', '昨收','今日最高','今日最低', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '每股净资产','上次分红率','分红日期', '所属行业', '主营业务'],
             colModel: [
 
                 {label: 'code', name: 'code', width: 100, frozen: true},
                 {label: 'name', name: 'name', width: 150, frozen: true},
-                {label: 'type', name: 'type', width: 60, frozen: true},
+                {label: 'type', name: 'type', width: 50, frozen: true},
                 {label: 'price', name: 'price', width: 70, align: 'right', frozen: true},
                 {label: 'yesterdayPrice', name: 'yesterdayPrice', width: 60, align: 'right'},
 
                 {label: 'todayMax', name: 'todayMax', width: 70, align: 'right'},
                 {label: 'todayMin', name: 'todayMin', width: 70, align: 'right'},
 
-                {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right', cellattr: addCellAttr},
+                {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right'},
                 {label: 'ped', name: 'ped', width: 75, align: 'right'},
                 {label: 'pes', name: 'pes', width: 75, align: 'right'},
                 {label: 'pb', name: 'pb', width: 70, align: 'right'},
@@ -95,6 +94,8 @@
                 {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
                 {label: 'roe', name: 'roe', width: 100, align: 'right'},
                 {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
+                {label: 'dividend', name: 'dividend', width: 86, align: 'right'},
+                {label: 'dividendDate', name: 'dividendDate', width: 90},
                 {label: 'industry', name: 'industry', width: 200},
                 {label: 'mainBusiness', name: 'mainBusiness', width: 650}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
@@ -103,16 +104,29 @@
             rowList: [10, 20, 30, 60],
             height: '700',
             rowNum: 30,
-            pager: "#jqGridPager"
+            pager: "#jqGridPager",
+            gridComplete: function () {
+                var ids = $("#jqGrid").getDataIDs();
+                for (var i = 0; i < ids.length; i++) {
+                    var rowData = $("#jqGrid").getRowData(ids[i]);
+                    if (parseFloat(rowData.fluctuate) <= 0) {
+                        $("#jqGrid").find('#' + ids[i]).find("td").css("color", "green");
+                    }else{
+                        $("#jqGrid").find('#' + ids[i]).find("td").css("color", "red");
+                    }
+                }
+            }
         });
         $("#jqGrid").jqGrid("setFrozenColumns");
-        function addCellAttr(rowId, val, rawObject, cm, rdata) {
+        /*function addCellAttr(rowId, val, rawObject, cm, rdata) {
             if (parseFloat(rawObject.fluctuate) < 0) {
+                $($("#jqGrid" +"tr[id='"+ rowId +"']")).css("color", "green");
                 return "style='color:green'";
             } else if (parseFloat(rawObject.fluctuate) > 0) {
+                $($("#jqGrid" +"tr[id='"+ rowId +"']")).css("color", "red");
                 return "style='color:red'";
             }
-        }
+        }*/
 
     });
     /*$(window).resize(function(){

@@ -34,6 +34,8 @@ public class Stock {
     private Double pes;
     private Double ped;
     private Date Infodate;
+    private String dividendDate;
+    private Double dividend;
 
    /* public String get_id() {
         return _id;
@@ -185,5 +187,21 @@ public class Stock {
 
     public void setInfodate(Date infodate) {
         Infodate = infodate;
+    }
+
+    public String getDividendDate() {
+        return dividendDate;
+    }
+
+    public void setDividendDate(String dividendDate) {
+        this.dividendDate = dividendDate;
+    }
+
+    public Double getDividend() {
+        return dividend;
+    }
+
+    public void setDividend(Double dividend) {
+        this.dividend = dividend;
     }
 }

@@ -43,6 +43,23 @@ public class StockService {
             JSONObject json = jsons.getJSONObject(i);
             String scode=json.getString("code");
             JSONObject info=spider.getStockInfo(scode);
+            //"date":"2017-07-07","code":"600519","year":"2016年报","executeDate":"2017-07-01","remark":"10派67.87元(含税)","percent":1.44}
+            JSONArray dividends=spider.getHistoryDividendRate(scode);
+            JSONObject dividend;
+            String date="";
+            Double percent=0D;
+            if(null!=dividends&&dividends.size()>0){
+                for (int j = 0; j < dividends.size(); j++) {
+                    if(dividends.getJSONObject(j).getDouble("percent")>0){
+                        percent=dividends.getJSONObject(j).getDoubleValue("percent");
+                        date=dividends.getJSONObject(j).getString("date");
+                        break;
+                    }
+                }
+
+            }
+            json.put("dividend",percent);
+            json.put("dividendDate",date);
             json.putAll(info);
         }
         List<Stock> list = JSON.parseArray(jsons.toJSONString(), Stock.class);
@@ -71,6 +88,14 @@ public class StockService {
         //code
         List<Stock> list =template.find(query,Stock.class);
         JSONArray jsons = JSONArray.parseArray(JSONArray.toJSONString(list));
+        JSONObject temp;
+        for (int i = 0; i <jsons.size() ; i++) {
+            temp =jsons.getJSONObject(i);
+            temp.put("fluctuate",temp.getString("fluctuate")+"%");
+            temp.put("roe",temp.getString("roe")+"%");
+            temp.put("totalValue",temp.getString("totalValue")+"亿");
+            temp.put("dividend",temp.getString("dividend")+"%");
+        }
 
         JSONObject data= new JSONObject();
         data.put("rows",jsons);

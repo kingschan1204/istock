@@ -21,7 +21,7 @@ public class StockServiceTest {
     @Autowired
     private StockService stockService;
 
-    @Ignore
+    @Test
     public void addStock() throws Exception {
         stockService.addStock(new String[]{
                 "000895","601288","000338","601668","601633"
