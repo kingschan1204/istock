@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
+import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
+import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -26,6 +28,8 @@ import java.util.Optional;
 public class StockService {
     @Autowired
     private StockRepository stockRepository;
+    @Autowired
+    private StockHisDividendRepository stockHisDividendRepository;
     @Autowired
     private StockSpider spider;
     @Autowired
@@ -56,7 +60,9 @@ public class StockService {
                         break;
                     }
                 }
-
+                //save dividend
+                List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
+                stockHisDividendRepository.save(stockHisDividendList);
             }
             json.put("dividend",percent);
             json.put("dividendDate",date);

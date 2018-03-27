@@ -152,7 +152,7 @@ public class DefaultSpiderImpl implements StockSpider {
                     // list.add(new ThsStockDividendRate(, , ,value,data[3]));
                     json = new JSONObject();
                     json.put("code",stockCode);
-                    json.put("year", data[0]);
+                    json.put("title", data[0]);
                     json.put("date", data[6]);
                     json.put("percent", value);
                     json.put("executeDate", data[3]);
