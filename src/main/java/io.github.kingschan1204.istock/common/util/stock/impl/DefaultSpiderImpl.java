@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.common.util.stock.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
@@ -13,7 +12,6 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,7 +31,7 @@ import java.util.TimeZone;
 public class DefaultSpiderImpl implements StockSpider {
 
     private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
-    private static final String useAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36";
+    public static final String useAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36";
 
     @Override
     public JSONArray getStockPrice(String[] stockCode) throws Exception {
@@ -75,7 +73,7 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("todayMin", today_min);//今日最低价
             json.put("yesterdayPrice", zs);//昨收
             json.put("fluctuate", StockSpider.mathFormat(nf.format(zf)));//波动
-            json.put("date",new Date());
+            json.put("priceDate",new Date());
             rows.add(json);
 
         }
@@ -104,13 +102,13 @@ public class DefaultSpiderImpl implements StockSpider {
         if (tds1.size() > 14) {
             jzcsyl = tds1.get(14).select("span").get(1).text();//净资产收益率
         }
-        //公司详情
+       /* //公司详情
         String companyInfoUrl=String.format("http://vip.stock.finance.sina.com.cn/corp/go.php/vCI_CorpInfo/stockid/%s.phtml",stockCode);
         Document infoDoc = Jsoup.connect(companyInfoUrl).userAgent(useAgent).get();
         Element infoTable = infoDoc.getElementById("con02-0");
         Elements rows = infoTable.getElementsByTag("td");
         //表格的第三行第四列是上市日期
-        String listingDate=rows.get(7).text().trim();//上市日期
+        String listingDate=rows.get(7).text().trim();//上市日期*/
 
 
         JSONObject json = new JSONObject();
@@ -122,15 +120,17 @@ public class DefaultSpiderImpl implements StockSpider {
         json.put("totalValue", BigDecimal.valueOf(StockSpider.mathFormat(zsz)));//总市值
         json.put("roe", BigDecimal.valueOf(StockSpider.mathFormat(jzcsyl)));//净资产收益率
         json.put("bvps",StockSpider.mathFormat(mgjzc));//每股净资产
-        json.put("date",new Date());
+        json.put("Infodate",new Date());
         json.put("code",stockCode);
-        json.put("listingDate",listingDate);//上市日期
+        json.put("type",StockSpider.formatStockCode(stockCode).replaceAll("\\d",""));
+//        json.put("listingDate",listingDate);//上市日期
         return json;
     }
 
     @Override
     public JSONArray getHistoryDividendRate(String code) throws Exception {
-        String url = String.format("http://basic.10jqka.com.cn/16/%s/bonus.html", code);
+        String stockCode=code.replaceAll("\\D","");
+        String url = String.format("http://basic.10jqka.com.cn/16/%s/bonus.html", stockCode);
         log.info("craw url :{}", url);
         Document doc = Jsoup.connect(url).userAgent(useAgent).get();
         Element table = doc.getElementById("bonus_table");
@@ -142,7 +142,7 @@ public class DefaultSpiderImpl implements StockSpider {
             for (int i = 1; i < rows.size(); i++) {
                 String[] data = rows.get(i).select("td").text().split(" ");
                 if (data[0].endsWith("年报")) {
-                    log.info("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
+                    log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
                     //String year, String date, String plan, Double percent
                     double value = -1;
                     if (null != data[9]) {
@@ -153,6 +153,7 @@ public class DefaultSpiderImpl implements StockSpider {
                     //String , String , String plan, Double percent,String executeDate
                     // list.add(new ThsStockDividendRate(, , ,value,data[3]));
                     json = new JSONObject();
+                    json.put("code",stockCode);
                     json.put("year", data[0]);
                     json.put("date", data[6]);
                     json.put("percent", value);
@@ -187,6 +188,7 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("roe", StockSpider.mathFormat(roe[i].toString()));
             json.put("roeTb", StockSpider.mathFormat(roeTb[i].toString()));
             json.put("code", code);
+            json.put("date",new Date());
             jsons.add(json);
         }
         return jsons;

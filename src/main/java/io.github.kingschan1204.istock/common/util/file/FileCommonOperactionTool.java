@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.common.util.file;
 
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class FileCommonOperactionTool {
         log.info("start download file :{}",url);
         //Open a URL Stream
         Connection.Response resultResponse = Jsoup.connect(url)
-                .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
+                .userAgent(DefaultSpiderImpl.useAgent)
                 .ignoreContentType(true).execute();
         String defaultFileName = Arrays.stream(resultResponse.contentType().split(";"))
                 .filter(s -> s.startsWith("name")).findFirst().get().replaceAll("name=|\"", "");

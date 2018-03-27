@@ -66,7 +66,7 @@
     $(document).ready(function () {
 
         $("#jqGrid").jqGrid({
-            url: basepath + "/stock/list-jqgrid",
+            url: basepath + "/stock/q",
             width: window.screen.availWidth - 20,
             multiselect: true,//复选框
             shrinkToFit: false,
@@ -75,24 +75,28 @@
             mtype: "GET",
             styleUI: 'Bootstrap',
             datatype: "json",
-            colNames: ['代码', '名称', '当前价格', '昨收', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '分红率', '分红年份'
-                , '所属行业', '主营业务'],
+            colNames: ['代码', '名称','市场', '当前价格', '昨收','今日最高','今日最低', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '每股净资产', '所属行业', '主营业务'],
             colModel: [
-                {label: 'sCode', name: 'sCode', width: 100, frozen: true},
-                {label: 'sStockName', name: 'sStockName', width: 150, frozen: true},
-                {label: 'sCurrentPrice', name: 'sCurrentPrice', width: 70, align: 'right', frozen: true},
-                {label: 'sYesterdayPrice', name: 'sYesterdayPrice', width: 60, align: 'right'},
 
-                {label: 'sRangePrice', name: 'sRangePrice', width: 70, align: 'right', cellattr: addCellAttr},
-                {label: 'sPeDynamic', name: 'sPeDynamic', width: 75, align: 'right'},
-                {label: 'sPeStatic', name: 'sPeStatic', width: 75, align: 'right'},
-                {label: 'sPb', name: 'sPb', width: 70, align: 'right'},
-                {label: 'sTotalValue', name: 'sTotalValue', width: 80, align: 'right'},
-                {label: 'sRoe', name: 'sRoe', width: 100, align: 'right'},
-                {label: 'sDividendRate', name: 'sDividendRate', width: 80, align: 'right'},
-                {label: 'sDividendYear', name: 'sDividendYear', width: 70},
-                {label: 'sIndustry', name: 'sIndustry', width: 200},
-                {label: 'sMainBusiness', name: 'sMainBusiness', width: 650}
+                {label: 'code', name: 'code', width: 100, frozen: true},
+                {label: 'name', name: 'name', width: 150, frozen: true},
+                {label: 'type', name: 'type', width: 60, frozen: true},
+                {label: 'price', name: 'price', width: 70, align: 'right', frozen: true},
+                {label: 'yesterdayPrice', name: 'yesterdayPrice', width: 60, align: 'right'},
+
+                {label: 'todayMax', name: 'todayMax', width: 70, align: 'right'},
+                {label: 'todayMin', name: 'todayMin', width: 70, align: 'right'},
+
+                {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right', cellattr: addCellAttr},
+                {label: 'ped', name: 'ped', width: 75, align: 'right'},
+                {label: 'pes', name: 'pes', width: 75, align: 'right'},
+                {label: 'pb', name: 'pb', width: 70, align: 'right'},
+
+                {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
+                {label: 'roe', name: 'roe', width: 100, align: 'right'},
+                {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
+                {label: 'industry', name: 'industry', width: 200},
+                {label: 'mainBusiness', name: 'mainBusiness', width: 650}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
             ],
             viewrecords: true,
@@ -103,9 +107,9 @@
         });
         $("#jqGrid").jqGrid("setFrozenColumns");
         function addCellAttr(rowId, val, rawObject, cm, rdata) {
-            if (parseFloat(rawObject.sRangePrice) < 0) {
+            if (parseFloat(rawObject.fluctuate) < 0) {
                 return "style='color:green'";
-            } else if (parseFloat(rawObject.sRangePrice) > 0) {
+            } else if (parseFloat(rawObject.fluctuate) > 0) {
                 return "style='color:red'";
             }
         }

@@ -4,9 +4,7 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +31,7 @@ public class DefaultSpiderImplTest {
         System.out.println(sp);*/
     }
 
-    @Ignore
-    @Test
-    public void getStockInfo() throws Exception {
-        System.out.println(spider.getStockInfo(code).toJSONString());
-    }
+
     @Ignore
     @Test
     public void getHistoryDividendRate() throws Exception {
@@ -59,6 +53,7 @@ public class DefaultSpiderImplTest {
         System.out.println(spider.getHistoryPB(code).toJSONString());
     }
 
+    @Ignore
     @Test
     public void getAllStockCode()throws Exception{
         Optional<List<String>> optional=Optional.of(spider.getAllStockCode());
@@ -73,14 +68,11 @@ public class DefaultSpiderImplTest {
                 System.out.println(String.format("%s | %s",code,temp));
             }
         }
-
     }
 
-    @Ignore
     @Test
-    public  void formatStockCode(){
-        String code =StockSpider.formatStockCode("300314");
-        System.out.println(code);
+    public  void formatStockCode()throws Exception{
+
     }
 
 }
