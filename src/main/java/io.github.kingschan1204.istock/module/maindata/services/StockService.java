@@ -167,12 +167,11 @@ public class StockService {
         StringBuffer year = new StringBuffer();
         StringBuffer percent = new StringBuffer();
         list.stream().forEach(item ->{
-            year.append("'").append(item.getTitle()).append("',");
             if(item.getPercent()>0){
                 percent.append(item.getPercent()).append(",");
-            }else{
-                percent.append("0,");
+                year.append("'").append(item.getTitle()).append("',");
             }
+
         });
         return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
                 percent.toString().replaceAll("\\,$","")
@@ -193,11 +192,9 @@ public class StockService {
         StringBuffer year = new StringBuffer();
         StringBuffer percent = new StringBuffer();
         list.stream().forEach(item ->{
-            year.append("'").append(item.getYear()).append("',");
             if(item.getRoe()>0){
                 percent.append(item.getRoe()).append(",");
-            }else{
-                percent.append("0,");
+                year.append("'").append(item.getYear()).append("',");
             }
 
         });
