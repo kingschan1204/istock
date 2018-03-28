@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
+import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class StockService {
     private StockRepository stockRepository;
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
+    @Autowired
+    private StockHisRoeService stockHisRoeService;
     @Autowired
     private StockSpider spider;
     @Autowired
@@ -67,6 +70,8 @@ public class StockService {
             json.put("dividend",percent);
             json.put("dividendDate",date);
             json.putAll(info);
+            // his roe
+            stockHisRoeService.addStockHisRoe(scode);
         }
         List<Stock> list = JSON.parseArray(jsons.toJSONString(), Stock.class);
         stockRepository.save(list);
@@ -109,6 +114,64 @@ public class StockService {
         data.put("records",total);// 总共有多少条记录
         data.put("page",pageindex);
         return data.toJSONString();
+    }
+
+
+    /**
+     *
+     * @param code
+     * @return
+     */
+    public String getStockDividend(String code){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("code").is(code));
+        //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        orders.add(new Sort.Order(Sort.Direction.ASC,"title"));
+        Sort sort = new Sort(orders);
+        query.with(sort);
+        //code
+        List<StockHisDividend> list =template.find(query,StockHisDividend.class);
+        StringBuffer year = new StringBuffer();
+        StringBuffer percent = new StringBuffer();
+        list.stream().forEach(item ->{
+            year.append("'").append(item.getTitle()).append("',");
+            if(item.getPercent()>0){
+                percent.append(item.getPercent()).append(",");
+            }else{
+                percent.append("0,");
+            }
+        });
+        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                percent.toString().replaceAll("\\,$","")
+        );
+    }
+
+
+    public String getStockHisRoe(String code){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("code").is(code));
+        //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        orders.add(new Sort.Order(Sort.Direction.ASC,"year"));
+        Sort sort = new Sort(orders);
+        query.with(sort);
+        //code
+        List<StockHisRoe> list =template.find(query,StockHisRoe.class);
+        StringBuffer year = new StringBuffer();
+        StringBuffer percent = new StringBuffer();
+        list.stream().forEach(item ->{
+            year.append("'").append(item.getYear()).append("',");
+            if(item.getRoe()>0){
+                percent.append(item.getRoe()).append(",");
+            }else{
+                percent.append("0,");
+            }
+
+        });
+        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                percent.toString().replaceAll("\\,$","")
+        );
     }
 
 }

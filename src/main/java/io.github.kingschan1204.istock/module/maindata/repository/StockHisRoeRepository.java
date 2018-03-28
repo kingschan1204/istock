@@ -1,6 +1,6 @@
-package io.github.kingschan1204.istock.module.hisroe.repository;
+package io.github.kingschan1204.istock.module.maindata.repository;
 
-import io.github.kingschan1204.istock.module.hisroe.po.StockHisRoe;
+import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package io.github.kingschan1204.istock.module.hisroe.po;
+package io.github.kingschan1204.istock.module.maindata.po;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

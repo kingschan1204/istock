@@ -1,13 +1,11 @@
 package io.github.kingschan1204.istock.module.hisroe.service;
 
-import org.junit.Ignore;
+import io.github.kingschan1204.istock.module.maindata.services.StockHisRoeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -21,10 +19,9 @@ public class StockHisRoeServiceTest {
     @Autowired
     private StockHisRoeService service;
 
-    @Ignore
     @Test
     public void addStockHisRoe() throws Exception {
-        service.addStockHisRoe("600519");
+        service.addStockHisRoe("601006");
     }
 
 }
