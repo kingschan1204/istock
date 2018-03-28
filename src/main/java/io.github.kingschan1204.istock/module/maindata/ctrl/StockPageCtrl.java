@@ -31,6 +31,18 @@ public class StockPageCtrl {
             String roeItem[]=data.split("\\|");
             mav.addObject("roe_year",roeItem[0]);
             mav.addObject("roe_percent",roeItem[1]);
+
+            //历年pb
+            data=stockService.getStockHisPb(code);
+            String pbItem[]=data.split("\\|");
+            mav.addObject("pb_date",pbItem[0]);
+            mav.addObject("pb_value",pbItem[1]);
+
+            //历年pe
+            data=stockService.getStockHisPe(code);
+            String peItem[]=data.split("\\|");
+            mav.addObject("pe_date",peItem[0]);
+            mav.addObject("pe_value",peItem[1]);
             return  mav;
         }
 

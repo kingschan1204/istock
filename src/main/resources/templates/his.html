@@ -7,9 +7,13 @@
 </head>
 <body>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div id="main" style="width: 1000px;height:400px;"></div>
+<div id="main" style="width: 100%;height:400px;"></div>
 <br><br><br>
-<div id="roe" style="width: 1000px;height:400px;"></div>
+<div id="roe" style="width: 100%;height:400px;"></div>
+<br><br><br>
+<div id="pb" style="width: 100%;height:400px;"></div>
+<br><br><br>
+<div id="pe" style="width: 100%;height:400px;"></div>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
@@ -75,7 +79,6 @@
     myChart.setOption(option);
 </script>
 
-
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var roeChart = echarts.init(document.getElementById('roe'));
@@ -139,6 +142,136 @@
 
     // 使用刚指定的配置项和数据显示图表。
     roeChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var pbChart = echarts.init(document.getElementById('pb'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '历史市净率',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['pb情况']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: [${pb_date}]
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+        series: [
+            {
+                name:'pb',
+                type:'line',
+                data:[${pb_value}],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    pbChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var peChart = echarts.init(document.getElementById('pe'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '历史市盈率',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['pe情况']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: [${pe_date}]
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+        series: [
+            {
+                name:'pe',
+                type:'line',
+                data:[${pe_value}],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    peChart.setOption(option);
 </script>
 </body>
 </html>

@@ -209,7 +209,7 @@ public class DefaultSpiderImpl implements StockSpider {
             JSONObject json ;
             for (int i=0;i<date.length;i++) {
                 json = new JSONObject();
-                json.put("code",code);
+                json.put("code",code.replaceAll("\\D",""));
                 json.put("date", date[i].trim());
                 json.put("pe", pe[i].trim());
                 json.put("price", price[i].trim());
@@ -238,7 +238,7 @@ public class DefaultSpiderImpl implements StockSpider {
             JSONObject json ;
             for (int i=0;i<date.length;i++) {
                 json = new JSONObject();
-                json.put("code",code);
+                json.put("code",code.replaceAll("\\D",""));
                 json.put("date", date[i].trim());
                 json.put("pb", pb[i].trim());
                 json.put("price", price[i].trim());

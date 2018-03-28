@@ -21,7 +21,7 @@ public class StockServiceTest {
     @Test
     public void addStock() throws Exception {
         stockService.addStock(new String[]{
-                "000895","601288","000338","601668","601633"
+                "000895"//,"601288","000338","601668","601633"
         });
     }
     @Test

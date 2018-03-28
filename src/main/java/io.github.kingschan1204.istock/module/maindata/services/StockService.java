@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
-import io.github.kingschan1204.istock.module.maindata.po.Stock;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
+import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
+import io.github.kingschan1204.istock.module.maindata.repository.StockHisPbRepository;
+import io.github.kingschan1204.istock.module.maindata.repository.StockHisPeRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -33,6 +33,10 @@ public class StockService {
     private StockHisDividendRepository stockHisDividendRepository;
     @Autowired
     private StockHisRoeService stockHisRoeService;
+    @Autowired
+    private StockHisPbRepository stockHisPbRepository;
+    @Autowired
+    private StockHisPeRepository stockHisPeRepository;
     @Autowired
     private StockSpider spider;
     @Autowired
@@ -72,10 +76,38 @@ public class StockService {
             json.putAll(info);
             // his roe
             stockHisRoeService.addStockHisRoe(scode);
+            //his pb
+            addStockHisPb(scode);
+            //his pe
+            addStockHisPe(scode);
         }
         List<Stock> list = JSON.parseArray(jsons.toJSONString(), Stock.class);
         stockRepository.save(list);
     }
+
+
+    /**
+     * 增加历史pe
+     * @param code
+     * @throws Exception
+     */
+    public void addStockHisPe(String code)throws Exception{
+        JSONArray jsons=spider.getHistoryPE(StockSpider.formatStockCode(code));
+        List<StockHisPe> lis = JSON.parseArray(jsons.toJSONString(),StockHisPe.class);
+        stockHisPeRepository.save(lis);
+    }
+
+    /**
+     * 增加历史pb
+     * @param code
+     * @throws Exception
+     */
+    public void addStockHisPb(String code)throws Exception{
+        JSONArray jsons=spider.getHistoryPB(StockSpider.formatStockCode(code));
+        List<StockHisPb> lis = JSON.parseArray(jsons.toJSONString(),StockHisPb.class);
+        stockHisPbRepository.save(lis);
+    }
+
 
     public String queryStock(int pageindex, int pagesize, final String pcode, String orderfidld, String psort){
         Query query = new Query();
@@ -174,4 +206,58 @@ public class StockService {
         );
     }
 
+
+    public String getStockHisPb(String code){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("code").is(code));
+        //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        orders.add(new Sort.Order(Sort.Direction.ASC,"date"));
+        Sort sort = new Sort(orders);
+        query.with(sort);
+        //code
+        List<StockHisPb> list =template.find(query,StockHisPb.class);
+        StringBuffer year = new StringBuffer();
+        StringBuffer pb = new StringBuffer();
+        list.stream().forEach(item ->{
+            year.append("'").append(item.getDate()).append("',");
+            if(item.getPb()>0){
+                pb.append(item.getPb()).append(",");
+            }else{
+                pb.append("0,");
+            }
+
+        });
+        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                pb.toString().replaceAll("\\,$","")
+        );
+    }
+
+
+
+    public String getStockHisPe(String code){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("code").is(code));
+        //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        orders.add(new Sort.Order(Sort.Direction.ASC,"date"));
+        Sort sort = new Sort(orders);
+        query.with(sort);
+        //code
+        List<StockHisPe> list =template.find(query,StockHisPe.class);
+        StringBuffer year = new StringBuffer();
+        StringBuffer pe = new StringBuffer();
+        list.stream().forEach(item ->{
+            year.append("'").append(item.getDate()).append("',");
+            if(item.getPe()>0){
+                pe.append(item.getPe()).append(",");
+            }else{
+                pe.append("0,");
+            }
+
+        });
+        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                pe.toString().replaceAll("\\,$","")
+        );
+    }
 }
