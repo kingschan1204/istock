@@ -3,26 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>股票离线分析</title>
-    <!-- The jQuery library is a prerequisite for all jqSuite products -->
-    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/jquery.min.js"></script>
-    <!-- We support more than 40 localizations -->
-    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-en.js"></script>
-    <!-- This is the Javascript file of jqGrid -->
-    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/src/jquery.jqGrid.js"></script>
-    <!-- This is the localization file of the grid controlling messages, labels, etc.
-    <!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <!-- The link to the CSS that the grid needs -->
-    <link rel="stylesheet" type="text/css" media="screen"
-          href="http://www.guriddo.net/demo/css/trirand/ui.jqgrid-bootstrap.css"/>
-    <script>
-        $.jgrid.defaults.width = 780;
-    </script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/plugs/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="/plugs/jqgrid/grid.locale-cn.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"  crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen"  href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"  crossorigin="anonymous"></script>
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.css" rel="stylesheet">
     <script src="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.js"></script>
-
     <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/mouse0270-bootstrap-notify/3.1.7/bootstrap-notify.min.js"></script>
     <script src="/js/util.js"></script>
@@ -65,7 +53,7 @@
     $(document).ready(function () {
 
         $("#jqGrid").jqGrid({
-            url: basepath + "/stock/q",
+            url:  "/stock/q",
             width: window.screen.availWidth - 20,
             multiselect: true,//复选框
             shrinkToFit: false,
@@ -115,6 +103,11 @@
                         $("#jqGrid").find('#' + ids[i]).find("td").css("color", "red");
                     }
                 }
+            },
+            ondblClickRow: function(id){
+                //双击行
+                var rowData = $("#jqGrid").getRowData(id);
+                window.open("/stock/his/"+rowData.code);
             }
         });
         $("#jqGrid").jqGrid("setFrozenColumns");

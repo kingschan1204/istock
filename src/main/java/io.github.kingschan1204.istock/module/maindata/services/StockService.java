@@ -217,13 +217,10 @@ public class StockService {
         StringBuffer year = new StringBuffer();
         StringBuffer pb = new StringBuffer();
         list.stream().forEach(item ->{
-            year.append("'").append(item.getDate()).append("',");
             if(item.getPb()>0){
+                year.append("'").append(item.getDate()).append("',");
                 pb.append(item.getPb()).append(",");
-            }else{
-                pb.append("0,");
             }
-
         });
         return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
                 pb.toString().replaceAll("\\,$","")
@@ -245,13 +242,10 @@ public class StockService {
         StringBuffer year = new StringBuffer();
         StringBuffer pe = new StringBuffer();
         list.stream().forEach(item ->{
-            year.append("'").append(item.getDate()).append("',");
             if(item.getPe()>0){
                 pe.append(item.getPe()).append(",");
-            }else{
-                pe.append("0,");
+                year.append("'").append(item.getDate()).append("',");
             }
-
         });
         return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
                 pe.toString().replaceAll("\\,$","")
