@@ -63,11 +63,7 @@ public class DefaultSpiderImplTest {
            List<String> codes= optional.get();
             for (String code :
                     codes) {
-                String temp=StockSpider.formatStockCode(code.replaceAll("\\D",""));
-                if(null==temp||!code.equals(temp)){
-                    throw new Exception(code);
-                }
-                System.out.println(String.format("%s | %s",code,temp));
+                System.out.println(code);
             }
         }
     }

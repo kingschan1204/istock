@@ -69,6 +69,7 @@ public class StockService {
                 }
                 //save dividend
                 List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
+                template.remove(new Query(Criteria.where("code").is(scode)),StockHisDividend.class);
                 stockHisDividendRepository.save(stockHisDividendList);
             }
             json.put("dividend",percent);
@@ -94,6 +95,7 @@ public class StockService {
     public void addStockHisPe(String code)throws Exception{
         JSONArray jsons=spider.getHistoryPE(StockSpider.formatStockCode(code));
         List<StockHisPe> lis = JSON.parseArray(jsons.toJSONString(),StockHisPe.class);
+        template.remove(new Query(Criteria.where("code").is(code)),StockHisPe.class);
         stockHisPeRepository.save(lis);
     }
 
@@ -105,7 +107,9 @@ public class StockService {
     public void addStockHisPb(String code)throws Exception{
         JSONArray jsons=spider.getHistoryPB(StockSpider.formatStockCode(code));
         List<StockHisPb> lis = JSON.parseArray(jsons.toJSONString(),StockHisPb.class);
+        template.remove(new Query(Criteria.where("code").is(code)),StockHisPb.class);
         stockHisPbRepository.save(lis);
+
     }
 
 

@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.common.util.stock.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
@@ -53,6 +54,9 @@ public class DefaultSpiderImpl implements StockSpider {
         for (String s : line) {
             String row = s.trim().replaceAll("^var\\D+|\"", "").replace("=", ",");
             String data[] = row.split(",");
+            if(data.length<30){
+                throw new Exception("代码不存在!");
+            }
             double xj = StockSpider.mathFormat(data[4]);
             double zs = StockSpider.mathFormat(data[3]);
             double zf = (xj - zs) / zs * 100;
@@ -253,18 +257,21 @@ public class DefaultSpiderImpl implements StockSpider {
 
     @Override
     public List<String> getAllStockCode() throws Exception {
-        String url = "https://touzi.sina.com.cn/api/openapi.php/TzyFreeService.searchStocks?callback=jQuery11120012495474513398941_1520409064124&p1=CNSESH%2CCNSESZ";
+        String url = "https://touzi.sina.com.cn/api/openapi.php/TzyFreeService.searchStocks";
         log.info("craw all stock code :{}", url);
         StockSpider.enableSSLSocket();
         Document doc = null;
-        String[] codes = new String[0];
+        List<String> codes=null;
         try {
             doc = Jsoup.connect(url).userAgent(useAgent).ignoreContentType(true).get();
-            String text=doc.text().replaceAll(".*\\[|\\].*|\\\"","");
-            codes=text.split(",");
+            String text=doc.text();
+            JSONObject json = JSON.parseObject(text);
+            JSONArray value=json.getJSONObject("result").getJSONObject("data").getJSONArray("stocks");
+            codes=value.toJavaList(String.class);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Arrays.asList(codes);
+        return codes;
     }
 }
