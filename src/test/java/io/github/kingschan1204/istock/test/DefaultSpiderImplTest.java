@@ -7,6 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,18 @@ public class DefaultSpiderImplTest {
     @Ignore
     @Test
     public void getStockPrice() throws Exception {
-        System.out.println(spider.getStockPrice(new String[]{"600741"}));
+        List<String> codes=spider.getAllStockCode();
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < codes.size(); i++) {
+            list.add(codes.get(i));
+            if(i>0&&(i%300==0||i==codes.size()-1)){
+                System.out.println(spider.getStockPrice(list.toArray(new String[]{})));
+                list=new ArrayList<>();
+                Thread.sleep(1000);
+            }
+
+        }
+
     }
 
 

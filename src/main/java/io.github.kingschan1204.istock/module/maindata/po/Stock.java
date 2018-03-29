@@ -33,7 +33,7 @@ public class Stock {
     private Double bvps;
     private Double pes;
     private Double ped;
-    private Date Infodate;
+    private Integer Infodate;
     private String dividendDate;
     private Double dividend;
 
@@ -181,11 +181,11 @@ public class Stock {
         this.ped = ped;
     }
 
-    public Date getInfodate() {
+    public Integer getInfodate() {
         return Infodate;
     }
 
-    public void setInfodate(Date infodate) {
+    public void setInfodate(Integer infodate) {
         Infodate = infodate;
     }
 
