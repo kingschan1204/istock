@@ -106,7 +106,6 @@ public class DefaultSpiderImpl implements StockSpider {
         String sjljt = tds1.get(4).text().replaceAll(".*\\：|\\s*", "");//市盈率(静态)
         String sjl = tds1.get(8).text().replaceAll(".*\\：|\\s*", "");//市净率
         String zsz = tds1.get(11).text().replaceAll("\\D+", "");//总市值
-        System.out.println(tds1.get(12).text().replaceAll("\\[.*|", ""));
         double mgjzc = StockSpider.mathFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));//每股净资产
         String jzcsyl = "-1";
         if (tds1.size() > 14) {

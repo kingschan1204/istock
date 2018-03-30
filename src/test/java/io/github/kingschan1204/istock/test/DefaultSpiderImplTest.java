@@ -81,8 +81,8 @@ public class DefaultSpiderImplTest {
     }
 
     @Test
-    public  void formatStockCode()throws Exception{
-
+    public  void getStockInfo()throws Exception{
+        System.out.println(spider.getStockInfo("000995"));
     }
 
 }
