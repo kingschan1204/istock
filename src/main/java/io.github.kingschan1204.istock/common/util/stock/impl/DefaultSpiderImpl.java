@@ -106,8 +106,8 @@ public class DefaultSpiderImpl implements StockSpider {
         String sjljt = tds1.get(4).text().replaceAll(".*\\：|\\s*", "");//市盈率(静态)
         String sjl = tds1.get(8).text().replaceAll(".*\\：|\\s*", "");//市净率
         String zsz = tds1.get(11).text().replaceAll("\\D+", "");//总市值
-        String mgjzc = tds1.get(12).text().replaceAll("\\[.*|", "")
-                .replaceAll("[^0-9|\\.]", "");//每股净资产
+        System.out.println(tds1.get(12).text().replaceAll("\\[.*|", ""));
+        double mgjzc = StockSpider.mathFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));//每股净资产
         String jzcsyl = "-1";
         if (tds1.size() > 14) {
             jzcsyl = tds1.get(14).select("span").get(1).text();//净资产收益率
@@ -129,7 +129,7 @@ public class DefaultSpiderImpl implements StockSpider {
         json.put("pb", BigDecimal.valueOf(StockSpider.mathFormat(sjl)));//市净率
         json.put("totalValue", BigDecimal.valueOf(StockSpider.mathFormat(zsz)));//总市值
         json.put("roe", BigDecimal.valueOf(StockSpider.mathFormat(jzcsyl)));//净资产收益率
-        json.put("bvps",StockSpider.mathFormat(mgjzc));//每股净资产
+        json.put("bvps",mgjzc);//每股净资产
         json.put("Infodate", StockDateUtil.getCurrentDateNumber());
         json.put("code",stockCode);
         json.put("type",StockSpider.formatStockCode(stockCode).replaceAll("\\d",""));
