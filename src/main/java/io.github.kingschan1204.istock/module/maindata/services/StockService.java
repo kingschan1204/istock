@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -141,12 +140,30 @@ public class StockService {
             temp.put("fluctuate",temp.getString("fluctuate")+"%");
             temp.put("roe",temp.getString("roe")+"%");
             temp.put("totalValue",temp.getString("totalValue")+"亿");
-            temp.put("dividend",temp.getString("dividend")+"%");
+
+            if(temp.getDouble("pb")==-1){
+                temp.put("pb","--");
+            }
+            if(temp.getDouble("pes")==-1){
+                temp.put("pes","--");
+            }
+            if(temp.getDouble("ped")==-1){
+                temp.put("ped","--");
+            }
+            if(temp.containsKey("dividend")){
+                if(temp.getDouble("dividend")!=-1){
+                    temp.put("dividend",temp.getString("dividend")+"%");
+                }
+            }else {
+                temp.put("dividend","--");
+            }
+
         }
 
         JSONObject data= new JSONObject();
+        long pagetotal=total%pagesize==0?total/pagesize:total/pagesize+1;
         data.put("rows",jsons);
-        data.put("total",(total-1)/pagesize);//有多少页
+        data.put("total",pagetotal);//有多少页
         data.put("records",total);// 总共有多少条记录
         data.put("page",pageindex);
         return data.toJSONString();

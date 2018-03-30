@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>股票离线分析</title>
+    <title>离线分析</title>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="/plugs/jqgrid/jquery.jqGrid.min.js"></script>
     <script src="/plugs/jqgrid/grid.locale-cn.js"></script>
@@ -35,8 +35,6 @@
             </div>
             <button type="button" class="btn btn-primary" id="search_btn">查询</button>
             <button type="button" class="btn btn-success" id="add_btn">新增</button>
-            <button type="button" class="btn btn-warning" id="refresh_data_btn">更新</button>
-            <button type="button" class="btn btn-danger" id="del_btn">删除</button>
         </form>
     </div>
 </div>
@@ -144,27 +142,7 @@
         reloadStock();
     });
 
-    /**
-     * 刷新财务数据
-     */
-    $("#refresh_data_btn").click(function(){
-        messageBox.showLoading('正在更新财务数据请稍后...');
-        $.ajax({
-            type: "POST",
-            url: basepath + "/stock/refresh",
-            success: function (data) {
-                if (data == 'success') {
-                    reloadStock();
-                } else {
-                    messageBox.error('提示', data);
-                }
-                messageBox.closeLoading();
-            },
-            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
-                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
-            }
-        });
-    });
+
 
     /**
      * 新增
@@ -190,40 +168,5 @@
         });
     });
 
-    $("#del_btn").click(function () {
-        var ids = $("#jqGrid").jqGrid("getGridParam", "selarrrow");
-        if (ids.length==0) {
-            messageBox.notify("请选择要删除的股票!", "danger");
-            return;
-        }
-        var codes=new Array();
-        //遍历访问这个集合
-        $(ids).each(function (index, id){
-            //由id获得对应数据行
-            var row = $("#jqGrid").jqGrid('getRowData', id);
-            codes.push(row.sCode);
-        })
-        messageBox.confirm("是否删除选中的股票？", function (result) {
-            messageBox.showLoading('正在处理请稍后...');
-            $.ajax({
-                type: "POST",
-                url: basepath + "/stock/del",
-                data: {codes: codes},
-                success: function (data) {
-                    messageBox.closeLoading();
-                    if (data == 'success') {
-                        reloadStock();
-                    } else {
-                        messageBox.error('提示', data);
-                    }
 
-                },
-                error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
-                    messageBox.error('提示', '数据提交错误，请联系系统管理员.');
-                }
-            });
-        });
-
-
-    });
 </script>

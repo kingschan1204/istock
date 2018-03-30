@@ -33,13 +33,13 @@ public class SinaStockPriceTask {
     @Autowired
     private MongoTemplate template;
 
-    @Scheduled(cron = "59 * * * * ? ")
+    @Scheduled(cron = "0/20 * * * * ?")
     public void stockPriceExecute()throws Exception{
-        log.info("开始更新stock主数据");
         if(!StockDateUtil.stockOpenTime()){
             log.info("非交易时间不执行操作...");
             return ;
         }
+        log.info("开始更新stock主数据");
         List<String> codes=spider.getAllStockCode();
         List<String> list = new ArrayList<>();
         for (int i = 0; i < codes.size(); i++) {

@@ -7,7 +7,6 @@ import java.util.Date;
 
 /**
  * stock maindata
- *
  * @author chenguoxiang
  * @create 2018-03-27 10:15
  **/
@@ -36,7 +35,7 @@ public class Stock {
     private Integer Infodate;
     private String dividendDate;
     private Double dividend;
-
+    private Integer dividendUpdateDay;
    /* public String get_id() {
         return _id;
     }
@@ -203,5 +202,13 @@ public class Stock {
 
     public void setDividend(Double dividend) {
         this.dividend = dividend;
+    }
+
+    public Integer getDividendUpdateDay() {
+        return dividendUpdateDay;
+    }
+
+    public void setDividendUpdateDay(Integer dividendUpdateDay) {
+        this.dividendUpdateDay = dividendUpdateDay;
     }
 }

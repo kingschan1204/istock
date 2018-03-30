@@ -19,8 +19,8 @@ public class StockCtrl {
 
     @RequestMapping("/stock/q")
     public String queryStock(Integer page, Integer rows, String code, String sidx, String sord){
-        String order =(null==sord||sord.isEmpty())?"desc":sord;
-        String field =(null==sidx||sidx.isEmpty())?"fluctuate":sidx;
+        String order =(null==sord||sord.isEmpty())?"asc":sord;
+        String field =(null==sidx||sidx.isEmpty())?"_id":sidx;
         return service.queryStock(page,rows,code,field,order);
     }
 
