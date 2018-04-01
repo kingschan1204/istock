@@ -133,4 +133,12 @@ public interface StockSpider {
      */
     List<String> getAllStockCode()throws Exception;
 
+    /**
+     * 得到股息
+     * @param page  页码
+     * @return
+     * @throws Exception
+     */
+    JSONObject getDy(int page)throws Exception;
+
 }

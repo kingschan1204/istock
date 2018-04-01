@@ -5,7 +5,15 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +24,9 @@ import java.util.Optional;
  * @author chenguoxiang
  * @create 2018-02-01 10:05
  **/
-//@RunWith(SpringRunner.class)
+@WebAppConfiguration
+//@PropertySource(value = { "classpath:application.properties" })
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class DefaultSpiderImplTest {
     StockSpider spider=new DefaultSpiderImpl();
@@ -81,8 +91,9 @@ public class DefaultSpiderImplTest {
     }
 
     @Test
-    public  void getStockInfo()throws Exception{
-        System.out.println(spider.getStockInfo("000995"));
+    public  void getdy()throws Exception{
+       System.out.println(spider.getDy(1));
+
     }
 
 }

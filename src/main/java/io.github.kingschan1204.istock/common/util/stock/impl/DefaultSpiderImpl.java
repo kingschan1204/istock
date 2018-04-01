@@ -7,12 +7,14 @@ import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
 import io.github.kingschan1204.istock.common.util.file.FileCommonOperactionTool;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.io.File;
 import java.math.BigDecimal;
@@ -33,8 +35,12 @@ import java.util.TimeZone;
 public class DefaultSpiderImpl implements StockSpider {
 
     private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
-    private static final int timeout=8000;//8s超时
-    public static final String useAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36";
+    @Value("${spider.timeout}")
+    private int timeout;//8s超时
+    @Value("${spider.useagent}")
+    private  String useAgent;
+    @Value("${xueqiu.token}")
+    private String xueqiu_token;
 
     @Override
     public JSONArray getStockPrice(String[] stockCode) throws Exception {
@@ -123,11 +129,11 @@ public class DefaultSpiderImpl implements StockSpider {
         JSONObject json = new JSONObject();
         json.put("mainBusiness", zyyw);//主营业务
         json.put("industry", sshy);//所属行业
-        json.put("ped", BigDecimal.valueOf(StockSpider.mathFormat(dtsyl)));//市盈率(动态)
-        json.put("pes", BigDecimal.valueOf(StockSpider.mathFormat(sjljt)));//市盈率(静态)
-        json.put("pb", BigDecimal.valueOf(StockSpider.mathFormat(sjl)));//市净率
-        json.put("totalValue", BigDecimal.valueOf(StockSpider.mathFormat(zsz)));//总市值
-        json.put("roe", BigDecimal.valueOf(StockSpider.mathFormat(jzcsyl)));//净资产收益率
+        json.put("ped", StockSpider.mathFormat(dtsyl));//市盈率(动态)
+        json.put("pes", StockSpider.mathFormat(sjljt));//市盈率(静态)
+        json.put("pb", StockSpider.mathFormat(sjl));//市净率
+        json.put("totalValue", StockSpider.mathFormat(zsz));//总市值
+        json.put("roe", StockSpider.mathFormat(jzcsyl));//净资产收益率
         json.put("bvps",mgjzc);//每股净资产
         json.put("Infodate", StockDateUtil.getCurrentDateNumber());
         json.put("code",stockCode);
@@ -279,4 +285,35 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         return codes;
     }
+
+    /**
+     * 得到股票实时股息
+     * @param page
+     * @return
+     * @throws Exception
+     */
+   public JSONObject getDy(int page)throws Exception{
+       String url="https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=dy&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.92";
+       url=String.format(url,page);
+       StockSpider.enableSSLSocket();
+       Document infoDoc = Jsoup.connect(url).userAgent(useAgent).referrer("https://xueqiu.com/hq/screener/CN")
+               .timeout(timeout)
+               .cookie("xq_a_token",xueqiu_token)
+               .ignoreContentType(true)
+               .get();
+       JSONObject json = JSON.parseObject(infoDoc.text());
+       JSONArray jsons =json.getJSONArray("list");
+       JSONArray items = new JSONArray();
+       for (int i = 0; i < jsons.size(); i++) {
+           JSONObject item =new JSONObject();
+           item.put("code",jsons.getJSONObject(i).getString("symbol").replaceAll("\\D",""));
+           item.put("dy",jsons.getJSONObject(i).getDoubleValue("dy"));
+           items.add(item);
+       }
+       json.put("list",items);
+       System.out.println(json.toJSONString());
+       return json;
+   }
+
+
 }

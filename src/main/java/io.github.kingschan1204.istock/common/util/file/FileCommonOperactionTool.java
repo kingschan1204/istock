@@ -28,7 +28,7 @@ public class FileCommonOperactionTool {
         log.info("start download file :{}",url);
         //Open a URL Stream
         Connection.Response resultResponse = Jsoup.connect(url)
-                .userAgent(DefaultSpiderImpl.useAgent)
+                .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")
                 .ignoreContentType(true).execute();
         String defaultFileName = Arrays.stream(resultResponse.contentType().split(";"))
                 .filter(s -> s.startsWith("name")).findFirst().get().replaceAll("name=|\"", "");
