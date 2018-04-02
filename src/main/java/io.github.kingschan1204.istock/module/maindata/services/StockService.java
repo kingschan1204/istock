@@ -210,7 +210,7 @@ public class StockService {
     }
 
 
-    public String getStockHisPb(String code){
+    public List<StockHisPb> getStockHisPb(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
@@ -220,7 +220,8 @@ public class StockService {
         query.with(sort);
         //code
         List<StockHisPb> list =template.find(query,StockHisPb.class);
-        StringBuffer year = new StringBuffer();
+        return list;
+        /*StringBuffer year = new StringBuffer();
         StringBuffer pb = new StringBuffer();
         list.stream().forEach(item ->{
             if(item.getPb()>0){
@@ -230,12 +231,12 @@ public class StockService {
         });
         return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
                 pb.toString().replaceAll("\\,$","")
-        );
+        );*/
     }
 
 
 
-    public String getStockHisPe(String code){
+    public List<StockHisPe> getStockHisPe(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
@@ -245,17 +246,7 @@ public class StockService {
         query.with(sort);
         //code
         List<StockHisPe> list =template.find(query,StockHisPe.class);
-        StringBuffer year = new StringBuffer();
-        StringBuffer pe = new StringBuffer();
-        list.stream().forEach(item ->{
-            if(item.getPe()>0){
-                pe.append(item.getPe()).append(",");
-                year.append("'").append(item.getDate()).append("',");
-            }
-        });
-        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
-                pe.toString().replaceAll("\\,$","")
-        );
+        return list;
     }
 
 

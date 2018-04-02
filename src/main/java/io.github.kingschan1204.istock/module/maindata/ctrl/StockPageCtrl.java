@@ -1,8 +1,6 @@
 package io.github.kingschan1204.istock.module.maindata.ctrl;
 
-import io.github.kingschan1204.istock.module.maindata.po.Stock;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
+import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import io.github.kingschan1204.istock.module.maindata.services.StockHisRoeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
@@ -90,8 +88,8 @@ public class StockPageCtrl {
         @RequestMapping("/stock/his_roe/{code}")
         public ModelAndView getStockHisRoe(@PathVariable String code) {
             ModelAndView mav = new ModelAndView("his_roe");
-            mav.addObject("year","''");
-            mav.addObject("percent","0");
+            mav.addObject("roe_year","''");
+            mav.addObject("roe_percent","0");
             Stock stock =stockRepository.findOne(code);
             if(null==stock){
                 mav.addObject("msg",String.format("代码:%s %s",code,"不存在，或者非A股代码!"));
@@ -125,5 +123,79 @@ public class StockPageCtrl {
             return mav;
         }
 
+
+    @RequestMapping("/stock/his_pe/{code}")
+    public ModelAndView getStockHisPe(@PathVariable String code) {
+        ModelAndView mav = new ModelAndView("his_pe");
+        mav.addObject("pe_date","''");
+        mav.addObject("pe_value","0");
+        Stock stock =stockRepository.findOne(code);
+        if(null==stock){
+            mav.addObject("msg",String.format("代码:%s %s",code,"不存在，或者非A股代码!"));
+            return mav;
+        }
+        mav.addObject("stock",stock);
+        List<StockHisPe> list=stockService.getStockHisPe(code);
+        if(null==list||list.size()==0){
+            try {
+                list= stockService.addStockHisPe(code);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        mav.addObject("rows",list);
+        StringBuffer year = new StringBuffer();
+        StringBuffer pe = new StringBuffer();
+        list.stream().forEach(item ->{
+            if(item.getPe()>0){
+                pe.append(item.getPe()).append(",");
+                year.append("'").append(item.getDate()).append("',");
+            }
+        });
+        String data=  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                pe.toString().replaceAll("\\,$","")
+        );
+        String roeItem[]=data.split("\\|");
+        mav.addObject("pe_date",roeItem[0]);
+        mav.addObject("pe_value",roeItem[1]);
+        return mav;
+    }
+
+    @RequestMapping("/stock/his_pb/{code}")
+    public ModelAndView getStockHisPb(@PathVariable String code) {
+        ModelAndView mav = new ModelAndView("his_pb");
+        mav.addObject("pb_date","''");
+        mav.addObject("pb_value","0");
+        Stock stock =stockRepository.findOne(code);
+        if(null==stock){
+            mav.addObject("msg",String.format("代码:%s %s",code,"不存在，或者非A股代码!"));
+            return mav;
+        }
+        mav.addObject("stock",stock);
+        List<StockHisPb> list=stockService.getStockHisPb(code);
+        if(null==list||list.size()==0){
+            try {
+                list= stockService.addStockHisPb(code);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        mav.addObject("rows",list);
+        StringBuffer year = new StringBuffer();
+        StringBuffer pe = new StringBuffer();
+        list.stream().forEach(item ->{
+            if(item.getPb()>0){
+                pe.append(item.getPb()).append(",");
+                year.append("'").append(item.getDate()).append("',");
+            }
+        });
+        String data=  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                pe.toString().replaceAll("\\,$","")
+        );
+        String roeItem[]=data.split("\\|");
+        mav.addObject("pb_date",roeItem[0]);
+        mav.addObject("pb_value",roeItem[1]);
+        return mav;
+    }
 
 }
