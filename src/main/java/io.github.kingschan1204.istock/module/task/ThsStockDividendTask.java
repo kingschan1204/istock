@@ -40,6 +40,10 @@ public class ThsStockDividendTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockDividendExecute() throws Exception {
+        if(!StockDateUtil.stockOpenTime()){
+            log.info("非交易时间不执行操作...");
+            return ;
+        }
         log.info("开始更新stock Dividend 数据");
         Long start =System.currentTimeMillis();
         Integer dateNumber = StockDateUtil.getCurrentDateNumber()-5;

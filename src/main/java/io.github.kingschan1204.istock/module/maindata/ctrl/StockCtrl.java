@@ -27,7 +27,7 @@ public class StockCtrl {
     /**
      * @param code
      * @return
-     */
+     *//*
     @RequestMapping("/stock/add/{code}")
     public String addStock(@PathVariable String code) {
         String msg = "success";
@@ -38,5 +38,5 @@ public class StockCtrl {
             e.printStackTrace();
         }
         return msg;
-    }
+    }*/
 }

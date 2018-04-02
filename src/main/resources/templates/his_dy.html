@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>量化分析-
+        <#if stock??>${stock.name}
+            <#else>${code!""}
+        </#if>
+        历史分红
+    </title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<#if msg??>
+    <h3 style="color:red;">${msg}</h3>
+</#if>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 100%;height:400px;"></div>
+
+<div class="container-fluid">
+    <table class="table table-striped table-hover">
+        <thead>
+        <th>年度</th>
+        <th>执行日期</th>
+        <th>方案</th>
+        <th>分红率</td>
+        </thead>
+        <#list rows as row>
+            <tr>
+                <td>${row.title}</td>
+                <td>${row.executeDate}</td>
+                <td>${row.remark}</td>
+                <td>
+                    <#if (row.percent==-1)>
+                        --
+                        <#else>
+                            ${row.percent}%
+                    </#if>
+                </td>
+            </tr>
+        </#list>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '<#if stock??>${stock.name}<#else>${code!""}</#if> - 各年度分红情况',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['分红情况']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [${year}]
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+        series: [
+            {
+                name: '年度分红',
+                type: 'line',
+                data: [${percent}],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>

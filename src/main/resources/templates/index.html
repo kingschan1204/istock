@@ -34,7 +34,7 @@
                 </div>
             </div>
             <button type="button" class="btn btn-primary" id="search_btn">查询</button>
-            <button type="button" class="btn btn-success" id="add_btn">新增</button>
+            <button type="button" class="btn btn-success" id="dy_btn">历史分红</button>
         </form>
     </div>
 </div>
@@ -105,7 +105,7 @@
             ondblClickRow: function(id){
                 //双击行
                 var rowData = $("#jqGrid").getRowData(id);
-                window.open("/stock/his/"+rowData.code);
+                window.open("/stock/his_dy/"+rowData.code);
             }
         });
         $("#jqGrid").jqGrid("setFrozenColumns");
@@ -141,32 +141,5 @@
     $("#search_btn").click(function(){
         reloadStock();
     });
-
-
-
-    /**
-     * 新增
-     */
-    $("#add_btn").click(function(){
-        messageBox.showLoading('正在加载数据请稍后...');
-        $.ajax({
-            type: "POST",
-            url: basepath + "/stock/add/" + $("#stockCode").val(),
-            /*data: $("#form").serialize(),*/
-            success: function (data) {
-                messageBox.closeLoading();
-                if (data == 'success') {
-                    reloadStock();
-                } else {
-                    messageBox.error('提示', data);
-                }
-
-            },
-            error: function (data) { // 当提交失败时触发验证,如果验证通过则判断为其他问题
-                messageBox.error('提示', '数据提交错误，请联系系统管理员.');
-            }
-        });
-    });
-
 
 </script>

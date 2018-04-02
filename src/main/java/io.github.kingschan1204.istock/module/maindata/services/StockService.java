@@ -178,7 +178,7 @@ public class StockService {
      * @param code
      * @return
      */
-    public String getStockDividend(String code){
+    public  List<StockHisDividend> getStockDividend(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
@@ -188,18 +188,7 @@ public class StockService {
         query.with(sort);
         //code
         List<StockHisDividend> list =template.find(query,StockHisDividend.class);
-        StringBuffer year = new StringBuffer();
-        StringBuffer percent = new StringBuffer();
-        list.stream().forEach(item ->{
-            if(item.getPercent()>0){
-                percent.append(item.getPercent()).append(",");
-                year.append("'").append(item.getTitle()).append("',");
-            }
-
-        });
-        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
-                percent.toString().replaceAll("\\,$","")
-        );
+        return list;
     }
 
 
@@ -275,4 +264,6 @@ public class StockService {
                 pe.toString().replaceAll("\\,$","")
         );
     }
+
+
 }

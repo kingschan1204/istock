@@ -36,9 +36,10 @@ public class XueQiuStockDyTask {
 
     @Scheduled(cron = "0 0/10 * * * ?")
     public void stockDividendExecute() throws Exception {
-       /* if (true){
+        if(!StockDateUtil.stockOpenTime()){
+            log.info("非交易时间不执行操作...");
             return ;
-        }*/
+        }
         log.info("开始更新stock dy 数据");
         Long start =System.currentTimeMillis();
         JSONObject data =spider.getDy(1);
@@ -52,6 +53,7 @@ public class XueQiuStockDyTask {
             log.info("dy 更新页：{}",pageindex);
             uptateDy(data);
             pageindex++;
+            Thread.sleep(1000);
         }while (pageindex<=pagesize);
         log.info(String.format("dy更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
     }
