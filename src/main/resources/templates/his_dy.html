@@ -15,34 +15,36 @@
 </head>
 <body>
 <#if msg??>
-    <h3 style="color:red;">${msg}</h3>
+    <h3 style="color:red;" class="text-center">${msg}</h3>
 </#if>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 <div id="main" style="width: 100%;height:400px;"></div>
 
 <div class="container-fluid">
-    <table class="table table-striped table-hover">
-        <thead>
-        <th>年度</th>
-        <th>执行日期</th>
-        <th>方案</th>
-        <th>分红率</td>
-        </thead>
-        <#list rows as row>
-            <tr>
-                <td>${row.title}</td>
-                <td>${row.executeDate}</td>
-                <td>${row.remark}</td>
-                <td>
-                    <#if (row.percent==-1)>
-                        --
-                        <#else>
-                            ${row.percent}%
-                    </#if>
-                </td>
-            </tr>
-        </#list>
-    </table>
+    <#if rows??>
+        <table class="table table-striped table-hover">
+            <thead>
+            <th>年度</th>
+            <th>执行日期</th>
+            <th>方案</th>
+            <th>分红率</td>
+            </thead>
+            <#list rows as row>
+                <tr>
+                    <td>${row.title}</td>
+                    <td>${row.executeDate}</td>
+                    <td>${row.remark}</td>
+                    <td>
+                        <#if (row.percent==-1)>
+                            --
+                            <#else>
+                                ${row.percent}%
+                        </#if>
+                    </td>
+                </tr>
+            </#list>
+        </table>
+    </#if>
 </div>
 
 

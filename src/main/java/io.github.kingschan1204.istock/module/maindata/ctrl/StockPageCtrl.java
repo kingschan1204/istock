@@ -33,13 +33,13 @@ public class StockPageCtrl {
             mav.addObject("percent","0");
             Stock stock =stockRepository.findOne(code);
             if(null==stock){
-                mav.addObject("msg",String.format("代码:%s",code,"不存在，或者不属于A股代码!"));
+                mav.addObject("msg",String.format("代码:%s %s",code,"不存在，或者非A股代码!"));
                 return mav;
             }
             mav.addObject("stock",stock);
             //历年分红
             List<StockHisDividend> list =stockService.getStockDividend(code);
-            if(null!=list){
+            if(null!=list&&list.size()>0){
                 StringBuffer year = new StringBuffer();
                 StringBuffer percent = new StringBuffer();
                 list.stream().forEach(item ->{
@@ -53,9 +53,11 @@ public class StockPageCtrl {
                         percent.toString().replaceAll("\\,$","")
                 );
                 String item[]=data.split("\\|");
-                mav.addObject("year",item[0]);
-                mav.addObject("percent",item[1]);
-                mav.addObject("rows",list);
+                if(item.length==2){
+                    mav.addObject("year",item[0]);
+                    mav.addObject("percent",item[1]);
+                    mav.addObject("rows",list);
+                }
             }else{
                 mav.addObject("msg","该股票没有分红信息!");
             }

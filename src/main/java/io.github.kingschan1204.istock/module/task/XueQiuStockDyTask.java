@@ -47,13 +47,18 @@ public class XueQiuStockDyTask {
         int pagesize=total%30==0?total/30:total/30+1;
         int pageindex=1;
         do{
-            if(pageindex>1){
-                data =spider.getDy(pageindex);
-            }
-            log.info("dy 更新页：{}",pageindex);
-            uptateDy(data);
-            pageindex++;
-            Thread.sleep(1000);
+           try{
+               if(pageindex>1){
+                   data =spider.getDy(pageindex);
+               }
+               log.info("dy 更新页：{}",pageindex);
+               log.info(data.toJSONString());
+               uptateDy(data);
+               pageindex++;
+               Thread.sleep(1000);
+           }catch (Exception ex){
+               ex.printStackTrace();
+           }
         }while (pageindex<=pagesize);
         log.info(String.format("dy更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
     }
