@@ -91,11 +91,12 @@ public class StockService {
      * @param code
      * @throws Exception
      */
-    public void addStockHisPe(String code)throws Exception{
+    public List<StockHisPe> addStockHisPe(String code)throws Exception{
         JSONArray jsons=spider.getHistoryPE(StockSpider.formatStockCode(code));
         List<StockHisPe> lis = JSON.parseArray(jsons.toJSONString(),StockHisPe.class);
         template.remove(new Query(Criteria.where("code").is(code)),StockHisPe.class);
         stockHisPeRepository.save(lis);
+        return  lis;
     }
 
     /**
@@ -103,11 +104,12 @@ public class StockService {
      * @param code
      * @throws Exception
      */
-    public void addStockHisPb(String code)throws Exception{
+    public List<StockHisPb> addStockHisPb(String code)throws Exception{
         JSONArray jsons=spider.getHistoryPB(StockSpider.formatStockCode(code));
         List<StockHisPb> lis = JSON.parseArray(jsons.toJSONString(),StockHisPb.class);
         template.remove(new Query(Criteria.where("code").is(code)),StockHisPb.class);
         stockHisPbRepository.save(lis);
+        return lis;
 
     }
 
@@ -118,6 +120,8 @@ public class StockService {
         if (code.isPresent()){
             if(pcode.matches("\\d{6}")){
                 query.addCriteria(Criteria.where("_id").is(pcode));
+            }else{
+                query.addCriteria(Criteria.where("name").regex(pcode));
             }
         }
         //记录总数
@@ -192,7 +196,7 @@ public class StockService {
     }
 
 
-    public String getStockHisRoe(String code){
+    public List<StockHisRoe> getStockHisRoe(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
@@ -202,18 +206,7 @@ public class StockService {
         query.with(sort);
         //code
         List<StockHisRoe> list =template.find(query,StockHisRoe.class);
-        StringBuffer year = new StringBuffer();
-        StringBuffer percent = new StringBuffer();
-        list.stream().forEach(item ->{
-            if(item.getRoe()>0){
-                percent.append(item.getRoe()).append(",");
-                year.append("'").append(item.getYear()).append("',");
-            }
-
-        });
-        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
-                percent.toString().replaceAll("\\,$","")
-        );
+       return list;
     }
 
 

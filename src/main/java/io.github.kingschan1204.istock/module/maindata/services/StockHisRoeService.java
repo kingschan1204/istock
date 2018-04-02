@@ -34,11 +34,12 @@ public class StockHisRoeService {
      * @param code
      * @throws Exception
      */
-    public void addStockHisRoe(String code) throws Exception {
+    public List<StockHisRoe> addStockHisRoe(String code) throws Exception {
         JSONArray jsons=spider.getHistoryROE(code);
         List<StockHisRoe> lis = JSON.parseArray(jsons.toJSONString(),StockHisRoe.class);
         template.remove(new Query(Criteria.where("code").is(code)),StockHisRoe.class);
         repository.save(lis);
+        return lis;
 
     }
 }

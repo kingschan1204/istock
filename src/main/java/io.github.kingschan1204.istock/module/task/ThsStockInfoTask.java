@@ -38,7 +38,8 @@ public class ThsStockInfoTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockInfoExecute() throws Exception {
-        if(!StockDateUtil.stockOpenTime()){
+        int day=StockDateUtil.getCurrentWeekDay();
+        if(day==6||day==0){
             log.info("非交易时间不执行操作...");
             return ;
         }
@@ -51,6 +52,10 @@ public class ThsStockInfoTask {
         Query query = new Query(cr.orOperator(c1,c2));
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
+        if(null==list||list.size()==0){
+            log.info("stock info 今日已全部更新完!");
+            return ;
+        }
         list.stream().forEach(stock -> {
             Stock item = null;
             try {

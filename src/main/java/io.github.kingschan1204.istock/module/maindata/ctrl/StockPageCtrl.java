@@ -2,7 +2,9 @@ package io.github.kingschan1204.istock.module.maindata.ctrl;
 
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
+import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
+import io.github.kingschan1204.istock.module.maindata.services.StockHisRoeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,9 @@ public class StockPageCtrl {
 
     @Autowired
     private StockService stockService;
+    @Autowired
+    private StockHisRoeService stockHisRoeService;
+
         @RequestMapping("/stock/his_dy/{code}")
         public ModelAndView hisdata(@PathVariable String code, Model model){
             ModelAndView mav = new ModelAndView("his_dy");
@@ -80,6 +85,44 @@ public class StockPageCtrl {
             mav.addObject("pe_date",peItem[0]);
             mav.addObject("pe_value",peItem[1]);*/
             return  mav;
+        }
+
+        @RequestMapping("/stock/his_roe/{code}")
+        public ModelAndView getStockHisRoe(@PathVariable String code) {
+            ModelAndView mav = new ModelAndView("his_roe");
+            mav.addObject("year","''");
+            mav.addObject("percent","0");
+            Stock stock =stockRepository.findOne(code);
+            if(null==stock){
+                mav.addObject("msg",String.format("代码:%s %s",code,"不存在，或者非A股代码!"));
+                return mav;
+            }
+            mav.addObject("stock",stock);
+           List<StockHisRoe> list=stockService.getStockHisRoe(code);
+           if(null==list||list.size()==0){
+               try {
+                   list= stockHisRoeService.addStockHisRoe(code);
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+            mav.addObject("rows",list);
+            StringBuffer year = new StringBuffer();
+            StringBuffer percent = new StringBuffer();
+            list.stream().forEach(item ->{
+                if(item.getRoe()>0){
+                    percent.append(item.getRoe()).append(",");
+                    year.append("'").append(item.getYear()).append("',");
+                }
+
+            });
+            String data= String.format("%s|%s",year.toString().replaceAll("\\,$",""),
+                    percent.toString().replaceAll("\\,$","")
+            );
+            String roeItem[]=data.split("\\|");
+            mav.addObject("roe_year",roeItem[0]);
+            mav.addObject("roe_percent",roeItem[1]);
+            return mav;
         }
 
 
