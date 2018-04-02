@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * stock maindata
+ *
  * @author chenguoxiang
  * @create 2018-03-27 10:15
  **/
@@ -36,7 +37,10 @@ public class Stock {
     private String dividendDate;
     private Double dividend;
     private Integer dividendUpdateDay;
-   /* public String get_id() {
+    private Double dy;//实时股息率
+    private Integer dyDate;//实时股息更新时间
+
+/* public String get_id() {
         return _id;
     }
 
@@ -210,5 +214,21 @@ public class Stock {
 
     public void setDividendUpdateDay(Integer dividendUpdateDay) {
         this.dividendUpdateDay = dividendUpdateDay;
+    }
+
+    public Double getDy() {
+        return dy;
+    }
+
+    public void setDy(Double dy) {
+        this.dy = dy;
+    }
+
+    public Integer getDyDate() {
+        return dyDate;
+    }
+
+    public void setDyDate(Integer dyDate) {
+        this.dyDate = dyDate;
     }
 }

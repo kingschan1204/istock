@@ -60,7 +60,7 @@
             mtype: "GET",
             styleUI: 'Bootstrap',
             datatype: "json",
-            colNames: ['代码', '名称','市场', '当前价格', '昨收','今日最高','今日最低', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '每股净资产','上次分红率','分红日期', '所属行业', '主营业务'],
+            colNames: ['代码', '名称','市场', '当前价格', '昨收','今日最高','今日最低', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '每股净资产','最新股息','上次分红率','上次分红日期', '所属行业'],
             colModel: [
 
                 {label: 'code', name: 'code', width: 100, frozen: true},
@@ -80,16 +80,16 @@
                 {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
                 {label: 'roe', name: 'roe', width: 100, align: 'right'},
                 {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
+                {label: 'dy', name: 'dy', width: 86, align: 'right'},
                 {label: 'dividend', name: 'dividend', width: 86, align: 'right'},
                 {label: 'dividendDate', name: 'dividendDate', width: 90},
-                {label: 'industry', name: 'industry', width: 200},
-                {label: 'mainBusiness', name: 'mainBusiness', width: 650}
+                {label: 'industry', name: 'industry', width: 200}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
             ],
             viewrecords: true,
             rowList: [10, 20, 30, 60],
             height: '700',
-            rowNum: 30,
+            rowNum: 20,
             pager: "#jqGridPager",
             gridComplete: function () {
                 var ids = $("#jqGrid").getDataIDs();

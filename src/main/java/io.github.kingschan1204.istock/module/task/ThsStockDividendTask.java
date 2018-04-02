@@ -42,7 +42,7 @@ public class ThsStockDividendTask {
     public void stockDividendExecute() throws Exception {
         log.info("开始更新stock Dividend 数据");
         Long start =System.currentTimeMillis();
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        Integer dateNumber = StockDateUtil.getCurrentDateNumber()-5;
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);
         Criteria c2 = Criteria.where("dividendUpdateDay").exists(false);

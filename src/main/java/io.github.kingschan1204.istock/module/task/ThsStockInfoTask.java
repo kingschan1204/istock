@@ -39,12 +39,12 @@ public class ThsStockInfoTask {
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockInfoExecute() throws Exception {
         log.info("开始更新stock info 数据");
-        Long start =System.currentTimeMillis();
+        Long start = System.currentTimeMillis();
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("Infodate").lt(dateNumber);
         Criteria c2 = Criteria.where("Infodate").exists(false);
-        Query query = new Query(cr.orOperator(c1, c2));
+        Query query = new Query(cr.orOperator(c1,c2));
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
         list.stream().forEach(stock -> {
@@ -52,27 +52,27 @@ public class ThsStockInfoTask {
             try {
                 JSONObject info = spider.getStockInfo(stock.getCode());
                 item = info.toJavaObject(Stock.class);
+                if (null == item) return;
+                WriteResult wr = template.upsert(
+                        new Query(Criteria.where("_id").is(stock.getCode())),
+                        new Update()
+                                .set("_id", stock.getCode())
+                                .set("industry", item.getIndustry())
+                                .set("mainBusiness", item.getMainBusiness())
+                                .set("totalValue", item.getTotalValue())
+                                .set("pb", item.getPb())
+                                .set("roe", item.getRoe())
+                                .set("bvps", item.getBvps())
+                                .set("pes", item.getPes())
+                                .set("ped", item.getPed())
+                                .set("Infodate", item.getInfodate()),
+                        "stock"
+                );
+                log.info("stock info 受影响行：" + wr.getN());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (null == item) return;
-            WriteResult wr =template.upsert(
-                    new Query(Criteria.where("_id").is(stock.getCode())),
-                    new Update()
-                            .set("_id", stock.getCode())
-                            .set("industry", item.getIndustry())
-                            .set("mainBusiness", item.getMainBusiness())
-                            .set("totalValue", item.getTotalValue())
-                            .set("pb", item.getPb())
-                            .set("roe", item.getRoe())
-                            .set("bvps", item.getBvps())
-                            .set("pes", item.getPes())
-                            .set("ped", item.getPed())
-                            .set("Infodate", item.getInfodate()),
-                    "stock"
-            );
-            log.info("受影响行："+wr.getN());
         });
-        log.info(String.format("info更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
+        log.info(String.format("info更新一批耗时：%s ms", (System.currentTimeMillis() - start)));
     }
 }

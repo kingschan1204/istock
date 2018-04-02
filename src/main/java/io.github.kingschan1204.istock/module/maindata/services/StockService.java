@@ -141,13 +141,13 @@ public class StockService {
             temp.put("roe",temp.getString("roe")+"%");
             temp.put("totalValue",temp.getString("totalValue")+"亿");
 
-            if(temp.getDouble("pb")==-1){
+            if(temp.containsKey("dividend")&&temp.getDouble("pb")==-1){
                 temp.put("pb","--");
             }
-            if(temp.getDouble("pes")==-1){
+            if(temp.containsKey("dividend")&&temp.getDouble("pes")==-1){
                 temp.put("pes","--");
             }
-            if(temp.getDouble("ped")==-1){
+            if(temp.containsKey("ped")&&temp.getDouble("ped")==-1){
                 temp.put("ped","--");
             }
             if(temp.containsKey("dividend")){
@@ -156,6 +156,9 @@ public class StockService {
                 }
             }else {
                 temp.put("dividend","--");
+            }
+            if(temp.containsKey("dy")){
+                temp.put("dy",temp.getString("dy")+"%");
             }
 
         }
