@@ -1,8 +1,10 @@
 package io.github.kingschan1204.istock.module.maindata.ctrl;
+import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -39,4 +41,11 @@ public class StockCtrl {
         }
         return msg;
     }*/
+    @Autowired
+    private StockSpider spider;
+    @ResponseBody
+    @RequestMapping("/stock/dys")
+    public String getStockDy() throws Exception {
+        return spider.getDy(1).toJSONString();
+    }
 }

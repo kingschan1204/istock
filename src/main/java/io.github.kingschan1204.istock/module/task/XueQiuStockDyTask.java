@@ -6,6 +6,8 @@ import com.mongodb.WriteResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
+import io.github.kingschan1204.istock.module.maindata.po.StockDyQueue;
+import io.github.kingschan1204.istock.module.maindata.repository.StockDyQueueRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +35,52 @@ public class XueQiuStockDyTask {
     private StockSpider spider;
     @Autowired
     private MongoTemplate template;
+    @Autowired
+    private StockDyQueueRepository stockDyQueueRepository;
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void stockDividendExecute() throws Exception {
-        if(!StockDateUtil.stockOpenTime()){
+        int day=StockDateUtil.getCurrentWeekDay();
+        if(day==6||day==0){
             log.info("非交易时间不执行操作...");
             return ;
         }
         log.info("开始更新stock dy 数据");
         Long start =System.currentTimeMillis();
+       List<StockDyQueue> list= template.find(
+                new Query(Criteria.where("date").is(StockDateUtil.getCurrentDateNumber())), StockDyQueue.class
+        );
+       int pageindex=1;
+       int totalpage=9;//目前雪球只能拿到9页 8百多条
+       if(null!=list&&list.size()>0){
+            pageindex=list.size()+1;
+            //totalpage=list.get(0).getTotalPage();
+       }
+       if(pageindex>totalpage){
+           log.info("stock dy 已经全部更新完");
+           return ;
+       }
+        try {
+           log.info("dy开始更新第{}页",pageindex);
+            JSONObject data =spider.getDy(pageindex);
+            uptateDy(data);
+
+            int total=data.getInteger("count");
+            int pagesize=total%100==0?total/100:total/100+1;
+
+            StockDyQueue stockDyQueue = new StockDyQueue();
+            stockDyQueue.setDate(StockDateUtil.getCurrentDateNumber());
+            stockDyQueue.setPageIndex(pageindex);
+            stockDyQueue.setTotalPage(pagesize);
+            template.save(stockDyQueue,"stock_dy_queue");
+        }catch (Exception ex){
+           ex.printStackTrace();
+           log.error("dy 出错了:{}",ex);
+        }
+
+
+
+/*
         JSONObject data =spider.getDy(1);
         int total=data.getInteger("count");
         int pagesize=total%100==0?total/100:total/100+1;
@@ -60,7 +99,7 @@ public class XueQiuStockDyTask {
            }catch (Exception ex){
                ex.printStackTrace();
            }
-        }while (pageindex<=pagesize);
+        }while (pageindex<=pagesize);*/
         log.info(String.format("dy更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
     }
 

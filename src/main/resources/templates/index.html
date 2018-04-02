@@ -108,16 +108,7 @@
                 window.open("/stock/his_dy/"+rowData.code);
             }
         });
-        $("#jqGrid").jqGrid("setFrozenColumns");
-        /*function addCellAttr(rowId, val, rawObject, cm, rdata) {
-            if (parseFloat(rawObject.fluctuate) < 0) {
-                $($("#jqGrid" +"tr[id='"+ rowId +"']")).css("color", "green");
-                return "style='color:green'";
-            } else if (parseFloat(rawObject.fluctuate) > 0) {
-                $($("#jqGrid" +"tr[id='"+ rowId +"']")).css("color", "red");
-                return "style='color:red'";
-            }
-        }*/
+        //$("#jqGrid").jqGrid("setFrozenColumns");
 
     });
     /*$(window).resize(function(){
@@ -130,7 +121,6 @@
     function reloadStock(){
         //此处可以添加对查询数据的合法验证
         var code = $("#stockCode").val();
-        console.info(code);
         $("#jqGrid").jqGrid('setGridParam',{
             datatype:'json',
             postData:{'code':code},
