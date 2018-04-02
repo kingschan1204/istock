@@ -44,7 +44,8 @@ public class XueQiuStockDyTask {
         Long start =System.currentTimeMillis();
         JSONObject data =spider.getDy(1);
         int total=data.getInteger("count");
-        int pagesize=total%30==0?total/30:total/30+1;
+        int pagesize=total%100==0?total/100:total/100+1;
+        log.info("dy共{}页数据",pagesize);
         int pageindex=1;
         do{
            try{
@@ -55,7 +56,7 @@ public class XueQiuStockDyTask {
                log.info(data.toJSONString());
                uptateDy(data);
                pageindex++;
-               Thread.sleep(1000);
+               Thread.sleep(1500);
            }catch (Exception ex){
                ex.printStackTrace();
            }

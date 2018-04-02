@@ -295,7 +295,7 @@ public class DefaultSpiderImpl implements StockSpider {
      * @throws Exception
      */
     public JSONObject getDy(int page) throws Exception {
-        String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=dy&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.92";
+        String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=dy&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.92&size=100";
         url = String.format(url, page);
         StockSpider.enableSSLSocket();
         Document infoDoc = Jsoup.connect(url).userAgent(useAgent).referrer("https://xueqiu.com/hq/screener/CN")
