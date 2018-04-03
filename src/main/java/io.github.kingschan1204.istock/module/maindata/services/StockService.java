@@ -120,7 +120,10 @@ public class StockService {
         if (code.isPresent()){
             if(pcode.matches("\\d{6}")){
                 query.addCriteria(Criteria.where("_id").is(pcode));
-            }else{
+            }else if(pcode.matches("\\d+")){
+                query.addCriteria(Criteria.where("_id").regex(pcode));
+            }
+            else{
                 query.addCriteria(Criteria.where("name").regex(pcode));
             }
         }
