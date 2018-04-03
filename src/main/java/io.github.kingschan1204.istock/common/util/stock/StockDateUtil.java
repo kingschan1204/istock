@@ -52,7 +52,7 @@ public class StockDateUtil {
             } else {
                 return true;
             }
-        } else if (hour >= 13 && hour <= 15) {
+        } else if (hour >= 13 && hour < 15) {
             return true;
         }
         return false;

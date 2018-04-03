@@ -38,7 +38,7 @@ public class XueQiuStockDyTask {
     @Autowired
     private StockDyQueueRepository stockDyQueueRepository;
 
-    @Scheduled(cron = "0 0/2 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void stockDividendExecute() throws Exception {
         int day=StockDateUtil.getCurrentWeekDay();
         if(day==6||day==0){
@@ -51,7 +51,7 @@ public class XueQiuStockDyTask {
                 new Query(Criteria.where("date").is(StockDateUtil.getCurrentDateNumber())), StockDyQueue.class
         );
        int pageindex=1;
-       int totalpage=9;//目前雪球只能拿到9页 8百多条
+       int totalpage=25;
        if(null!=list&&list.size()>0){
             pageindex=list.size()+1;
             //totalpage=list.get(0).getTotalPage();
@@ -77,32 +77,8 @@ public class XueQiuStockDyTask {
            ex.printStackTrace();
            log.error("dy 出错了:{}",ex);
         }
-
-
-
-/*
-        JSONObject data =spider.getDy(1);
-        int total=data.getInteger("count");
-        int pagesize=total%100==0?total/100:total/100+1;
-        log.info("dy共{}页数据",pagesize);
-        int pageindex=1;
-        do{
-           try{
-               if(pageindex>1){
-                   data =spider.getDy(pageindex);
-               }
-               log.info("dy 更新页：{}",pageindex);
-               log.info(data.toJSONString());
-               uptateDy(data);
-               pageindex++;
-               Thread.sleep(1500);
-           }catch (Exception ex){
-               ex.printStackTrace();
-           }
-        }while (pageindex<=pagesize);*/
         log.info(String.format("dy更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
     }
-
 
     public void uptateDy(JSONObject data){
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();

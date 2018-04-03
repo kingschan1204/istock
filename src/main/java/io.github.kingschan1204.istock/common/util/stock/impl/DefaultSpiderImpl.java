@@ -295,11 +295,11 @@ public class DefaultSpiderImpl implements StockSpider {
      * @throws Exception
      */
     public JSONObject getDy(int page) throws Exception {
-        String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=dy&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.92&size=100";
+        String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=symbol&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.31&size=100";
         url = String.format(url, page);
         log.info("更新dy第{}页",page);
         StockSpider.enableSSLSocket();
-        Document infoDoc = Jsoup.connect(url).userAgent(useAgent).referrer("https://xueqiu.com/hq/screener/CN")
+        Document infoDoc = Jsoup.connect(url).userAgent(useAgent).referrer("https://xueqiu.com/hq/screener")
                 .timeout(timeout)
                 .cookie("xq_a_token", xueqiu_token)
                 .ignoreContentType(true)
