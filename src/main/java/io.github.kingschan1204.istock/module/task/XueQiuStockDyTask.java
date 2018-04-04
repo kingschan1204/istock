@@ -42,10 +42,9 @@ public class XueQiuStockDyTask {
     public void stockDividendExecute() throws Exception {
         int day=StockDateUtil.getCurrentWeekDay();
         if(day==6||day==0){
-            log.info("非交易时间不执行操作...");
+            log.debug("非交易时间不执行操作...");
             return ;
         }
-        log.info("开始更新stock dy 数据");
         Long start =System.currentTimeMillis();
        List<StockDyQueue> list= template.find(
                 new Query(Criteria.where("date").is(StockDateUtil.getCurrentDateNumber())), StockDyQueue.class
@@ -57,11 +56,11 @@ public class XueQiuStockDyTask {
             //totalpage=list.get(0).getTotalPage();
        }
        if(pageindex>totalpage){
-           log.info("stock dy 已经全部更新完");
+           log.debug("stock dy 已经全部更新完，当前{}页,共{}页",pageindex,totalpage);
            return ;
        }
         try {
-           log.info("dy开始更新第{}页",pageindex);
+           log.info("dy开始更新第{}页,共{}页",pageindex,totalpage);
             JSONObject data =spider.getDy(pageindex);
             uptateDy(data);
 
@@ -81,10 +80,11 @@ public class XueQiuStockDyTask {
     }
 
     public void uptateDy(JSONObject data){
+        int affected=0;//受影响行
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         JSONArray rows = data.getJSONArray("list");
         List<Stock> list =rows.toJavaList(Stock.class);
-        list.stream().forEach(stock -> {
+        for (Stock stock :list) {
             WriteResult wr =template.updateFirst(
                     new Query(Criteria.where("_id").is(stock.getCode())),
                     new Update()
@@ -92,7 +92,9 @@ public class XueQiuStockDyTask {
                             .set("dyDate", dateNumber),
                     "stock"
             );
-            log.info("dy更新受影响行："+wr.getN());
-        });
+            affected+=wr.getN();
+        }
+        log.info("dy 批处理：共{}条，本次更新{}条",list.size(),affected);
+
     }
 }

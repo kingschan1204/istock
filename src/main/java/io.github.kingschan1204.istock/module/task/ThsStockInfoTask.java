@@ -40,10 +40,9 @@ public class ThsStockInfoTask {
     public void stockInfoExecute() throws Exception {
         int day=StockDateUtil.getCurrentWeekDay();
         if(day==6||day==0){
-            log.info("非交易时间不执行操作...");
+            log.debug("非交易时间不执行操作...");
             return ;
         }
-        log.info("开始更新stock info 数据");
         Long start = System.currentTimeMillis();
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         Criteria cr = new Criteria();
@@ -53,10 +52,11 @@ public class ThsStockInfoTask {
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
         if(null==list||list.size()==0){
-            log.info("stock info 今日已全部更新完!");
+            log.debug("stock info 今日已全部更新完!");
             return ;
         }
-        list.stream().forEach(stock -> {
+        int affected=0;
+        for (Stock stock :list) {
             Stock item = null;
             try {
                 JSONObject info = spider.getStockInfo(stock.getCode());
@@ -77,11 +77,11 @@ public class ThsStockInfoTask {
                                 .set("Infodate", item.getInfodate()),
                         "stock"
                 );
-                log.info("stock info 受影响行：" + wr.getN());
+                affected+=wr.getN();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
-        log.info(String.format("info更新一批耗时：%s ms", (System.currentTimeMillis() - start)));
+        }
+        log.info(String.format("info更新一批耗时：%s ms ,受影响行: %s", (System.currentTimeMillis() - start),affected));
     }
 }
