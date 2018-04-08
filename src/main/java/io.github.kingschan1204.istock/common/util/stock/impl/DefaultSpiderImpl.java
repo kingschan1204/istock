@@ -21,10 +21,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * 默认爬虫
@@ -184,7 +181,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONArray getHistoryROE(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=%s", code);
-        String path = String.format("./%s_main_year.xls", code);
+        String path = String.format("./data/%s_main_year.xls", code);
         if (!new File(path).exists()) {
             //下载
             FileCommonOperactionTool.downloadFile(url, "./data/", null);
@@ -320,6 +317,39 @@ public class DefaultSpiderImpl implements StockSpider {
         log.error("dy出错{}",infoDoc.html());
         return null;
     }
+
+    @Override
+    public List<String> getStockCodeBySH() throws Exception {
+        String url ="http://www.sse.com.cn/js/common/ssesuggestdata.js";
+        Document infoDoc = Jsoup.connect(url).userAgent(useAgent)
+                .timeout(timeout)
+                .ignoreContentType(true)
+                .get();
+       String result= StockSpider.findStrByRegx(infoDoc.html(),"60\\d{4}");
+       String[] codes=result.split(",");
+        return Arrays.asList(codes);
+    }
+
+    @Override
+    public List<String> getStockCodeBySZ() throws Exception {
+        List<String> codes = new ArrayList<>();
+        String url ="http://www.szse.cn/szseWeb/ShowReport.szse?SHOWTYPE=xlsx&CATALOGID=1110&tab2PAGENO=1&ENCODE=1&TABKEY=tab2";
+        String filename=String.format("sz_code_%s.xlsx",StockDateUtil.getCurrentDateNumber());
+        String path = String.format("./data/%s", filename);
+        if (!new File(path).exists()) {
+            //下载
+            FileCommonOperactionTool.downloadFile(url, "./data/", filename);
+        }
+        //读取excel数据
+        List<Object[]> list = ExcelOperactionTool.readExcelData(path);
+        for (Object[] row :list) {
+            if(row[0].toString().trim().matches("^00\\d{4}")){
+                codes.add(row[0].toString().trim());
+            }
+        }
+        return codes;
+    }
+
 
 
 }

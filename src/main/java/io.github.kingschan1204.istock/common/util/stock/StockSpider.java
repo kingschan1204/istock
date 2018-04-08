@@ -11,6 +11,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 爬虫接口定义
@@ -42,6 +44,31 @@ public interface StockSpider {
         return null;
     }
 
+    /**
+     * 提取文本中匹配正则的字符串
+     * @param text
+     * @param regx 正则
+     * @return 多个结果已,分隔
+     */
+     static String findStrByRegx(String text,String regx){
+        StringBuffer bf = new StringBuffer(64);
+        try {
+            Pattern pattern = Pattern.compile(regx);
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                bf.append(matcher.group()).append(",");
+            }
+            int len = bf.length();
+            if (len > 0) {
+                bf.deleteCharAt(len - 1);
+            }
+            return bf.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+
+    }
     /**
      * 格式化数据，如果不是数字全部返回-1
      *
@@ -140,5 +167,21 @@ public interface StockSpider {
      * @throws Exception
      */
     JSONObject getDy(int page)throws Exception;
+
+
+    /**
+     * 得到上海所有代码
+     * @return
+     * @throws Exception
+     */
+    List<String> getStockCodeBySH() throws Exception;
+
+
+    /**
+     * 得到深圳所有代码
+     * @return
+     * @throws Exception
+     */
+    List<String> getStockCodeBySZ() throws Exception;
 
 }

@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.common.util.file;
 
-import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
@@ -30,8 +29,12 @@ public class FileCommonOperactionTool {
         Connection.Response resultResponse = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")
                 .ignoreContentType(true).execute();
-        String defaultFileName = Arrays.stream(resultResponse.contentType().split(";"))
-                .filter(s -> s.startsWith("name")).findFirst().get().replaceAll("name=|\"", "");
+        String defaultFileName="";
+        if(resultResponse.contentType().contains("name")){
+            String[] list =resultResponse.contentType().split(";");
+            defaultFileName = Arrays.stream(list)
+                    .filter(s -> s.startsWith("name")).findFirst().get().replaceAll("name=|\"", "");
+        }
         // output here
         String path = dir + (null == filename ? defaultFileName : filename);
         FileOutputStream out = (new FileOutputStream(new java.io.File(path)));
