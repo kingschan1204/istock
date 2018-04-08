@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>量化分析-
+        <#if stock??>${stock.name}
+            <#else>${code!""}
+        </#if>
+        市盈率
+    </title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<#if msg??>
+    <h3 style="color:red;" class="text-center">${msg}</h3>
+</#if>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="pe" style="width: 100%;height:400px;"></div>
+
+
+
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var peChart = echarts.init(document.getElementById('pe'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '<#if stock??>${stock.name}<#else>${code!""}</#if> - 历史市盈率',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['pe情况']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: [${pe_date}]
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+        series: [
+            {
+                name:'pe',
+                type:'line',
+                data:[${pe_value}],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    peChart.setOption(option);
+</script>
+</body>
+</html>
