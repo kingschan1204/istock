@@ -145,9 +145,13 @@ public class StockService {
         for (int i = 0; i <jsons.size() ; i++) {
             temp =jsons.getJSONObject(i);
             temp.put("fluctuate",temp.getString("fluctuate")+"%");
-            temp.put("roe",temp.getString("roe")+"%");
-            temp.put("totalValue",temp.getString("totalValue")+"亿");
 
+            if(temp.containsKey("roe")&&temp.getDouble("roe")!=-1){
+                temp.put("roe",temp.getString("roe")+"%");
+            }
+            if(temp.containsKey("totalValue")&&temp.getDouble("totalValue")!=-1){
+                temp.put("totalValue",temp.getString("totalValue")+"亿");
+            }
             if(temp.containsKey("dividend")&&temp.getDouble("pb")==-1){
                 temp.put("pb","--");
             }
@@ -224,19 +228,7 @@ public class StockService {
         //code
         List<StockHisPb> list =template.find(query,StockHisPb.class);
         return list;
-        /*StringBuffer year = new StringBuffer();
-        StringBuffer pb = new StringBuffer();
-        list.stream().forEach(item ->{
-            if(item.getPb()>0){
-                year.append("'").append(item.getDate()).append("',");
-                pb.append(item.getPb()).append(",");
-            }
-        });
-        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
-                pb.toString().replaceAll("\\,$","")
-        );*/
     }
-
 
 
     public List<StockHisPe> getStockHisPe(String code){
@@ -251,6 +243,7 @@ public class StockService {
         List<StockHisPe> list =template.find(query,StockHisPe.class);
         return list;
     }
+
 
 
 }

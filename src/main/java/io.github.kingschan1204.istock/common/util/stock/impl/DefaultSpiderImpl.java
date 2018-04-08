@@ -321,6 +321,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public List<String> getStockCodeBySH() throws Exception {
         String url ="http://www.sse.com.cn/js/common/ssesuggestdata.js";
+        log.info("craw sh codes :{}",url);
         Document infoDoc = Jsoup.connect(url).userAgent(useAgent)
                 .timeout(timeout)
                 .ignoreContentType(true)
@@ -334,6 +335,7 @@ public class DefaultSpiderImpl implements StockSpider {
     public List<String> getStockCodeBySZ() throws Exception {
         List<String> codes = new ArrayList<>();
         String url ="http://www.szse.cn/szseWeb/ShowReport.szse?SHOWTYPE=xlsx&CATALOGID=1110&tab2PAGENO=1&ENCODE=1&TABKEY=tab2";
+        log.info("craw sz codes :{}",url);
         String filename=String.format("sz_code_%s.xlsx",StockDateUtil.getCurrentDateNumber());
         String path = String.format("./data/%s", filename);
         if (!new File(path).exists()) {
