@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -45,6 +46,7 @@ public class ThsStockDividendTask {
             return ;
         }
         Long start =System.currentTimeMillis();
+        int affected=0;
         Integer dateNumber = StockDateUtil.getCurrentDateNumber()-5;
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);
@@ -52,12 +54,12 @@ public class ThsStockDividendTask {
         Query query = new Query(cr.orOperator(c1, c2));
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
-        list.stream().forEach(stock -> {
+        for (Stock stock:list) {
             JSONArray dividends=new JSONArray();
             String date="";
             Double percent=0D;
             try {
-                 dividends=spider.getHistoryDividendRate(stock.getCode());
+                dividends=spider.getHistoryDividendRate(stock.getCode());
                 if(null!=dividends&&dividends.size()>0){
                     for (int j = 0; j < dividends.size(); j++) {
                         if(dividends.getJSONObject(j).getDouble("percent")>0){
@@ -83,8 +85,10 @@ public class ThsStockDividendTask {
                             .set("dividendUpdateDay", dateNumber),
                     "stock"
             );
-            log.info("dividend更新受影响行："+wr.getN());
-        });
-        log.info(String.format("dividend更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
+            affected+=wr.getN();
+        }
+        log.info(String.format("dividend更新一批耗时：%s ms 受影响行数:%s",(System.currentTimeMillis()-start)),affected);
     }
+
+
 }

@@ -4,10 +4,9 @@
     <groupId>io.github.kingschan1204</groupId>
     <artifactId>istock</artifactId>
     <packaging>jar</packaging>
-    <version>1.5</version>
+    <version>1.5.4</version>
     <name>pritice Maven Webapp</name>
     <url>http://maven.apache.org</url>
-
     <!-- 继承父包 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -25,12 +24,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <!-- <exclusions>
+             <exclusions>
                  <exclusion>
                      <groupId>org.springframework.boot</groupId>
                      <artifactId>spring-boot-starter-tomcat</artifactId>
                  </exclusion>
-             </exclusions>-->
+             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,28 +50,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
-        <!--jpa-->
-      <!--  <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>-->
-
-        <!-- MySQL的java驱动
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.0.26</version>
-        </dependency>-->
         <!-- html解析 -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.9.2</version>
+            <version>1.11.2</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -78,7 +64,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.0</version>
         </dependency>
         <!--json 工具-->
         <dependency>

@@ -14,24 +14,24 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 /**
- *
+ *代码历史数据控制器
  * @author chenguoxiang
  * @create 2018-03-27 15:19
  **/
 @Controller
-public class StockPageCtrl {
+public class StockHisPageCtrl {
 
     @Autowired
     private StockRepository stockRepository;
-
     @Autowired
     private StockService stockService;
     @Autowired
     private StockHisRoeService stockHisRoeService;
+    private final String template_path="/stock/his/";
 
         @RequestMapping("/stock/his_dy/{code}")
         public ModelAndView hisdata(@PathVariable String code, Model model){
-            ModelAndView mav = new ModelAndView("his_dy");
+            ModelAndView mav = new ModelAndView(template_path+"his_dy");
             mav.addObject("year","''");
             mav.addObject("percent","0");
             Stock stock =stockRepository.findOne(code);
@@ -64,30 +64,12 @@ public class StockPageCtrl {
             }else{
                 mav.addObject("msg","该股票没有分红信息!");
             }
-
-            /*//历年roe
-            data=stockService.getStockHisRoe(code);
-            String roeItem[]=data.split("\\|");
-            mav.addObject("roe_year",roeItem[0]);
-            mav.addObject("roe_percent",roeItem[1]);
-
-            //历年pb
-            data=stockService.getStockHisPb(code);
-            String pbItem[]=data.split("\\|");
-            mav.addObject("pb_date",pbItem[0]);
-            mav.addObject("pb_value",pbItem[1]);
-
-            //历年pe
-            data=stockService.getStockHisPe(code);
-            String peItem[]=data.split("\\|");
-            mav.addObject("pe_date",peItem[0]);
-            mav.addObject("pe_value",peItem[1]);*/
             return  mav;
         }
 
         @RequestMapping("/stock/his_roe/{code}")
         public ModelAndView getStockHisRoe(@PathVariable String code) {
-            ModelAndView mav = new ModelAndView("his_roe");
+            ModelAndView mav = new ModelAndView(template_path+"his_roe");
             mav.addObject("roe_year","''");
             mav.addObject("roe_percent","0");
             Stock stock =stockRepository.findOne(code);
@@ -126,7 +108,7 @@ public class StockPageCtrl {
 
     @RequestMapping("/stock/his_pe/{code}")
     public ModelAndView getStockHisPe(@PathVariable String code) {
-        ModelAndView mav = new ModelAndView("his_pe");
+        ModelAndView mav = new ModelAndView(template_path+"his_pe");
         mav.addObject("pe_date","''");
         mav.addObject("pe_value","0");
         Stock stock =stockRepository.findOne(code);
@@ -163,7 +145,7 @@ public class StockPageCtrl {
 
     @RequestMapping("/stock/his_pb/{code}")
     public ModelAndView getStockHisPb(@PathVariable String code) {
-        ModelAndView mav = new ModelAndView("his_pb");
+        ModelAndView mav = new ModelAndView(template_path+"his_pb");
         mav.addObject("pb_date","''");
         mav.addObject("pb_value","0");
         Stock stock =stockRepository.findOne(code);

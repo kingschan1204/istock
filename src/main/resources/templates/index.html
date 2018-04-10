@@ -2,30 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>离线分析</title>
+    <title>股票筛选</title>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="/plugs/jqgrid/jquery.jqGrid.min.js"></script>
     <script src="/plugs/jqgrid/grid.locale-cn.js"></script>
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"  crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen"  href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <script id="stockspt" src="http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300"></script>
+
+    <!--
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.css" rel="stylesheet">
     <script src="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.js"></script>
     <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/mouse0270-bootstrap-notify/3.1.7/bootstrap-notify.min.js"></script>
     <script src="/js/util.js"></script>
-    <script src="/js/messageBox.js"></script>
+    <script src="/js/messageBox.js"></script>-->
     <style>
         div.header
         　　 {
             　　text-align: center;
         }
+        #app span{margin-left: 10px; }
     </style>
 </head>
 <body style="padding: 20px 0px 0px 10px;overflow: hidden;">
-
 <div class="row" style="margin-bottom: 10px;">
-    <div class="col-md-12" style="padding-left: 30px;">
+    <div class="col-md-5" style="padding-left: 30px;">
         <form class="form-inline" onkeydown="if(event.keyCode==13){reloadStock(); return false;}">
             <div class="form-group">
                 <div class="input-group">
@@ -35,11 +39,32 @@
             </div>
             <button type="button" class="btn btn-primary" id="search_btn">查询</button>
             <button type="button" class="btn btn-info" id="refresh_btn">刷新</button>
-            <button type="button" class="btn btn-success" id="dy_btn">历史分红</button>
-            <button type="button" class="btn btn-success" id="roe_btn">历史净资产收益率</button>
-            <button type="button" class="btn btn-success" id="pe_btn">历史市盈率</button>
-            <button type="button" class="btn btn-success" id="pb_btn">历史市净率</button>
+
+            <!-- Single button -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    历史数据 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#"  id="dy_btn">历史分红</a></li>
+                    <li><a href="#" id="roe_btn">历史净资产收益率</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" id="pe_btn">历史市盈率</a></li>
+                    <li><a href="#" id="pb_btn">历史市净率</a></li>
+                </ul>
+            </div>
         </form>
+    </div>
+
+    <div class="col-md-7">
+        <!---->
+        <div id="app">
+            <span  v-bind:style="{ color: sz_color}">{{ sz[0] }} <span v-bind:class="[sz_icon]"></span> {{ sz[3] }} {{ sz_range}}</span>
+            <span  v-bind:style="{ color: sh_color}">{{ sh[0] }} <span v-bind:class="[sh_icon]"></span> {{ sh[3] }} {{ sh_range}}</span>
+            <span  v-bind:style="{ color: cyb_color}">{{ cyb[0] }} <span v-bind:class="[cyb_icon]"></span> {{ cyb[3] }} {{ cyb_range}}</span>
+            <span  v-bind:style="{ color: hs300_color}">{{ hs300[0] }} <span v-bind:class="[hs300_icon]"></span>{{ hs300[3] }} {{ hs300_range}}</span>
+        </div>
+        <!---->
     </div>
 </div>
 
@@ -49,6 +74,81 @@
 </body>
 </html>
 <script type="text/javascript">
+
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            sz:hq_str_sz399001.split(","),
+            sz_color:"",
+            sz_icon:"",
+            sz_range:"",
+            sh:hq_str_sh000001.split(","),
+            sh_color:"",
+            sh_icon:"",
+            sh_range:"",
+            cyb:hq_str_sz399006.split(","),
+            cyb_color:"",
+            cyb_icon:"",
+            cyb_range:"",
+            hs300:hq_str_sh000300.split(","),
+            hs300_color:"",
+            hs300_icon:"",
+            hs300_range:""
+        },
+        created: function () {
+            this.initdata();
+        },methods:{
+            initdata:function () {
+                //console.info(this.sz[3]);
+                this.sz=hq_str_sz399001.split(",");
+                this.sh=hq_str_sh000001.split(",");
+                this.cyb=hq_str_sz399006.split(",");
+                this.hs300=hq_str_sh000300.split(",");
+                this.sz_color= this.stockColor(this.sz[3],this.sz[2]);
+                this.sz_icon=this.stockIcon(this.sz[3],this.sz[2]);
+                this.sz_range=this.stockRange(this.sz[3],this.sz[2]);
+
+                this.sh_color= this.stockColor(this.sh[3],this.sh[2]);
+                this.sh_icon=this.stockIcon(this.sh[3],this.sh[2]);
+                this.sh_range=this.stockRange(this.sh[3],this.sh[2]);
+
+                this.cyb_color= this.stockColor(this.cyb[3],this.cyb[2]);
+                this.cyb_icon=this.stockIcon(this.cyb[3],this.cyb[2]);
+                this.cyb_range=this.stockRange(this.cyb[3],this.cyb[2]);
+
+                this.hs300_color= this.hs300[3]>this.hs300[2]?"red":"green";
+                this.hs300_icon=this.stockIcon(this.hs300[3],this.hs300[2]);
+                this.hs300_range=this.stockRange(this.hs300[3],this.hs300[2]);
+            },
+            stockColor:function(price,oldprice){
+                return price>oldprice?"red":"green";
+            },
+            stockIcon:function(price,oldprice){
+                return price>oldprice?["glyphicon","glyphicon-chevron-up"]:["glyphicon","glyphicon-chevron-down"];
+            },
+            stockRange:function(price,oldprice){
+                var val=price-oldprice;
+                val=val.toFixed(2);
+                return price>oldprice?"+"+val:""+val;
+            }
+        }
+    });
+
+
+    setInterval(function () {
+        jQuery.ajax({
+            url: "http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300",
+            dataType: "script",
+            cache: true
+        }).done(function() {
+            app.initdata();
+        });
+
+    }, 1000);
+
+
+
     $.jgrid.defaults.width = 780;
     $.jgrid.defaults.responsive = true;
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -143,7 +243,6 @@
         var ss = getPageSize();
         $("#jqGrid").jqGrid('setGridWidth', ss.WinW-10).jqGrid('setGridHeight', ss.WinH-200);
     }
-
 
 
 
