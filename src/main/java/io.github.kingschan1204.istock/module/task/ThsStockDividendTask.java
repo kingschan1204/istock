@@ -87,7 +87,7 @@ public class ThsStockDividendTask {
             );
             affected+=wr.getN();
         }
-        log.info(String.format("dividend更新一批耗时：%s ms 受影响行数:%s",(System.currentTimeMillis()-start)),affected);
+        log.info(String.format("dividend更新一批耗时：%s ms 受影响行数:%s",(System.currentTimeMillis()-start),affected));
     }
 
 
