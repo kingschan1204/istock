@@ -46,12 +46,12 @@ public class ThsStockInfoTask {
         Long start = System.currentTimeMillis();
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         Criteria cr = new Criteria();
-        Criteria c1 = Criteria.where("Infodate").lt(dateNumber);
-        Criteria c2 = Criteria.where("Infodate").exists(false);
+        Criteria c1 = Criteria.where("infoDate").lt(dateNumber);
+        Criteria c2 = Criteria.where("infoDate").exists(false);
         Query query = new Query(cr.orOperator(c1,c2));
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
-        if(null==list||list.size()==0){
+        if(null==list){
             log.debug("stock info 今日已全部更新完!");
             return ;
         }
@@ -74,12 +74,14 @@ public class ThsStockInfoTask {
                                 .set("bvps", item.getBvps())
                                 .set("pes", item.getPes())
                                 .set("ped", item.getPed())
-                                .set("Infodate", item.getInfodate()),
+                                .set("infoDate", item.getInfoDate()),
                         "stock"
                 );
                 affected+=wr.getN();
             } catch (Exception e) {
                 e.printStackTrace();
+                log.error("{}",e);
+                ;
             }
         }
         log.info(String.format("info更新一批耗时：%s ms ,受影响行: %s", (System.currentTimeMillis() - start),affected));

@@ -30,14 +30,18 @@ public class StockCodeService {
      * @throws Exception
      */
     public void saveAllStockCode() throws Exception {
-        List<String> sz_codes=stockSpider.getStockCodeBySZ();
-        List<String> sh_codes=stockSpider.getStockCodeBySH();
-        sz_codes.stream().forEach(code->{
-            mongoTemplate.save(new StockCode(StockSpider.formatStockCode(code)));
-        });
-        sh_codes.stream().forEach(code->{
-            mongoTemplate.save(new StockCode(StockSpider.formatStockCode(code)));
-        });
+        List<String> szCodes=stockSpider.getStockCodeBySZ();
+        List<String> shCodes=stockSpider.getStockCodeBySH();
+        List<String> allcodes= stockSpider.getAllStockCode();
+        szCodes.stream().forEach(code->
+            mongoTemplate.save(new StockCode(StockSpider.formatStockCode(code)))
+        );
+        shCodes.stream().forEach(code->
+            mongoTemplate.save(new StockCode(StockSpider.formatStockCode(code)))
+        );
+        allcodes.stream().forEach(code->
+                mongoTemplate.save(new StockCode(code))
+        );
 
     }
 

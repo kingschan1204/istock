@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StockRepository extends PagingAndSortingRepository<Stock,String> {
 
-//    Page<Stock> queryAll(String code, Pageable pageable);
 
 
 }

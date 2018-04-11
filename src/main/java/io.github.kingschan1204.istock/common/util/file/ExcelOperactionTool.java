@@ -37,6 +37,9 @@ public class ExcelOperactionTool {
                 workBook = new XSSFWorkbook(fis);
             } catch (IOException e) {
                 e.printStackTrace();
+            }finally {
+                fis.close();
+                workBook.close();
             }
         }
         // 读取2003版，以   .xls 结尾
@@ -45,6 +48,9 @@ public class ExcelOperactionTool {
                 workBook = new HSSFWorkbook(fis);
             } catch (IOException e) {
                 e.printStackTrace();
+            }finally {
+                fis.close();
+                workBook.close();
             }
         }
         //Get the number of sheets in the xlsx file
