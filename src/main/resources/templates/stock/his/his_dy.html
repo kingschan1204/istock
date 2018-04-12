@@ -24,23 +24,26 @@
     <#if rows??>
         <table class="table table-striped table-hover">
             <thead>
-            <th>年度</th>
-            <th>执行日期</th>
+            <th>报告期</th>
+            <th>业绩披露日期</th>
+            <th>送股比率</th>
+            <th>转股比率</th>
             <th>方案</th>
-            <th>分红率</td>
+            <th>股息率</td>
+            <th>除权除息日</td>
+            <th>方案进度</td>
+
             </thead>
             <#list rows as row>
                 <tr>
                     <td>${row.title}</td>
-                    <td>${row.executeDate}</td>
-                    <td>${row.remark}</td>
-                    <td>
-                        <#if (row.percent==-1)>
-                            --
-                            <#else>
-                                ${row.percent}%
-                        </#if>
-                    </td>
+                    <td>${row.releaseDate}</td>
+                    <td>${row.sgbl}</td>
+                    <td>${row.zgbl}</td>
+                    <td>${row.plan}</td>
+                    <td>${row.percent}%</td>
+                    <td>${row.cxcqr}</td>
+                    <td>${row.progress}</td>
                 </tr>
             </#list>
         </table>

@@ -1,12 +1,11 @@
 package io.github.kingschan1204.istock.module.task;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.mongodb.WriteResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
+import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,12 +27,12 @@ import java.util.List;
  * @create 2018-03-29 14:50
  **/
 @Component
-public class ThsStockDividendTask {
+public class StockDividendTask {
 
-    private Logger log = LoggerFactory.getLogger(ThsStockDividendTask.class);
+    private Logger log = LoggerFactory.getLogger(StockDividendTask.class);
 
-    @Autowired
-    private StockSpider spider;
+    @Resource(name = "EastmoneySpider")
+    private EastmoneySpider spider;
     @Autowired
     private MongoTemplate template;
     @Autowired
@@ -41,7 +40,8 @@ public class ThsStockDividendTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockDividendExecute() throws Exception {
-        if(!StockDateUtil.stockOpenTime()){
+        int day=StockDateUtil.getCurrentWeekDay();
+        if(day==6||day==0){ //周未不执行操作
             log.debug("非交易时间不执行操作...");
             return ;
         }
@@ -49,7 +49,7 @@ public class ThsStockDividendTask {
         int affected=0;
         Integer dateNumber = StockDateUtil.getCurrentDateNumber()-5;
         Criteria cr = new Criteria();
-        Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);
+        Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);//小于 （5天更新一遍）
         Criteria c2 = Criteria.where("dividendUpdateDay").exists(false);
         Query query = new Query(cr.orOperator(c1, c2));
         query.limit(3);
@@ -64,16 +64,17 @@ public class ThsStockDividendTask {
                     for (int j = 0; j < dividends.size(); j++) {
                         if(dividends.getJSONObject(j).getDouble("percent")>0){
                             percent=dividends.getJSONObject(j).getDoubleValue("percent");
-                            date=dividends.getJSONObject(j).getString("date");
+                            date=dividends.getJSONObject(j).getString("cxcqr");
                             break;
                         }
                     }
                     //save dividend
-                    List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
-                    template.remove(new Query(Criteria.where("code").is(stock.getCode())),StockHisDividend.class);
-                    stockHisDividendRepository.save(stockHisDividendList);
+                    List<StockDividend> stockDividendList = JSONArray.parseArray(dividends.toJSONString(),StockDividend.class);
+                    template.remove(new Query(Criteria.where("code").is(stock.getCode())),StockDividend.class);
+                    stockHisDividendRepository.save(stockDividendList);
                 }
             } catch (Exception e) {
+                log.error("error:{}",e);
                 e.printStackTrace();
             }
             WriteResult wr =template.upsert(
@@ -87,7 +88,7 @@ public class ThsStockDividendTask {
             );
             affected+=wr.getN();
         }
-        log.info(String.format("dividend更新一批耗时：%s ms 受影响行数:%s",(System.currentTimeMillis()-start),affected));
+        log.info(String.format("dividend耗时：%s ms 行数:%s",(System.currentTimeMillis()-start),affected));
     }
 
 

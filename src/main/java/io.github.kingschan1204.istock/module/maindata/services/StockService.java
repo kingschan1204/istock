@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisPbRepository;
@@ -15,6 +16,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +39,8 @@ public class StockService {
     private StockHisPbRepository stockHisPbRepository;
     @Autowired
     private StockHisPeRepository stockHisPeRepository;
-    @Autowired
-    private StockSpider spider;
+    @Resource(name = "DefaultSpiderImpl")
+    private DefaultSpiderImpl spider;
     @Autowired
     private MongoTemplate template;
 
@@ -69,7 +72,7 @@ public class StockService {
                 //save dividend
                 List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
                 template.remove(new Query(Criteria.where("code").is(scode)),StockHisDividend.class);
-                stockHisDividendRepository.save(stockHisDividendList);
+//                stockHisDividendRepository.save(stockHisDividendList);
             }
             json.put("dividend",percent);
             json.put("dividendDate",date);
@@ -189,7 +192,7 @@ public class StockService {
      * @param code
      * @return
      */
-    public  List<StockHisDividend> getStockDividend(String code){
+    public  List<StockDividend> getStockDividend(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
@@ -198,7 +201,7 @@ public class StockService {
         Sort sort = new Sort(orders);
         query.with(sort);
         //code
-        List<StockHisDividend> list =template.find(query,StockHisDividend.class);
+        List<StockDividend> list =template.find(query,StockDividend.class);
         return list;
     }
 

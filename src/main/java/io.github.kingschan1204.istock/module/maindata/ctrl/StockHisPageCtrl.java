@@ -41,7 +41,7 @@ public class StockHisPageCtrl {
             }
             mav.addObject("stock",stock);
             //历年分红
-            List<StockHisDividend> list =stockService.getStockDividend(code);
+            List<StockDividend> list =stockService.getStockDividend(code);
             if(null!=list&&list.size()>0){
                 StringBuffer year = new StringBuffer();
                 StringBuffer percent = new StringBuffer();

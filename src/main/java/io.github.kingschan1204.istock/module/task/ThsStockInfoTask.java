@@ -3,7 +3,7 @@ package io.github.kingschan1204.istock.module.task;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.WriteResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import org.slf4j.Logger;
@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -29,8 +30,8 @@ public class ThsStockInfoTask {
 
     private Logger log = LoggerFactory.getLogger(ThsStockInfoTask.class);
 
-    @Autowired
-    private StockSpider spider;
+    @Resource(name = "DefaultSpiderImpl")
+    private DefaultSpiderImpl spider;
     @Autowired
     private MongoTemplate template;
     @Autowired

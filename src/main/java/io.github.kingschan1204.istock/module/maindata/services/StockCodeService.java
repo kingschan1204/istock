@@ -1,6 +1,7 @@
 package io.github.kingschan1204.istock.module.maindata.services;
 
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,8 +23,8 @@ import java.util.List;
 public class StockCodeService {
 
     private Logger log = LoggerFactory.getLogger(StockCodeService.class);
-    @Autowired
-    private StockSpider stockSpider;
+    @Resource(name = "DefaultSpiderImpl")
+    private DefaultSpiderImpl stockSpider;
     @Autowired
     private MongoTemplate mongoTemplate;
 

@@ -52,11 +52,9 @@ public class DefaultSpiderImplTest {
     }
 
 
-    @Ignore
     @Test
     public void getHistoryDividendRate() throws Exception {
-        JSONArray jsons =spider.getHistoryDividendRate(code);
-        System.out.println(jsons.getJSONObject(0));
+        JSONArray jsons =spider.getHistoryDividendRate("000550");
         System.out.println(jsons);
     }
     @Ignore

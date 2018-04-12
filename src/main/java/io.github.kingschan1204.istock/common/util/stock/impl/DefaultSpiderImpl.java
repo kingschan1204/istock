@@ -14,8 +14,8 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -27,16 +27,17 @@ import java.util.*;
  * @author chenguoxiang
  * @create 2018-01-31 14:02
  **/
-@Component
+@RefreshScope
+@Component("DefaultSpiderImpl")
 public class DefaultSpiderImpl implements StockSpider {
 
     private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
     @Value("${spider.timeout}")
-    private int timeout;//8s超时
+    protected int timeout;//8s超时
     @Value("${spider.useagent}")
-    private String useAgent;
+    protected String useAgent;
     @Value("${xueqiu.token}")
-    private String xueQiuToken;
+    protected String xueQiuToken;
 
     @Override
     public JSONArray getStockPrice(String[] stockCode) throws Exception {
@@ -124,7 +125,6 @@ public class DefaultSpiderImpl implements StockSpider {
         json.put("infoDate", StockDateUtil.getCurrentDateNumber());
         json.put("code", stockCode);
         json.put("type", StockSpider.formatStockCode(stockCode).replaceAll("\\d", ""));
-//        json.put("listingDate",listingDate);//上市日期
         return json;
     }
 
@@ -142,7 +142,6 @@ public class DefaultSpiderImpl implements StockSpider {
             JSONObject json;
             for (int i = 1; i < rows.size(); i++) {
                 String[] data = rows.get(i).select("td").text().split(" ");
-                if (data[0].endsWith("年报")) {
                     log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
                     //String year, String date, String plan, Double percent
                     double value = -1;
@@ -157,7 +156,6 @@ public class DefaultSpiderImpl implements StockSpider {
                     json.put("executeDate", data[3]);
                     json.put("remark", data[4]);
                     jsons.add(json);
-                }
             }
             return jsons;
         }

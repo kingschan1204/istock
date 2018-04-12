@@ -1,6 +1,7 @@
 package io.github.kingschan1204.istock.module.maindata.ctrl;
 
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author chenguoxiang
@@ -20,8 +23,8 @@ public class StockCtrl {
     private StockService service;
     @Autowired
     private StockCodeService stockCodeService;
-    @Autowired
-    private StockSpider spider;
+    @Resource(name = "DefaultSpiderImpl")
+    private DefaultSpiderImpl spider;
 
     @RequestMapping("/stock/q")
     public String queryStock(Integer page, Integer rows, String code, String sidx, String sord) {

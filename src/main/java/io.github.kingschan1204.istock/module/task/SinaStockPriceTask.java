@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
@@ -16,6 +17,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +33,8 @@ public class SinaStockPriceTask {
 
     private Logger log = LoggerFactory.getLogger(SinaStockPriceTask.class);
 
-    @Autowired
-    private StockSpider spider;
+    @Resource(name = "DefaultSpiderImpl")
+    private DefaultSpiderImpl spider;
     @Autowired
     private MongoTemplate template;
     @Autowired
