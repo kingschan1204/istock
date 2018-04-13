@@ -74,81 +74,6 @@
 </body>
 </html>
 <script type="text/javascript">
-
-
-    var app = new Vue({
-        el: '#app',
-        data: {
-            sz:hq_str_sz399001.split(","),
-            sz_color:"",
-            sz_icon:"",
-            sz_range:"",
-            sh:hq_str_sh000001.split(","),
-            sh_color:"",
-            sh_icon:"",
-            sh_range:"",
-            cyb:hq_str_sz399006.split(","),
-            cyb_color:"",
-            cyb_icon:"",
-            cyb_range:"",
-            hs300:hq_str_sh000300.split(","),
-            hs300_color:"",
-            hs300_icon:"",
-            hs300_range:""
-        },
-        created: function () {
-            this.initdata();
-        },methods:{
-            initdata:function () {
-                //console.info(this.sz[3]);
-                this.sz=hq_str_sz399001.split(",");
-                this.sh=hq_str_sh000001.split(",");
-                this.cyb=hq_str_sz399006.split(",");
-                this.hs300=hq_str_sh000300.split(",");
-                this.sz_color= this.stockColor(this.sz[3],this.sz[2]);
-                this.sz_icon=this.stockIcon(this.sz[3],this.sz[2]);
-                this.sz_range=this.stockRange(this.sz[3],this.sz[2]);
-
-                this.sh_color= this.stockColor(this.sh[3],this.sh[2]);
-                this.sh_icon=this.stockIcon(this.sh[3],this.sh[2]);
-                this.sh_range=this.stockRange(this.sh[3],this.sh[2]);
-
-                this.cyb_color= this.stockColor(this.cyb[3],this.cyb[2]);
-                this.cyb_icon=this.stockIcon(this.cyb[3],this.cyb[2]);
-                this.cyb_range=this.stockRange(this.cyb[3],this.cyb[2]);
-
-                this.hs300_color= this.hs300[3]>this.hs300[2]?"red":"green";
-                this.hs300_icon=this.stockIcon(this.hs300[3],this.hs300[2]);
-                this.hs300_range=this.stockRange(this.hs300[3],this.hs300[2]);
-            },
-            stockColor:function(price,oldprice){
-                return price>oldprice?"red":"green";
-            },
-            stockIcon:function(price,oldprice){
-                return price>oldprice?["glyphicon","glyphicon-chevron-up"]:["glyphicon","glyphicon-chevron-down"];
-            },
-            stockRange:function(price,oldprice){
-                var val=price-oldprice;
-                val=val.toFixed(2);
-                return price>oldprice?"+"+val:""+val;
-            }
-        }
-    });
-
-
-    setInterval(function () {
-        jQuery.ajax({
-            url: "http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300",
-            dataType: "script",
-            cache: true
-        }).done(function() {
-            app.initdata();
-        });
-
-    }, 1000);
-
-
-
     $.jgrid.defaults.width = 780;
     $.jgrid.defaults.responsive = true;
     $.jgrid.defaults.styleUI = 'Bootstrap';
@@ -300,4 +225,76 @@
         var rowData = $("#jqGrid").jqGrid('getRowData',ids);
         window.open("/stock/his_pb/"+rowData.code);
     });
+
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            sz:hq_str_sz399001.split(","),
+            sz_color:"",
+            sz_icon:"",
+            sz_range:"",
+            sh:hq_str_sh000001.split(","),
+            sh_color:"",
+            sh_icon:"",
+            sh_range:"",
+            cyb:hq_str_sz399006.split(","),
+            cyb_color:"",
+            cyb_icon:"",
+            cyb_range:"",
+            hs300:hq_str_sh000300.split(","),
+            hs300_color:"",
+            hs300_icon:"",
+            hs300_range:""
+        },
+        created: function () {
+            this.initdata();
+        },methods:{
+            initdata:function () {
+                //console.info(this.sz[3]);
+                this.sz=hq_str_sz399001.split(",");
+                this.sh=hq_str_sh000001.split(",");
+                this.cyb=hq_str_sz399006.split(",");
+                this.hs300=hq_str_sh000300.split(",");
+                this.sz_color= this.stockColor(this.sz[3],this.sz[2]);
+                this.sz_icon=this.stockIcon(this.sz[3],this.sz[2]);
+                this.sz_range=this.stockRange(this.sz[3],this.sz[2]);
+
+                this.sh_color= this.stockColor(this.sh[3],this.sh[2]);
+                this.sh_icon=this.stockIcon(this.sh[3],this.sh[2]);
+                this.sh_range=this.stockRange(this.sh[3],this.sh[2]);
+
+                this.cyb_color= this.stockColor(this.cyb[3],this.cyb[2]);
+                this.cyb_icon=this.stockIcon(this.cyb[3],this.cyb[2]);
+                this.cyb_range=this.stockRange(this.cyb[3],this.cyb[2]);
+
+                this.hs300_color= this.hs300[3]>this.hs300[2]?"red":"green";
+                this.hs300_icon=this.stockIcon(this.hs300[3],this.hs300[2]);
+                this.hs300_range=this.stockRange(this.hs300[3],this.hs300[2]);
+            },
+            stockColor:function(price,oldprice){
+                return price>oldprice?"red":"green";
+            },
+            stockIcon:function(price,oldprice){
+                return price>oldprice?["glyphicon","glyphicon-chevron-up"]:["glyphicon","glyphicon-chevron-down"];
+            },
+            stockRange:function(price,oldprice){
+                var val=price-oldprice;
+                val=val.toFixed(2);
+                return price>oldprice?"+"+val:""+val;
+            }
+        }
+    });
+
+
+    setInterval(function () {
+        jQuery.ajax({
+            url: "http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300",
+            dataType: "script",
+            cache: true
+        }).done(function() {
+            app.initdata();
+        });
+
+    }, 1000);
 </script>
