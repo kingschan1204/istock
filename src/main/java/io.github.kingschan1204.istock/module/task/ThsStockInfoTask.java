@@ -3,7 +3,7 @@ package io.github.kingschan1204.istock.module.task;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.WriteResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
-import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
+import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import org.slf4j.Logger;
@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -30,8 +29,8 @@ public class ThsStockInfoTask {
 
     private Logger log = LoggerFactory.getLogger(ThsStockInfoTask.class);
 
-    @Resource(name = "DefaultSpiderImpl")
-    private DefaultSpiderImpl spider;
+    @Autowired
+    private StockSpider spider;
     @Autowired
     private MongoTemplate template;
     @Autowired
@@ -39,10 +38,8 @@ public class ThsStockInfoTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockInfoExecute() throws Exception {
-        int day=StockDateUtil.getCurrentWeekDay();
-        if(day==6||day==0){
-            log.debug("非交易时间不执行操作...");
-            return ;
+        if (!StockDateUtil.stockOpenTime()) {
+            return;
         }
         Long start = System.currentTimeMillis();
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
@@ -85,6 +82,6 @@ public class ThsStockInfoTask {
                 ;
             }
         }
-        log.info(String.format("info更新一批耗时：%s ms ,受影响行: %s", (System.currentTimeMillis() - start),affected));
+        log.info(String.format("info更新耗时：%s ms ,影响行: %s", (System.currentTimeMillis() - start),affected));
     }
 }

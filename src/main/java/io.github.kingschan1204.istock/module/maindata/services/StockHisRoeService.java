@@ -3,7 +3,6 @@ package io.github.kingschan1204.istock.module.maindata.services;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
-import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisRoeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -23,8 +21,8 @@ import java.util.List;
 @Service
 public class StockHisRoeService {
 
-    @Resource(name = "DefaultSpiderImpl")
-    private DefaultSpiderImpl spider;
+    @Autowired
+    private StockSpider spider;
     @Autowired
     private StockHisRoeRepository repository;
     @Autowired

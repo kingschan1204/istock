@@ -60,7 +60,7 @@ public class EastmoneySpider extends DefaultSpiderImpl {
             temp.put("plan", item.getString("AllocationPlan"));//分配预案
             temp.put("sgbl", intFormart(item.getString("SGBL")));//送股比例
             temp.put("zgbl", intFormart(item.getString("ZGBL")));//转股比例
-            temp.put("percent", doubleFormat(item.getString("GXL"))* 100);//股息率
+            temp.put("percent",doubleFormat(item.getString("GXL"),true));//股息率
             temp.put("gqdjr", item.getString("GQDJR").replaceAll(regex, ""));//股权登记日
             temp.put("cxcqr", item.getString("CQCXR").replaceAll(regex, ""));//除息除权日
             temp.put("progress", item.getString("ProjectProgress"));//进度
@@ -83,16 +83,18 @@ public class EastmoneySpider extends DefaultSpiderImpl {
      * @param math
      * @return
      */
-    public double doubleFormat(String math) {
+    public double doubleFormat(String math,boolean percent) {
         String regex_number="^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";
         if(math.matches(regex_number)){
             Double d = Double.parseDouble(math);
+            if(percent){
+                d=d*100;
+            }
             BigDecimal b = new BigDecimal(d);
             return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
        return 0d;
     }
-
 
 
 }

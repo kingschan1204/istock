@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import java.io.File;
 import java.math.RoundingMode;
@@ -28,6 +29,7 @@ import java.util.*;
  * @create 2018-01-31 14:02
  **/
 @RefreshScope
+@Primary
 @Component("DefaultSpiderImpl")
 public class DefaultSpiderImpl implements StockSpider {
 

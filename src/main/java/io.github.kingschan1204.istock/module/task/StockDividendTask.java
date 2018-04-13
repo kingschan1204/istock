@@ -40,10 +40,8 @@ public class StockDividendTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockDividendExecute() throws Exception {
-        int day=StockDateUtil.getCurrentWeekDay();
-        if(day==6||day==0){ //周未不执行操作
-            log.debug("非交易时间不执行操作...");
-            return ;
+        if (!StockDateUtil.stockOpenTime()) {
+            return;
         }
         Long start =System.currentTimeMillis();
         int affected=0;
