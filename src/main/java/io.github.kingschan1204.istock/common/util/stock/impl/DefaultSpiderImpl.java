@@ -17,8 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.math.RoundingMode;
+import java.net.SocketTimeoutException;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -53,7 +55,13 @@ public class DefaultSpiderImpl implements StockSpider {
         String queryCode = queryStr.toString().replaceAll("\\,$", "");
         String query = String.format("http://hq.sinajs.cn/list=%s", queryCode);
         log.info(query);
-        String content = Jsoup.connect(query).timeout(timeout).ignoreContentType(true).get().text();
+        String content = null;
+        try {
+            content = Jsoup.connect(query).timeout(timeout).ignoreContentType(true).get().text();
+        } catch (SocketTimeoutException e) {
+            log.error("超时{}", query);
+            return null;
+        }
         log.debug(content);
         String[] line = content.split(";");
         JSONArray rows = new JSONArray();
@@ -97,7 +105,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONObject getStockInfo(String code) throws Exception {
         String stockCode = code.replaceAll("\\D", "");
-        String regex=".*\\：|\\s*";
+        String regex = ".*\\：|\\s*";
         String url = String.format("http://basic.10jqka.com.cn/%s/", stockCode);
         Document doc = Jsoup.connect(url).userAgent(useAgent).timeout(timeout).get();
         Elements table = doc.getElementsByTag("table");
@@ -144,20 +152,20 @@ public class DefaultSpiderImpl implements StockSpider {
             JSONObject json;
             for (int i = 1; i < rows.size(); i++) {
                 String[] data = rows.get(i).select("td").text().split(" ");
-                    log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
-                    //String year, String date, String plan, Double percent
-                    double value = -1;
-                    if (null != data[9]) {
-                        value = StockSpider.mathFormat(data[9]);
-                    }
-                    json = new JSONObject();
-                    json.put("code", stockCode);
-                    json.put("title", data[0]);
-                    json.put("date", data[6]);
-                    json.put("percent", value);
-                    json.put("executeDate", data[3]);
-                    json.put("remark", data[4]);
-                    jsons.add(json);
+                log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
+                //String year, String date, String plan, Double percent
+                double value = -1;
+                if (null != data[9]) {
+                    value = StockSpider.mathFormat(data[9]);
+                }
+                json = new JSONObject();
+                json.put("code", stockCode);
+                json.put("title", data[0]);
+                json.put("date", data[6]);
+                json.put("percent", value);
+                json.put("executeDate", data[3]);
+                json.put("remark", data[4]);
+                jsons.add(json);
             }
             return jsons;
         }
@@ -194,7 +202,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONArray getHistoryPE(String code) throws Exception {
         String url = String.format("https://androidinvest.com/Stock/History/%s", StockSpider.formatStockCode(code).toUpperCase());
-        String regex="\'|\\[|\\]";
+        String regex = "\'|\\[|\\]";
         log.info("craw history pe :{}", url);
         StockSpider.enableSSLSocket();
         JSONArray jsons = new JSONArray();
@@ -281,7 +289,7 @@ public class DefaultSpiderImpl implements StockSpider {
     public JSONObject getDy(int page) throws Exception {
         String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=symbol&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.31&size=100";
         url = String.format(url, page);
-        log.info("更新dy第{}页",page);
+        log.info("更新dy第{}页", page);
         StockSpider.enableSSLSocket();
         Document infoDoc = Jsoup.connect(url).userAgent(useAgent).referrer("https://xueqiu.com/hq/screener")
                 .timeout(timeout)
@@ -306,23 +314,23 @@ public class DefaultSpiderImpl implements StockSpider {
 
     @Override
     public List<String> getStockCodeBySH() throws Exception {
-        String url ="http://www.sse.com.cn/js/common/ssesuggestdata.js";
-        log.info("craw sh codes :{}",url);
+        String url = "http://www.sse.com.cn/js/common/ssesuggestdata.js";
+        log.info("craw sh codes :{}", url);
         Document infoDoc = Jsoup.connect(url).userAgent(useAgent)
                 .timeout(timeout)
                 .ignoreContentType(true)
                 .get();
-       String result= StockSpider.findStrByRegx(infoDoc.html(),"60\\d{4}");
-       String[] codes=result.split(",");
+        String result = StockSpider.findStrByRegx(infoDoc.html(), "60\\d{4}");
+        String[] codes = result.split(",");
         return Arrays.asList(codes);
     }
 
     @Override
     public List<String> getStockCodeBySZ() throws Exception {
         List<String> codes = new ArrayList<>();
-        String url ="http://www.szse.cn/szseWeb/ShowReport.szse?SHOWTYPE=xlsx&CATALOGID=1110&tab2PAGENO=1&ENCODE=1&TABKEY=tab2";
-        log.info("craw sz codes :{}",url);
-        String filename=String.format("sz_code_%s.xlsx",StockDateUtil.getCurrentDateNumber());
+        String url = "http://www.szse.cn/szseWeb/ShowReport.szse?SHOWTYPE=xlsx&CATALOGID=1110&tab2PAGENO=1&ENCODE=1&TABKEY=tab2";
+        log.info("craw sz codes :{}", url);
+        String filename = String.format("sz_code_%s.xlsx", StockDateUtil.getCurrentDateNumber());
         String path = String.format("./data/%s", filename);
         if (!new File(path).exists()) {
             //下载
@@ -330,14 +338,13 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
-        for (Object[] row :list) {
-            if(row[0].toString().trim().matches("^00\\d{4}")){
+        for (Object[] row : list) {
+            if (row[0].toString().trim().matches("^00\\d{4}")) {
                 codes.add(row[0].toString().trim());
             }
         }
         return codes;
     }
-
 
 
 }

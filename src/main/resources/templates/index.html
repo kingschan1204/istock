@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" media="screen"  href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"  crossorigin="anonymous"></script>
     <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
-    <script id="stockspt" src="http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300"></script>
+
 
     <!--
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.css" rel="stylesheet">
@@ -59,10 +59,12 @@
     <div class="col-md-7">
         <!---->
         <div id="app">
-            <span  v-bind:style="{ color: sz_color}">{{ sz[0] }} <span v-bind:class="[sz_icon]"></span> {{ sz[3] }} {{ sz_range}}</span>
-            <span  v-bind:style="{ color: sh_color}">{{ sh[0] }} <span v-bind:class="[sh_icon]"></span> {{ sh[3] }} {{ sh_range}}</span>
-            <span  v-bind:style="{ color: cyb_color}">{{ cyb[0] }} <span v-bind:class="[cyb_icon]"></span> {{ cyb[3] }} {{ cyb_range}}</span>
-            <span  v-bind:style="{ color: hs300_color}">{{ hs300[0] }} <span v-bind:class="[hs300_icon]"></span>{{ hs300[3] }} {{ hs300_range}}</span>
+            <div v-if="show">
+                <span  v-bind:style="{ color: sz_color}">{{ sz[0] }} <span v-bind:class="[sz_icon]"></span> {{ sz[3] }} {{ sz_range}}</span>
+                <span  v-bind:style="{ color: sh_color}">{{ sh[0] }} <span v-bind:class="[sh_icon]"></span> {{ sh[3] }} {{ sh_range}}</span>
+                <span  v-bind:style="{ color: cyb_color}">{{ cyb[0] }} <span v-bind:class="[cyb_icon]"></span> {{ cyb[3] }} {{ cyb_range}}</span>
+                <span  v-bind:style="{ color: hs300_color}">{{ hs300[0] }} <span v-bind:class="[hs300_icon]"></span>{{ hs300[3] }} {{ hs300_range}}</span>
+            </div>
         </div>
         <!---->
     </div>
@@ -73,12 +75,9 @@
 
 </body>
 </html>
+<script id="stockspt" src="http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300"></script>
 <script type="text/javascript">
-    $.jgrid.defaults.width = 780;
-    $.jgrid.defaults.responsive = true;
-    $.jgrid.defaults.styleUI = 'Bootstrap';
     $(document).ready(function () {
-
         $("#jqGrid").jqGrid({
             url:  "/stock/q",
             width: window.screen.availWidth - 20,
@@ -230,6 +229,7 @@
     var app = new Vue({
         el: '#app',
         data: {
+            show:false,
             sz:hq_str_sz399001.split(","),
             sz_color:"",
             sz_icon:"",
@@ -271,6 +271,7 @@
                 this.hs300_color= this.hs300[3]>this.hs300[2]?"red":"green";
                 this.hs300_icon=this.stockIcon(this.hs300[3],this.hs300[2]);
                 this.hs300_range=this.stockRange(this.hs300[3],this.hs300[2]);
+                this.show=true;
             },
             stockColor:function(price,oldprice){
                 return price>oldprice?"red":"green";

@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.net.SocketTimeoutException;
 
 /**
  * @author chenguoxiang
@@ -18,6 +21,7 @@ import java.math.BigDecimal;
 @Component("EastmoneySpider")
 public class EastmoneySpider extends DefaultSpiderImpl {
 
+    private Logger log = LoggerFactory.getLogger(EastmoneySpider.class);
     @Value("${eastmoney.token}")
     private String token ;
 
@@ -42,10 +46,16 @@ public class EastmoneySpider extends DefaultSpiderImpl {
         String regex = "T.*";
         String apiUrl = String.format("http://dcfm.eastmoney.com/EM_MutiSvcExpandInterface/api/js/get?type=DCSOBS&token=%s&p=1&ps=50&sr=-1&st=ReportingPeriod&filter=&cmd=%s", token, code);
         String referer = String.format("http://data.eastmoney.com/yjfp/detail/%s.html", code);
-        Document doc = Jsoup.connect(apiUrl).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")
-                .timeout(10000)
-                .ignoreContentType(true)
-                .referrer(referer).get();
+        Document doc=null;
+        try{
+             doc = Jsoup.connect(apiUrl).userAgent(useAgent)
+                    .timeout(10000)
+                    .ignoreContentType(true)
+                    .referrer(referer).get();
+        }catch (SocketTimeoutException e){
+            log.error("抓取超时：{}",apiUrl);
+            return new JSONArray();
+        }
         JSONArray data = JSONArray.parseArray(doc.text());
         if(null==data)return new JSONArray();
 
@@ -67,6 +77,7 @@ public class EastmoneySpider extends DefaultSpiderImpl {
             jsons.add(temp);
 
         }
+        log.info("{}:抓取成功!",code);
         return jsons;
     }
 

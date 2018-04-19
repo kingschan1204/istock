@@ -38,7 +38,7 @@ public class SinaStockPriceTask {
     @Autowired
     private StockCodeService stockCodeService;
 
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void stockPriceExecute() throws Exception {
         if (!StockDateUtil.stockOpenTime()) {
             return;
