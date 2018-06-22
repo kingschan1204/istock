@@ -91,7 +91,7 @@ public class DefaultSpiderImpl implements StockSpider {
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
             json.put("code", data[0]);//代码
             json.put("type", StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));
-            json.put("name", data[1]);//名称
+            json.put("name", data[1].replaceAll("\\s",""));//名称
             json.put("price", xj);//现价
             json.put("todayMax", today_max);//今日最高价
             json.put("todayMin", today_min);//今日最低价

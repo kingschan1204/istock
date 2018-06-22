@@ -49,8 +49,8 @@ public class ThsStockInfoTask {
         Query query = new Query(cr.orOperator(c1,c2));
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
-        if(null==list){
-            log.debug("stock info 今日已全部更新完!");
+        if(null==list||list.size()==0){
+            log.info("stock info 今日已全部更新完!");
             return ;
         }
         int affected=0;
@@ -84,4 +84,5 @@ public class ThsStockInfoTask {
         }
         log.info(String.format("info更新耗时：%s ms ,影响行: %s", (System.currentTimeMillis() - start),affected));
     }
+
 }

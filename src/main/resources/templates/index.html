@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"  crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" media="screen"  href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
     <script src="/bootstrap/js/bootstrap.min.js"  ></script>
-    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <!--<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>-->
     <!--
     <link href="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.css" rel="stylesheet">
     <script src="//cdn.bootcss.com/limonte-sweetalert2/6.6.5/sweetalert2.min.js"></script>
@@ -56,14 +56,14 @@
 
     <div class="col-md-7">
         <!---->
-        <div id="app">
+        <!--<div id="app">
             <div v-if="show">
                 <span  v-bind:style="{ color: sz_color}">{{ sz[0] }} <span v-bind:class="[sz_icon]"></span> {{ sz[3] }} {{ sz_range}}</span>
                 <span  v-bind:style="{ color: sh_color}">{{ sh[0] }} <span v-bind:class="[sh_icon]"></span> {{ sh[3] }} {{ sh_range}}</span>
                 <span  v-bind:style="{ color: cyb_color}">{{ cyb[0] }} <span v-bind:class="[cyb_icon]"></span> {{ cyb[3] }} {{ cyb_range}}</span>
                 <span  v-bind:style="{ color: hs300_color}">{{ hs300[0] }} <span v-bind:class="[hs300_icon]"></span>{{ hs300[3] }} {{ hs300_range}}</span>
             </div>
-        </div>
+        </div>-->
         <!---->
     </div>
 </div>
@@ -224,7 +224,7 @@
     });
 
 
-    var app = new Vue({
+    /*var app = new Vue({
         el: '#app',
         data: {
             show:false,
@@ -295,5 +295,5 @@
             app.initdata();
         });
 
-    }, 1000);
+    }, 1000);*/
 </script>

@@ -50,6 +50,10 @@ public class DefaultSpiderImplTest {
         }
 
     }
+    @Test
+    public void getStockInfo() throws Exception {
+        System.out.println(spider.getStockInfo("600519"));
+    }
 
 
     @Test

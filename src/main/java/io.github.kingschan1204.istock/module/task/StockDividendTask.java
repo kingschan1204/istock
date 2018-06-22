@@ -18,7 +18,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 定时更新分红情况
@@ -40,11 +42,11 @@ public class StockDividendTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockDividendExecute() throws Exception {
-        if (!StockDateUtil.stockOpenTime()) {
+        /*if (!StockDateUtil.stockOpenTime()) {
             return;
-        }
-        Long start =System.currentTimeMillis();
-        int affected=0;
+        }*/
+
+
         Integer dateNumber = StockDateUtil.getCurrentDateNumber()-5;
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);//小于 （5天更新一遍）
@@ -53,6 +55,8 @@ public class StockDividendTask {
         query.limit(3);
         List<Stock> list = template.find(query, Stock.class);
         for (Stock stock:list) {
+            Long start =System.currentTimeMillis();//记录开始时间
+            int affected=0;//分红更新记录条数
             JSONArray dividends=new JSONArray();
             String date="";
             Double percent=0D;
@@ -70,6 +74,7 @@ public class StockDividendTask {
                     List<StockDividend> stockDividendList = JSONArray.parseArray(dividends.toJSONString(),StockDividend.class);
                     template.remove(new Query(Criteria.where("code").is(stock.getCode())),StockDividend.class);
                     stockHisDividendRepository.save(stockDividendList);
+                    affected=stockDividendList.size();
                 }
             } catch (Exception e) {
                 log.error("error:{}",e);
@@ -85,9 +90,19 @@ public class StockDividendTask {
                     "stock"
             );
             affected+=wr.getN();
+            log.info("{}分红抓取,耗时{},获得{}行数据",stock.getCode(),(System.currentTimeMillis()-start),affected);
         }
-        log.info(String.format("dividend耗时：%s ms 行数:%s",(System.currentTimeMillis()-start),affected));
+
     }
 
+    public static void main(String[] args) {
+        List<String> lis = null;//new ArrayList<>();
+        if (Optional.of(lis).isPresent())
+        {
+            System.out.println("ok");
+        }else {
+            System.out.println("ng");
+        }
+    }
 
 }
