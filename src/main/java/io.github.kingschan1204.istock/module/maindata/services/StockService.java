@@ -115,7 +115,7 @@ public class StockService {
     }
 
 
-    public String queryStock(int pageindex, int pagesize, final String pcode, String orderfidld, String psort){
+    public String queryStock(int pageindex, int pagesize, final String pcode,final String type, String orderfidld, String psort){
         Query query = new Query();
         Optional<String> code =Optional.ofNullable(pcode);
         if (code.isPresent()){
@@ -127,6 +127,9 @@ public class StockService {
             else{
                 query.addCriteria(Criteria.where("name").regex(pcode));
             }
+        }
+        if(null!=type&&type.matches("sz|sh")){
+            query.addCriteria(Criteria.where("type").is(type));
         }
         //记录总数
         Long total=template.count(query,Stock.class);

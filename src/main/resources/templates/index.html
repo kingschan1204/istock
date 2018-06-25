@@ -1,3 +1,4 @@
+<#compress>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +34,15 @@
                 <div class="input-group">
                     <div class="input-group-addon">$</div>
                     <input type="text" class="form-control" id="stockCode" placeholder="代码 / 股票名称" maxlength="6" >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="form-control" id="stockType" placeholder="市场">
+                        <option value="">全部</option>
+                        <option value="sz">深市</option>
+                        <option value="sh">沪市</option>
+                    </select>
                 </div>
             </div>
             <button type="button" class="btn btn-primary" id="search_btn">查询</button>
@@ -172,9 +182,10 @@
     function reloadStock(){
         //此处可以添加对查询数据的合法验证
         var code = $("#stockCode").val();
+        var type = $("#stockType").val();
         $("#jqGrid").jqGrid('setGridParam',{
             datatype:'json',
-            postData:{'code':code},
+            postData:{'code':code,'type':type},
             page:1
         }).trigger("reloadGrid");
     }
@@ -297,3 +308,4 @@
 
     }, 1000);*/
 </script>
+</#compress>
