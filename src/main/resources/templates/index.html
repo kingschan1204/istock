@@ -97,30 +97,27 @@
             mtype: "GET",
             styleUI: 'Bootstrap',
             datatype: "json",
-            colNames: ['代码', '名称','市场', '当前价格', '昨收','今日最高','今日最低', '涨幅', 'PE(动态)', 'PE(静态)', '市净率', '总市值', '净资产收益率', '每股净资产','最新股息','上次分红率','上次分红日期', '所属行业'],
+            colNames: ['代码', '名称','市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', 'ROE', '每股净资产','股息(动)','股息(静)','上次分红', '行业'],
             colModel: [
 
                 {label: 'code', name: 'code', width: 100},
                 {label: 'name', name: 'name', width: 150},
-                {label: 'type', name: 'type', width: 50},
-                {label: 'price', name: 'price', width: 70, align: 'right'},
+                {label: 'type', name: 'type', width: 40},
+                {label: 'price', name: 'price', width: 50, align: 'right'},
                 {label: 'yesterdayPrice', name: 'yesterdayPrice', width: 60, align: 'right'},
 
-                {label: 'todayMax', name: 'todayMax', width: 70, align: 'right'},
-                {label: 'todayMin', name: 'todayMin', width: 70, align: 'right'},
-
                 {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right'},
-                {label: 'ped', name: 'ped', width: 75, align: 'right'},
-                {label: 'pes', name: 'pes', width: 75, align: 'right'},
-                {label: 'pb', name: 'pb', width: 70, align: 'right'},
+                {label: 'ped', name: 'ped', width: 70, align: 'right'},
+                {label: 'pes', name: 'pes', width: 70, align: 'right'},
+                {label: 'pb', name: 'pb', width: 60, align: 'right'},
 
                 {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
-                {label: 'roe', name: 'roe', width: 100, align: 'right'},
+                {label: 'roe', name: 'roe', width: 70, align: 'right'},
                 {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
-                {label: 'dy', name: 'dy', width: 86, align: 'right'},
-                {label: 'dividend', name: 'dividend', width: 86, align: 'right'},
-                {label: 'dividendDate', name: 'dividendDate', width: 98},
-                {label: 'industry', name: 'industry', width: 200}
+                {label: 'dy', name: 'dy', width: 70, align: 'right'},
+                {label: 'dividend', name: 'dividend', width: 70, align: 'right'},
+                {label: 'dividendDate', name: 'dividendDate', width: 90},
+                {label: 'industry', name: 'industry', width: 130}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
             ],
             viewrecords: true,
@@ -173,7 +170,7 @@
 
     function doResize() {
         var ss = getPageSize();
-        $("#jqGrid").jqGrid('setGridWidth', ss.WinW-10).jqGrid('setGridHeight', ss.WinH-200);
+        $("#jqGrid").jqGrid('setGridWidth', ss.WinW-10).jqGrid('setGridHeight', ss.WinH-150);
     }
 
 

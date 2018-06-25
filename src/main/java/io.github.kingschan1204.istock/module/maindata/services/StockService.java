@@ -3,6 +3,8 @@ package io.github.kingschan1204.istock.module.maindata.services;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
@@ -12,6 +14,7 @@ import io.github.kingschan1204.istock.module.maindata.repository.StockRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -116,7 +119,16 @@ public class StockService {
 
 
     public String queryStock(int pageindex, int pagesize, final String pcode,final String type, String orderfidld, String psort){
-        Query query = new Query();
+        DBObject dbObject = new BasicDBObject();
+        DBObject fieldObject = new BasicDBObject();
+        fieldObject.put("todayMax", false);
+        fieldObject.put("todayMin", false);
+        fieldObject.put("priceDate", false);
+        fieldObject.put("mainBusiness", false);
+        fieldObject.put("dyDate", false);
+        fieldObject.put("infoDate", false);
+        fieldObject.put("dividendUpdateDay", false);
+        Query query = new BasicQuery(dbObject,fieldObject);
         Optional<String> code =Optional.ofNullable(pcode);
         if (code.isPresent()){
             if(pcode.matches("\\d{6}")){
