@@ -37,9 +37,16 @@ public class FileCommonOperactionTool {
         }
         // output here
         String path = dir + (null == filename ? defaultFileName : filename);
-        FileOutputStream out = (new FileOutputStream(new java.io.File(path)));
-        out.write(resultResponse.bodyAsBytes());
-        out.close();
+        FileOutputStream out=null;
+       try{
+            out = (new FileOutputStream(new java.io.File(path)));
+           out.write(resultResponse.bodyAsBytes());
+       }catch (Exception ex){
+           log.error("{}",ex);
+           ex.printStackTrace();
+       }finally {
+           out.close();
+       }
         return path;
     }
 }

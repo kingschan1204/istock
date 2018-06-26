@@ -40,61 +40,59 @@ public class XueQiuStockDyTask {
 
     @Scheduled(cron = "0 0/1 * * * ?")
     public void stockDividendExecute() throws Exception {
-        int day=StockDateUtil.getCurrentWeekDay();
-        if(day==6||day==0){
+        int day = StockDateUtil.getCurrentWeekDay();
+        if (day == 6 || day == 0) {
             log.debug("非交易时间不执行操作...");
-            return ;
+            return;
         }
-        Long start =System.currentTimeMillis();
-       List<StockDyQueue> list= template.find(
+        Long start = System.currentTimeMillis();
+        List<StockDyQueue> list = template.find(
                 new Query(Criteria.where("date").is(StockDateUtil.getCurrentDateNumber())), StockDyQueue.class
         );
-       int pageindex=1;
-       int totalpage=25;
-       if(null!=list&&list.size()>0){
-            pageindex=list.size()+1;
-            //totalpage=list.get(0).getTotalPage();
-       }
-       if(pageindex>totalpage){
-           log.debug("stock dy 已经全部更新完，当前{}页,共{}页",pageindex,totalpage);
-           return ;
-       }
+        int pageindex = 1;
+        int totalpage = 1;
+        if (null != list && list.size() > 0) {
+            pageindex = list.size() + 1;
+            totalpage = list.get(0).getTotalPage();
+        }
+        if (pageindex > totalpage) {
+            log.debug("stock dy 已经全部更新完，当前{}页,共{}页", pageindex, totalpage);
+            return;
+        }
         try {
-           log.info("dy开始更新第{}页,共{}页",pageindex,totalpage);
-            JSONObject data =spider.getDy(pageindex);
+            JSONObject data = spider.getDy(pageindex);
             uptateDy(data);
-
-            int total=data.getInteger("count");
-            int pagesize=total%100==0?total/100:total/100+1;
-
+            int total = data.getInteger("count");
+            int pagesize = total % 100 == 0 ? total / 100 : total / 100 + 1;
             StockDyQueue stockDyQueue = new StockDyQueue();
             stockDyQueue.setDate(StockDateUtil.getCurrentDateNumber());
             stockDyQueue.setPageIndex(pageindex);
             stockDyQueue.setTotalPage(pagesize);
-            template.save(stockDyQueue,"stock_dy_queue");
-        }catch (Exception ex){
-           ex.printStackTrace();
-           log.error("dy 出错了:{}",ex);
+            template.save(stockDyQueue, "stock_dy_queue");
+            log.info("dy更新第{}页,共{}页 耗时：{} ms", pageindex, totalpage, (System.currentTimeMillis() - start));
+        } catch (Exception ex) {
+            log.error("dy 出错了:{}", ex);
+            ex.printStackTrace();
         }
-        log.info(String.format("dy更新一批耗时：%s ms",(System.currentTimeMillis()-start)));
+
     }
 
-    public void uptateDy(JSONObject data){
-        int affected=0;//受影响行
+    public void uptateDy(JSONObject data) {
+        int affected = 0;//受影响行
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         JSONArray rows = data.getJSONArray("list");
-        List<Stock> list =rows.toJavaList(Stock.class);
-        for (Stock stock :list) {
-            WriteResult wr =template.updateFirst(
+        List<Stock> list = rows.toJavaList(Stock.class);
+        for (Stock stock : list) {
+            WriteResult wr = template.updateFirst(
                     new Query(Criteria.where("_id").is(stock.getCode())),
                     new Update()
                             .set("dy", stock.getDy())
                             .set("dyDate", dateNumber),
                     "stock"
             );
-            affected+=wr.getN();
+            affected += wr.getN();
         }
-        log.info("dy 批处理：共{}条，本次更新{}条",list.size(),affected);
+        log.info("dy 批处理：共{}条，本次更新{}条", list.size(), affected);
 
     }
 }

@@ -35,3 +35,31 @@
 
 ## 国内指数
 `http://hq.sinajs.cn/list=sz399001,sh000001,sz399006,sh000300`
+
+# 数据结构
+```
+	"_id" : "000783",
+	"type" : "sz",
+	"name" : "长江证券",
+	"price" : 6.62,
+	"yesterdayPrice" : 6.69,
+	"fluctuate" : -1.05,
+	"todayMax" : 6.72,
+	"todayMin" : 6.62,
+	"priceDate" : ISODate("2018-05-29T06:58:01.117Z"),
+	"industry" : "证券",
+	"mainBusiness" : "证券代理买卖、证券自营、证券承销、受托资产管理等证券类业务。",
+	"totalValue" : 369,
+	"pb" : 1.38,
+	"roe" : 1.21,
+	"bvps" : 4.85,
+	"pes" : 23.94,
+	"ped" : 28.704,
+	"dividendDate" : "-", 
+	"dividend" : 2.2,
+	"dy" : 2.24,
+	"dyDate" : 20180529,
+	"infoDate" : 20180529,
+	"dividendUpdateDay" : 20180524 
+
+```

@@ -50,13 +50,15 @@ public class DefaultSpiderImplTest {
         }
 
     }
+    @Test
+    public void getStockInfo() throws Exception {
+        System.out.println(spider.getStockInfo("600519"));
+    }
 
 
-    @Ignore
     @Test
     public void getHistoryDividendRate() throws Exception {
-        JSONArray jsons =spider.getHistoryDividendRate(code);
-        System.out.println(jsons.getJSONObject(0));
+        JSONArray jsons =spider.getHistoryDividendRate("000550");
         System.out.println(jsons);
     }
     @Ignore

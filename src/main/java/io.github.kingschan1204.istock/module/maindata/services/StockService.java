@@ -3,6 +3,8 @@ package io.github.kingschan1204.istock.module.maindata.services;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
@@ -12,9 +14,11 @@ import io.github.kingschan1204.istock.module.maindata.repository.StockRepository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +73,7 @@ public class StockService {
                 //save dividend
                 List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
                 template.remove(new Query(Criteria.where("code").is(scode)),StockHisDividend.class);
-                stockHisDividendRepository.save(stockHisDividendList);
+//                stockHisDividendRepository.save(stockHisDividendList);
             }
             json.put("dividend",percent);
             json.put("dividendDate",date);
@@ -114,8 +118,17 @@ public class StockService {
     }
 
 
-    public String queryStock(int pageindex, int pagesize, final String pcode, String orderfidld, String psort){
-        Query query = new Query();
+    public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
+        DBObject dbObject = new BasicDBObject();
+        DBObject fieldObject = new BasicDBObject();
+        fieldObject.put("todayMax", false);
+        fieldObject.put("todayMin", false);
+        fieldObject.put("priceDate", false);
+        fieldObject.put("mainBusiness", false);
+        fieldObject.put("dyDate", false);
+        fieldObject.put("infoDate", false);
+        fieldObject.put("dividendUpdateDay", false);
+        Query query = new BasicQuery(dbObject,fieldObject);
         Optional<String> code =Optional.ofNullable(pcode);
         if (code.isPresent()){
             if(pcode.matches("\\d{6}")){
@@ -126,6 +139,19 @@ public class StockService {
             else{
                 query.addCriteria(Criteria.where("name").regex(pcode));
             }
+        }
+        if(null!=type&&type.matches("sz|sh")){
+            query.addCriteria(Criteria.where("type").is(type));
+        }
+        if(null!=pb&&pb.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
+            double s = Double.parseDouble(pb.split("-")[0]);
+            double d = Double.parseDouble(pb.split("-")[1]);
+            query.addCriteria(Criteria.where("pb").gte(s).lte(d));
+        }
+        if(null!=dy&&dy.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
+            double s = Double.parseDouble(dy.split("-")[0]);
+            double d = Double.parseDouble(dy.split("-")[1]);
+            query.addCriteria(Criteria.where("dy").gte(s).lte(d));
         }
         //记录总数
         Long total=template.count(query,Stock.class);
@@ -145,9 +171,13 @@ public class StockService {
         for (int i = 0; i <jsons.size() ; i++) {
             temp =jsons.getJSONObject(i);
             temp.put("fluctuate",temp.getString("fluctuate")+"%");
-            temp.put("roe",temp.getString("roe")+"%");
-            temp.put("totalValue",temp.getString("totalValue")+"亿");
 
+            if(temp.containsKey("roe")&&temp.getDouble("roe")!=-1){
+                temp.put("roe",temp.getString("roe")+"%");
+            }
+            if(temp.containsKey("totalValue")&&temp.getDouble("totalValue")!=-1){
+                temp.put("totalValue",temp.getString("totalValue")+"亿");
+            }
             if(temp.containsKey("dividend")&&temp.getDouble("pb")==-1){
                 temp.put("pb","--");
             }
@@ -185,7 +215,7 @@ public class StockService {
      * @param code
      * @return
      */
-    public  List<StockHisDividend> getStockDividend(String code){
+    public  List<StockDividend> getStockDividend(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
@@ -194,7 +224,7 @@ public class StockService {
         Sort sort = new Sort(orders);
         query.with(sort);
         //code
-        List<StockHisDividend> list =template.find(query,StockHisDividend.class);
+        List<StockDividend> list =template.find(query,StockDividend.class);
         return list;
     }
 
@@ -224,19 +254,7 @@ public class StockService {
         //code
         List<StockHisPb> list =template.find(query,StockHisPb.class);
         return list;
-        /*StringBuffer year = new StringBuffer();
-        StringBuffer pb = new StringBuffer();
-        list.stream().forEach(item ->{
-            if(item.getPb()>0){
-                year.append("'").append(item.getDate()).append("',");
-                pb.append(item.getPb()).append(",");
-            }
-        });
-        return  String.format("%s|%s",year.toString().replaceAll("\\,$",""),
-                pb.toString().replaceAll("\\,$","")
-        );*/
     }
-
 
 
     public List<StockHisPe> getStockHisPe(String code){
@@ -251,6 +269,7 @@ public class StockService {
         List<StockHisPe> list =template.find(query,StockHisPe.class);
         return list;
     }
+
 
 
 }

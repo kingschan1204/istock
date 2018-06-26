@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.kingschan1204</groupId>
     <artifactId>istock</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <version>1.5.7</version>
     <name>pritice Maven Webapp</name>
     <url>http://maven.apache.org</url>
@@ -31,10 +31,6 @@
                      <artifactId>spring-boot-starter-tomcat</artifactId>
                  </exclusion>
              </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -135,6 +131,14 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceExcludes>src/main/resources/**</warSourceExcludes>
+                    <warName>${project.artifactId}-${project.version}</warName>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -14,7 +14,6 @@ import java.util.Date;
 @Document(collection = "stock")
 public class Stock {
 
-    // private String _id;
     @Id
     private String code;
     private String type;
@@ -33,20 +32,13 @@ public class Stock {
     private Double bvps;
     private Double pes;
     private Double ped;
-    private Integer Infodate;
+    private Integer infoDate;
     private String dividendDate;
     private Double dividend;
     private Integer dividendUpdateDay;
     private Double dy;//实时股息率
     private Integer dyDate;//实时股息更新时间
 
-/* public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }*/
 
     public String getCode() {
         return code;
@@ -184,13 +176,6 @@ public class Stock {
         this.ped = ped;
     }
 
-    public Integer getInfodate() {
-        return Infodate;
-    }
-
-    public void setInfodate(Integer infodate) {
-        Infodate = infodate;
-    }
 
     public String getDividendDate() {
         return dividendDate;
@@ -230,5 +215,12 @@ public class Stock {
 
     public void setDyDate(Integer dyDate) {
         this.dyDate = dyDate;
+    }
+    public Integer getInfoDate() {
+        return infoDate;
+    }
+
+    public void setInfoDate(Integer infoDate) {
+        this.infoDate = infoDate;
     }
 }
