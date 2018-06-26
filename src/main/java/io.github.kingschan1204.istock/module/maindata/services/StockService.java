@@ -118,7 +118,7 @@ public class StockService {
     }
 
 
-    public String queryStock(int pageindex, int pagesize, final String pcode,final String type, String orderfidld, String psort){
+    public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
         DBObject dbObject = new BasicDBObject();
         DBObject fieldObject = new BasicDBObject();
         fieldObject.put("todayMax", false);
@@ -142,6 +142,16 @@ public class StockService {
         }
         if(null!=type&&type.matches("sz|sh")){
             query.addCriteria(Criteria.where("type").is(type));
+        }
+        if(null!=pb&&pb.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
+            double s = Double.parseDouble(pb.split("-")[0]);
+            double d = Double.parseDouble(pb.split("-")[1]);
+            query.addCriteria(Criteria.where("pb").gte(s).lte(d));
+        }
+        if(null!=dy&&dy.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
+            double s = Double.parseDouble(dy.split("-")[0]);
+            double d = Double.parseDouble(dy.split("-")[1]);
+            query.addCriteria(Criteria.where("dy").gte(s).lte(d));
         }
         //记录总数
         Long total=template.count(query,Stock.class);
