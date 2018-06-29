@@ -69,6 +69,9 @@ public class EastmoneySpider extends DefaultSpiderImpl {
             if(title.matches("^\\d{4}\\-12-31$")){
                 title=title.replaceAll("\\-.*","")+"年报";
             }
+            if(title.matches("^\\d{4}\\-06-30$")){
+                title=title.replaceAll("\\-.*","")+"中报";
+            }
             temp.put("title",title);//报告期
             temp.put("releaseDate", item.getString("ResultsbyDate").replaceAll(regex, ""));//披露时间
             temp.put("plan", item.getString("AllocationPlan"));//分配预案
