@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.task;
 import com.alibaba.fastjson.JSONArray;
 import com.mongodb.WriteResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
+import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
@@ -18,9 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 定时更新分红情况
@@ -34,7 +33,9 @@ public class StockDividendTask {
     private Logger log = LoggerFactory.getLogger(StockDividendTask.class);
 
     @Resource(name = "EastmoneySpider")
-    private EastmoneySpider spider;
+    private EastmoneySpider eastmoneySpider;
+    @Autowired
+    private DefaultSpiderImpl defaultSpider;
     @Autowired
     private MongoTemplate template;
     @Autowired
@@ -47,9 +48,9 @@ public class StockDividendTask {
         }*/
 
 
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber()-5;
+        Integer dateNumber = StockDateUtil.getCurrentDateNumber()-3;
         Criteria cr = new Criteria();
-        Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);//小于 （5天更新一遍）
+        Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);//小于 （3天更新一遍）
         Criteria c2 = Criteria.where("dividendUpdateDay").exists(false);
         Query query = new Query(cr.orOperator(c1, c2));
         query.limit(3);
@@ -61,7 +62,7 @@ public class StockDividendTask {
             String date="";
             Double percent=0D;
             try {
-                dividends=spider.getHistoryDividendRate(stock.getCode());
+                dividends=combineHisDy(stock.getCode());
                 if(null!=dividends&&dividends.size()>0){
                     for (int j = 0; j < dividends.size(); j++) {
                         if(dividends.getJSONObject(j).getDouble("percent")>0){
@@ -95,14 +96,26 @@ public class StockDividendTask {
 
     }
 
-    public static void main(String[] args) {
-        List<String> lis = null;//new ArrayList<>();
-        if (Optional.of(lis).isPresent())
-        {
-            System.out.println("ok");
-        }else {
-            System.out.println("ng");
+    /**
+     *  同花顺和东方财富的并集
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    public JSONArray combineHisDy(String code)throws Exception{
+        JSONArray ths =defaultSpider.getHistoryDividendRate(code);
+        JSONArray east =eastmoneySpider.getHistoryDividendRate(code);
+        east.addAll(ths);
+        JSONArray ret=new JSONArray();
+        Set<String> titles=new HashSet<String>();
+        for (int i = 0; i < east.size(); i++) {
+            String title =east.getJSONObject(i).getString("title");
+            if(!titles.contains(title)){
+                ret.add(east.getJSONObject(i));
+                titles.add(title);
+            }
         }
+        return ret;
     }
 
 }

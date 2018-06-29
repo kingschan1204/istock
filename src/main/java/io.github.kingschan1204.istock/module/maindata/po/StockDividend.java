@@ -33,6 +33,7 @@ public class StockDividend {
     private String gqdjr;
     private String cxcqr;
     private String progress;
+    private String from;
 
     public String getId() {
         return id;
@@ -120,5 +121,13 @@ public class StockDividend {
 
     public void setProgress(String progress) {
         this.progress = progress;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

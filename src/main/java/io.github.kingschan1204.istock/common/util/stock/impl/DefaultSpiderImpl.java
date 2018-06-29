@@ -151,20 +151,24 @@ public class DefaultSpiderImpl implements StockSpider {
             JSONArray jsons = new JSONArray();
             JSONObject json;
             for (int i = 1; i < rows.size(); i++) {
-                String[] data = rows.get(i).select("td").text().split(" ");
-                log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
-                //String year, String date, String plan, Double percent
-                double value = -1;
-                if (null != data[9]) {
-                    value = StockSpider.mathFormat(data[9]);
+                String rowtext=rows.get(i).select("td").text();
+                String[] data =rowtext .split(" ");
+                if(data[6].equals("--")||data[9].equals("--")){
+                    continue;
                 }
+                log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
                 json = new JSONObject();
                 json.put("code", stockCode);
-                json.put("title", data[0]);
-                json.put("date", data[6]);
-                json.put("percent", value);
-                json.put("executeDate", data[3]);
-                json.put("remark", data[4]);
+                json.put("title", data[0]);//报告期
+                json.put("releaseDate", data[1]);//披露时间  董事会日期
+                json.put("plan", data[4]);//分红方案
+                json.put("sgbl", 0);//送股比例
+                json.put("zgbl", 0);//转股比例
+                json.put("percent", StockSpider.mathFormat(data[9]));//分红率
+                json.put("gqdjr", data[5]);//股权登记日
+                json.put("cxcqr", data[6]);//除息除权日
+                json.put("progress", data[7]);//方案进度
+                json.put("from", "ths");//来源
                 jsons.add(json);
             }
             return jsons;
