@@ -172,8 +172,13 @@ public class StockService {
             temp =jsons.getJSONObject(i);
             temp.put("fluctuate",temp.getString("fluctuate")+"%");
 
-            if(temp.containsKey("roe")&&temp.getDouble("roe")!=-1){
-                temp.put("roe",temp.getString("roe")+"%");
+            if(temp.containsKey("roe")){
+                if(temp.getDouble("roe")!=-1){
+                    temp.put("roe",temp.getString("roe")+"%");
+                }else {
+                    temp.put("roe","--");
+                }
+
             }
             if(temp.containsKey("totalValue")&&temp.getDouble("totalValue")!=-1){
                 temp.put("totalValue",temp.getString("totalValue")+"亿");
@@ -186,6 +191,9 @@ public class StockService {
             }
             if(temp.containsKey("ped")&&temp.getDouble("ped")==-1){
                 temp.put("ped","--");
+            }
+            if(temp.containsKey("bvps")&&temp.getDouble("bvps")==-1){
+                temp.put("bvps","--");
             }
             if(temp.containsKey("dividend")){
                 if(temp.getDouble("dividend")!=-1){
