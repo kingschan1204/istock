@@ -43,11 +43,6 @@ public class StockDividendTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void stockDividendExecute() throws Exception {
-        /*if (!StockDateUtil.stockOpenTime()) {
-            return;
-        }*/
-
-
         Integer dateNumber = StockDateUtil.getCurrentDateNumber()-3;
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);//小于 （3天更新一遍）
@@ -105,6 +100,9 @@ public class StockDividendTask {
     public JSONArray combineHisDy(String code)throws Exception{
         JSONArray ths =defaultSpider.getHistoryDividendRate(code);
         JSONArray east =eastmoneySpider.getHistoryDividendRate(code);
+        if(null==east){
+            east=new JSONArray();
+        }
         east.addAll(ths);
         JSONArray ret=new JSONArray();
         Set<String> titles=new HashSet<String>();
