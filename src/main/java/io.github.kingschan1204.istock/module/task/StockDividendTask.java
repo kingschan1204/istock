@@ -103,7 +103,9 @@ public class StockDividendTask {
         if(null==east){
             east=new JSONArray();
         }
-        east.addAll(ths);
+        if(null!=ths){
+            east.addAll(ths);
+        }
         JSONArray ret=new JSONArray();
         Set<String> titles=new HashSet<String>();
         for (int i = 0; i < east.size(); i++) {
