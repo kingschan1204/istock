@@ -1,13 +1,26 @@
 package io.github.kingschan1204.istock.module.maindata.ctrl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.WriteResult;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Iterator;
 
 /**
  * @author chenguoxiang
@@ -41,6 +54,37 @@ public class StockCtrl {
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    @Autowired
+    private MongoTemplate template;
+
+    @ResponseBody
+    @RequestMapping(value = "/stock/mapReduce")
+    public String mapReduce() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("releaseDate").gte("2014-01-01").lte("2018-12-31"));
+        MapReduceResults<BasicDBObject> result= template.mapReduce(query, "stock_dividend",
+                "classpath:dy5years_map.js", "classpath:dy5years_reduce.js",
+                new MapReduceOptions().outputCollection("stock_dy_statistics_demo"), BasicDBObject.class);
+        Iterator<BasicDBObject> iter = result.iterator();
+        while(iter.hasNext()){
+            BasicDBObject item= iter.next();
+            String code =  item.getString("_id");
+            BasicDBObject value = (BasicDBObject) item.get("value");
+            if(value.containsKey("size")&&value.getInt("size")>4){
+                double percent =Double.parseDouble(value.getString("percent"));
+                WriteResult wr = template.upsert(
+                        new Query(Criteria.where("_id").is(code)),
+                        new Update()
+                                .set("_id", code)
+                                .set("fiveYearDy", percent),
+                        "stock"
+                );
+            }
+
+        }
+        return "success";
     }
 
 

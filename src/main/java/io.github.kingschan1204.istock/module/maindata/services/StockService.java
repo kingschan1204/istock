@@ -205,6 +205,9 @@ public class StockService {
             if(temp.containsKey("dy")){
                 temp.put("dy",temp.getString("dy")+"%");
             }
+            if(temp.containsKey("fiveYearDy")){
+                temp.put("fiveYearDy",temp.getString("fiveYearDy")+"%");
+            }
 
         }
 

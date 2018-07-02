@@ -38,6 +38,7 @@ public class Stock {
     private Integer dividendUpdateDay;
     private Double dy;//实时股息率
     private Integer dyDate;//实时股息更新时间
+    private Double fiveYearDy;//5年平均股息
 
 
     public String getCode() {
@@ -222,5 +223,13 @@ public class Stock {
 
     public void setInfoDate(Integer infoDate) {
         this.infoDate = infoDate;
+    }
+
+    public Double getFiveYearDy() {
+        return fiveYearDy;
+    }
+
+    public void setFiveYearDy(Double fiveYearDy) {
+        this.fiveYearDy = fiveYearDy;
     }
 }
