@@ -71,8 +71,7 @@
                         <li><a href="#" id="dy_btn">历史分红</a></li>
                         <li><a href="#" id="roe_btn">历史净资产收益率</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="#" id="pe_btn">历史市盈率</a></li>
-                        <li><a href="#" id="pb_btn">历史市净率</a></li>
+                        <li><a href="#" id="his_btn">历史pb/pe/股价</a></li>
                     </ul>
                 </div>
             </form>
@@ -220,23 +219,15 @@
             var rowData = $("#jqGrid").jqGrid('getRowData', ids);
             window.open("/stock/his_roe/" + rowData.code);
         });
-        $("#pe_btn").click(function () {
+
+        $("#his_btn").click(function () {
             var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
             if (null == ids) {
                 alert("请选择要查看的股票!");
                 return;
             }
             var rowData = $("#jqGrid").jqGrid('getRowData', ids);
-            window.open("/stock/his_pe/" + rowData.code);
-        });
-        $("#pb_btn").click(function () {
-            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
-            if (null == ids) {
-                alert("请选择要查看的股票!");
-                return;
-            }
-            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
-            window.open("/stock/his_pb/" + rowData.code);
+            window.open("/stock/info/" + rowData.code);
         });
     </script>
 </#compress>

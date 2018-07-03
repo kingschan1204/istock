@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
 import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisPbRepository;
@@ -44,6 +46,8 @@ public class StockService {
     private StockSpider spider;
     @Autowired
     private MongoTemplate template;
+    @Autowired
+    private JisiluSpilder jisiluSpilder;
 
     /**
      * add stock code
@@ -280,6 +284,72 @@ public class StockService {
         //code
         List<StockHisPe> list =template.find(query,StockHisPe.class);
         return list;
+    }
+
+    /**
+     * 抓取历史数据
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    public String crawAndSaveHisPbPe(String code)throws Exception{
+
+        StringBuilder price = new StringBuilder();
+        StringBuilder pe = new StringBuilder();
+        StringBuilder pb = new StringBuilder();
+        StringBuilder date = new StringBuilder();
+
+        JSONObject data= jisiluSpilder.crawHisPbPePriceAndReports(code);
+        List<DBObject> list = new ArrayList<>();
+        DBCollection hisdata = template.getCollection("stock_his_pe_pb");
+        DBCollection report = template.getCollection("stock_report");
+
+        JSONArray hisdataJsons=data.getJSONArray("hisdata");
+        for (int i = 0; i <hisdataJsons.size() ; i++) {
+            JSONObject row = hisdataJsons.getJSONObject(i);
+            DBObject object = new BasicDBObject();
+            object.put("code",code);
+            object.put("date",row.getString("date"));
+            object.put("pb",row.getDouble("pb"));
+            object.put("pe",row.getDouble("pe"));
+            object.put("price",row.getDouble("price"));
+            //顺便拼成字符串
+            date.append(",").append(row.getString("date")).append("'");
+            price.append(row.getDouble("price"));
+            pb.append(row.getDouble("pb"));
+            pe.append(row.getDouble("pe"));
+            if(i!=hisdataJsons.size()-1){
+                price.append(",");
+                pb.append(",");
+                pe.append(",");
+                date.append(",");
+            }
+
+            list.add(object);
+            if ((i != 0 && i %1000 == 0)||i==hisdataJsons.size()-1){
+                hisdata.insert(list);
+                list.clear();
+            }
+        }
+
+
+        JSONArray reportJsons=data.getJSONArray("reports");
+        list = new ArrayList<>();
+        for (int i = 0; i <reportJsons.size() ; i++) {
+            JSONObject row = reportJsons.getJSONObject(i);
+            DBObject object = new BasicDBObject();
+            object.put("code",code);
+            object.put("releaseDay",row.getString("releaseDay"));
+            object.put("link",row.getString("link"));
+            object.put("title",row.getString("title"));
+            list.add(object);
+            if ((i != 0 && i %1000 == 0)||i==reportJsons.size()-1){
+                report.insert(list);
+                list.clear();
+            }
+        }
+        //价格》日期》pb》pe
+        return String.format("%s|%s|%s|%s",price.toString(),date.toString(),pb.toString(),pe.toString());
     }
 
 }
