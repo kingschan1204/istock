@@ -148,10 +148,11 @@ public class StockService {
             double d = Double.parseDouble(pb.split("-")[1]);
             query.addCriteria(Criteria.where("pb").gte(s).lte(d));
         }
-        if(null!=dy&&dy.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
-            double s = Double.parseDouble(dy.split("-")[0]);
-            double d = Double.parseDouble(dy.split("-")[1]);
-            query.addCriteria(Criteria.where("dy").gte(s).lte(d));
+        if(null!=dy&&dy.matches("(dy|dividend|fiveYearDy)\\-\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
+            String field=dy.split("-")[0];
+            double s = Double.parseDouble(dy.split("-")[1]);
+            double d = Double.parseDouble(dy.split("-")[2]);
+            query.addCriteria(Criteria.where(field).gte(s).lte(d));
         }
         //记录总数
         Long total=template.count(query,Stock.class);
@@ -280,7 +281,5 @@ public class StockService {
         List<StockHisPe> list =template.find(query,StockHisPe.class);
         return list;
     }
-
-
 
 }
