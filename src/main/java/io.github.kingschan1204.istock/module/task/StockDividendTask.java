@@ -60,9 +60,11 @@ public class StockDividendTask {
                 dividends=combineHisDy(stock.getCode());
                 if(null!=dividends&&dividends.size()>0){
                     for (int j = 0; j < dividends.size(); j++) {
-                        if(dividends.getJSONObject(j).getDouble("percent")>0){
-                            percent=dividends.getJSONObject(j).getDoubleValue("percent");
-                            date=dividends.getJSONObject(j).getString("cxcqr");
+                        double tempPercent=dividends.getJSONObject(j).getDouble("percent");
+                        String temp_date=dividends.getJSONObject(j).getString("cxcqr");
+                        if(tempPercent>0&&!temp_date.equals("-")){
+                            percent=tempPercent;
+                            date=temp_date;
                             break;
                         }
                     }
