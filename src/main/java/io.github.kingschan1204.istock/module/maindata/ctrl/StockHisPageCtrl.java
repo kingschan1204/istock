@@ -208,13 +208,12 @@ public class StockHisPageCtrl {
         query.addCriteria(Criteria.where("code").is(code));
         List<StockHisPbPe> lis = template.find(query, StockHisPbPe.class);
         if (null == lis || lis.size() == 0) {
-            String data = stockService.crawAndSaveHisPbPe(code);
-            String[] array = data.split("|");
+            List<String> data = stockService.crawAndSaveHisPbPe(code);
             //价格》日期》pb》pe
-            price.append(array[0]);
-            date.append(array[1]);
-            pb.append(array[2]);
-            pe.append(array[3]);
+            price.append(data.get(0));
+            date.append(data.get(1));
+            pb.append(data.get(2));
+            pe.append(data.get(3));
 
         } else {
             for (int i = 0; i < lis.size(); i++) {
@@ -234,7 +233,7 @@ public class StockHisPageCtrl {
         }
         mav.addObject("pb", pb.toString());
         mav.addObject("pe", pe.toString());
-        mav.addObject("date", date.toString());
+        mav.addObject("dates", date.toString());
         mav.addObject("price", price.toString());
         mav.addObject("code", code);
         return mav;

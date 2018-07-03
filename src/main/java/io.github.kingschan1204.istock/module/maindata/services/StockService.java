@@ -292,7 +292,7 @@ public class StockService {
      * @return
      * @throws Exception
      */
-    public String crawAndSaveHisPbPe(String code)throws Exception{
+    public List<String> crawAndSaveHisPbPe(String code)throws Exception{
 
         StringBuilder price = new StringBuilder();
         StringBuilder pe = new StringBuilder();
@@ -314,7 +314,7 @@ public class StockService {
             object.put("pe",row.getDouble("pe"));
             object.put("price",row.getDouble("price"));
             //顺便拼成字符串
-            date.append(",").append(row.getString("date")).append("'");
+            date.append("'").append(row.getString("date")).append("'");
             price.append(row.getDouble("price"));
             pb.append(row.getDouble("pb"));
             pe.append(row.getDouble("pe"));
@@ -349,7 +349,12 @@ public class StockService {
             }
         }
         //价格》日期》pb》pe
-        return String.format("%s|%s|%s|%s",price.toString(),date.toString(),pb.toString(),pe.toString());
+        List<String> result = new ArrayList<>();
+        result.add(price.toString());
+        result.add(date.toString());
+        result.add(pb.toString());
+        result.add(pe.toString());
+        return result;
     }
 
 }
