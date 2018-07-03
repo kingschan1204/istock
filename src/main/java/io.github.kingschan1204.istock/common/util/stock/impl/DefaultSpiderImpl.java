@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -91,7 +93,7 @@ public class DefaultSpiderImpl implements StockSpider {
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
             json.put("code", data[0]);//代码
             json.put("type", StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));
-            json.put("name", data[1].replaceAll("\\s",""));//名称
+            json.put("name", data[1].replaceAll("\\s", ""));//名称
             json.put("price", xj);//现价
             json.put("todayMax", today_max);//今日最高价
             json.put("todayMin", today_min);//今日最低价
@@ -151,9 +153,9 @@ public class DefaultSpiderImpl implements StockSpider {
             JSONArray jsons = new JSONArray();
             JSONObject json;
             for (int i = 1; i < rows.size(); i++) {
-                String rowtext=rows.get(i).select("td").text();
-                String[] data =rowtext .split(" ");
-                if(data[6].equals("--")||data[9].equals("--")){
+                String rowtext = rows.get(i).select("td").text();
+                String[] data = rowtext.split(" ");
+                if (data[6].equals("--") || data[9].equals("--")) {
                     continue;
                 }
                 log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);

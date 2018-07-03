@@ -10,6 +10,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +70,30 @@ public interface StockSpider {
         }
 
     }
+
+    /**
+     * 提取文本中匹配正则的字符串
+     * @param text 源字符串
+     * @param regx 正则
+     * @return
+     */
+    static List<String> findStringByRegx(String text,String regx){
+         List<String> list = new ArrayList<String>();
+        try {
+            Pattern pattern = Pattern.compile(regx);
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                list.add(matcher.group());
+            }
+
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        }
+
+    }
+
     /**
      * 格式化数据，如果不是数字全部返回-1
      *
@@ -77,7 +102,6 @@ public interface StockSpider {
      */
      static Double mathFormat(String value) {
         String v =value.replaceAll("[^0-9|\\.|\\-]","");
-        //value.replaceAll("\\%", "").replace("亿", "");
         if (v.matches(regexNumber)) {
             return Double.valueOf(v);
         }
