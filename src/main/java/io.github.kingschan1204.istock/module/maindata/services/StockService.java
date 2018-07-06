@@ -354,6 +354,7 @@ public class StockService {
         result.add(date.toString());
         result.add(pb.toString());
         result.add(pe.toString());
+        result.add(reportJsons.toJSONString());
         return result;
     }
 

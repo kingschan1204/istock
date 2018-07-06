@@ -239,4 +239,21 @@ public class StockHisPageCtrl {
         return mav;
     }
 
+    @RequestMapping("/stock/report/{code}")
+    public ModelAndView getStockReport(@PathVariable String code) throws Exception {
+        ModelAndView mav = new ModelAndView(template_path + "report");
+        Query query = new Query();
+        query.addCriteria(Criteria.where("code").is(code));
+        List<StockReport> lis = template.find(query, StockReport.class);
+        if (null==lis||lis.size()==0){
+            List<String> data = stockService.crawAndSaveHisPbPe(code);
+            JSONArray jsons =JSONArray.parseArray(data.get(4));
+            lis=jsons.toJavaList(StockReport.class);
+        }
+
+        mav.addObject("reports", lis);
+        return mav;
+
+    }
+
 }

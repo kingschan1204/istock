@@ -72,6 +72,7 @@
                         <li><a href="#" id="roe_btn">历史净资产收益率</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="#" id="his_btn">历史pb/pe/股价</a></li>
+                        <li><a href="#" id="report_btn">历史财务报表</a></li>
                     </ul>
                 </div>
             </form>
@@ -229,5 +230,15 @@
             var rowData = $("#jqGrid").jqGrid('getRowData', ids);
             window.open("/stock/info/" + rowData.code);
         });
+        $("#report_btn").click(function () {
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/report/" + rowData.code);
+        });
+
     </script>
 </#compress>
