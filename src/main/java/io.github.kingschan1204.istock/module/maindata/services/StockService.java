@@ -8,10 +8,11 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
-import io.github.kingschan1204.istock.module.maindata.po.*;
+import io.github.kingschan1204.istock.module.maindata.po.Stock;
+import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
+import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
+import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
-import io.github.kingschan1204.istock.module.maindata.repository.StockHisPbRepository;
-import io.github.kingschan1204.istock.module.maindata.repository.StockHisPeRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -38,10 +39,6 @@ public class StockService {
     private StockHisDividendRepository stockHisDividendRepository;
     @Autowired
     private StockHisRoeService stockHisRoeService;
-    @Autowired
-    private StockHisPbRepository stockHisPbRepository;
-    @Autowired
-    private StockHisPeRepository stockHisPeRepository;
     @Autowired
     private StockSpider spider;
     @Autowired
@@ -84,42 +81,12 @@ public class StockService {
             json.putAll(info);
             // his roe
             stockHisRoeService.addStockHisRoe(scode);
-            //his pb
-            addStockHisPb(scode);
-            //his pe
-            addStockHisPe(scode);
         }
         List<Stock> list = JSON.parseArray(jsons.toJSONString(), Stock.class);
         stockRepository.save(list);
     }
 
 
-    /**
-     * 增加历史pe
-     * @param code
-     * @throws Exception
-     */
-    public List<StockHisPe> addStockHisPe(String code)throws Exception{
-        JSONArray jsons=spider.getHistoryPE(StockSpider.formatStockCode(code));
-        List<StockHisPe> lis = JSON.parseArray(jsons.toJSONString(),StockHisPe.class);
-        template.remove(new Query(Criteria.where("code").is(code)),StockHisPe.class);
-        stockHisPeRepository.save(lis);
-        return  lis;
-    }
-
-    /**
-     * 增加历史pb
-     * @param code
-     * @throws Exception
-     */
-    public List<StockHisPb> addStockHisPb(String code)throws Exception{
-        JSONArray jsons=spider.getHistoryPB(StockSpider.formatStockCode(code));
-        List<StockHisPb> lis = JSON.parseArray(jsons.toJSONString(),StockHisPb.class);
-        template.remove(new Query(Criteria.where("code").is(code)),StockHisPb.class);
-        stockHisPbRepository.save(lis);
-        return lis;
-
-    }
 
 
     public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
@@ -259,32 +226,6 @@ public class StockService {
     }
 
 
-    public List<StockHisPb> getStockHisPb(String code){
-        Query query = new Query();
-        query.addCriteria(Criteria.where("code").is(code));
-        //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
-        orders.add(new Sort.Order(Sort.Direction.ASC,"date"));
-        Sort sort = new Sort(orders);
-        query.with(sort);
-        //code
-        List<StockHisPb> list =template.find(query,StockHisPb.class);
-        return list;
-    }
-
-
-    public List<StockHisPe> getStockHisPe(String code){
-        Query query = new Query();
-        query.addCriteria(Criteria.where("code").is(code));
-        //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
-        orders.add(new Sort.Order(Sort.Direction.ASC,"date"));
-        Sort sort = new Sort(orders);
-        query.with(sort);
-        //code
-        List<StockHisPe> list =template.find(query,StockHisPe.class);
-        return list;
-    }
 
     /**
      * 抓取历史数据

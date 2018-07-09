@@ -9,18 +9,20 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<table class="table table-striped table-hover">
-    <thead>
-    <th>报告期</th>
-    <th>披露日期</th>
+<div class="container">
+    <table class="table table-striped table-hover">
+        <thead>
+        <th>报告期</th>
+        <th>披露日期</th>
 
-    </thead>
-    <#list reports as row>
-        <tr>
-            <td><a href="${row.link}" target="_blank">${row.title}</a> </td>
-            <td>${row.releaseDay}</td>
-        </tr>
-    </#list>
-</table>
+        </thead>
+        <#list reports as row>
+            <tr>
+                <td><a href="${row.link}" target="_blank">${row.title}</a></td>
+                <td>${row.releaseDay}</td>
+            </tr>
+        </#list>
+    </table>
+</div>
 </body>
 </html>

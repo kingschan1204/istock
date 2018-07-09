@@ -62,7 +62,7 @@ public class StockDividendTask {
                     for (int j = 0; j < dividends.size(); j++) {
                         double tempPercent=dividends.getJSONObject(j).getDouble("percent");
                         String temp_date=dividends.getJSONObject(j).getString("cxcqr");
-                        if(tempPercent>0&&!temp_date.equals("-")){
+                        if(tempPercent>=0&&!temp_date.equals("-")){
                             percent=tempPercent;
                             date=temp_date;
                             break;

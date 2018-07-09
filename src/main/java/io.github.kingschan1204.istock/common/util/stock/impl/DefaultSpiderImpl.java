@@ -205,65 +205,6 @@ public class DefaultSpiderImpl implements StockSpider {
         return jsons;
     }
 
-    @Override
-    public JSONArray getHistoryPE(String code) throws Exception {
-        String url = String.format("https://androidinvest.com/Stock/History/%s", StockSpider.formatStockCode(code).toUpperCase());
-        String regex = "\'|\\[|\\]";
-        log.info("craw history pe :{}", url);
-        StockSpider.enableSSLSocket();
-        JSONArray jsons = new JSONArray();
-        Document doc = null;
-        try {
-            doc = Jsoup.connect(url).userAgent(useAgent).timeout(timeout).get();
-            Element div = doc.getElementById("chart2");
-            String data[] = div.text().split("@");//日期@市盈率@股价
-            String date[] = data[0].replaceAll(regex, "").split(",");
-            String pe[] = data[1].replaceAll(regex, "").split(",");
-            String price[] = data[2].replaceAll(regex, "").split(",");
-            JSONObject json;
-            for (int i = 0; i < date.length; i++) {
-                json = new JSONObject();
-                json.put("code", code.replaceAll("\\D", ""));
-                json.put("date", date[i].trim());
-                json.put("pe", pe[i].trim());
-                json.put("price", price[i].trim());
-                jsons.add(json);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return jsons;
-    }
-
-    @Override
-    public JSONArray getHistoryPB(String code) throws Exception {
-        String url = String.format("https://androidinvest.com/Stock/HistoryPB/%s", StockSpider.formatStockCode(code).toUpperCase());
-        log.info("craw history pb :{}", url);
-        StockSpider.enableSSLSocket();
-        JSONArray jsons = new JSONArray();
-        Document doc = null;
-        try {
-            doc = Jsoup.connect(url).userAgent(useAgent).timeout(timeout).get();
-            Element div = doc.getElementById("chart4");
-            String data[] = div.text().split("@");//日期@市净率@股价
-            String date[] = data[0].replaceAll("\'|\\[|\\]", "").split(",");
-            String pb[] = data[1].replaceAll("\'|\\[|\\]", "").split(",");
-            String price[] = data[2].replaceAll("\'|\\[|\\]", "").split(",");
-            JSONObject json;
-            for (int i = 0; i < date.length; i++) {
-                json = new JSONObject();
-                json.put("code", code.replaceAll("\\D", ""));
-                json.put("date", date[i].trim());
-                json.put("pb", pb[i].trim());
-                json.put("price", price[i].trim());
-                jsons.add(json);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return jsons;
-    }
 
     @Override
     public List<String> getAllStockCode() throws Exception {
