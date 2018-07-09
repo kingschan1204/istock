@@ -185,6 +185,8 @@ public class DefaultSpiderImpl implements StockSpider {
         if (!new File(path).exists()) {
             //下载
             FileCommonOperactionTool.downloadFile(url, "./data/", null);
+        }else{
+            log.info("文件存在，直接读取：{}",path);
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(String.format("./data/%s_main_year.xls", code));

@@ -13,9 +13,13 @@ public class StockCode {
 
     @Id
     private String code;
+    private Integer hrdud;//history report data update date 历史年度报表更新时间
 
     public StockCode(){}
-    public StockCode(String code){this.code=code;}
+    public StockCode(String code){
+        this.code=code;
+        this.hrdud=0;
+    }
 
 
     public String getCode() {
@@ -26,4 +30,11 @@ public class StockCode {
         this.code = code;
     }
 
+    public Integer getHrdud() {
+        return hrdud;
+    }
+
+    public void setHrdud(Integer hrdud) {
+        this.hrdud = hrdud;
+    }
 }
