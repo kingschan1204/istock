@@ -180,15 +180,16 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONArray getHistoryROE(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=%s", code);
-        String path = String.format("./data/%s_main_year.xls", code);
+        String path = null;//String.format("./data/%s_main_year.xls", code);
+        String referrer=String.format("http://stockpage.10jqka.com.cn/600725/finance/",code);
         if (!new File(path).exists()) {
             //下载
-            FileCommonOperactionTool.downloadFile(url, "./data/", null);
+            path= FileCommonOperactionTool.downloadFile(url, referrer,"./data/", null);
         }else{
             log.info("文件存在，直接读取：{}",path);
         }
         //读取excel数据
-        List<Object[]> list = ExcelOperactionTool.readExcelData(String.format("./data/%s_main_year.xls", code));
+        List<Object[]> list = ExcelOperactionTool.readExcelData(path);
         Object[] year = list.get(1);
         Object[] roe = list.get(10);
         Object[] roeTb = list.get(11);
@@ -286,7 +287,7 @@ public class DefaultSpiderImpl implements StockSpider {
         String path = String.format("./data/%s", filename);
         if (!new File(path).exists()) {
             //下载
-            FileCommonOperactionTool.downloadFile(url, "./data/", filename);
+            FileCommonOperactionTool.downloadFile(url, "","./data/", filename);
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
