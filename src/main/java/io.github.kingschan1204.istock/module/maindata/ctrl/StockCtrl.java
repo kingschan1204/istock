@@ -68,7 +68,7 @@ public class StockCtrl {
         query.addCriteria(Criteria.where("releaseDate").gte(startDate).lte(endDate));
         MapReduceResults<BasicDBObject> result = template.mapReduce(query, "stock_dividend",
                 "classpath:dy5years_map.js", "classpath:dy5years_reduce.js",
-                new MapReduceOptions().outputCollection("stock_dy_statistics_demo"), BasicDBObject.class);
+                new MapReduceOptions().outputCollection("stock_dy_statistics"), BasicDBObject.class);
         Iterator<BasicDBObject> iter = result.iterator();
         while (iter.hasNext()) {
             BasicDBObject item = iter.next();

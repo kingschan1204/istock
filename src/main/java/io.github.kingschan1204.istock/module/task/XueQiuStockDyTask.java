@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.task;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.WriteResult;
+import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
@@ -37,12 +38,37 @@ public class XueQiuStockDyTask {
     private MongoTemplate template;
     @Autowired
     private StockDyQueueRepository stockDyQueueRepository;
+    @Autowired
+    EhcacheUtil ehcacheUtil;
+    final String cacheName="XueQiuStockDyTask";
+
+    /**
+     * 是否错误次数过多，停止任务
+     * @return
+     */
+    boolean stopTask(){
+        return getErrorTotal()>5;
+    }
+
+    /**
+     * 得到执行错误的记录
+     * @return
+     */
+    int getErrorTotal(){
+        Object value =ehcacheUtil.getKey(cacheName,"error");
+        int val=null==value?0:(int)value;
+        return val;
+    }
 
     @Scheduled(cron = "0 0/1 * * * ?")
     public void stockDividendExecute() throws Exception {
         int day = StockDateUtil.getCurrentWeekDay();
         if (day == 6 || day == 0) {
             log.debug("非交易时间不执行操作...");
+            return;
+        }
+        if(stopTask()){
+            log.info("错误次数过多，不执行任务!");
             return;
         }
         Long start = System.currentTimeMillis();
@@ -71,6 +97,7 @@ public class XueQiuStockDyTask {
             template.save(stockDyQueue, "stock_dy_queue");
             log.info("dy更新第{}页,共{}页 耗时：{} ms", pageindex, totalpage, (System.currentTimeMillis() - start));
         } catch (Exception ex) {
+            ehcacheUtil.addKey(cacheName,"error",getErrorTotal()+1);
             log.error("dy 出错了:{}", ex);
             ex.printStackTrace();
         }

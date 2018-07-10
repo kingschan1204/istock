@@ -4,7 +4,7 @@
     <groupId>io.github.kingschan1204</groupId>
     <artifactId>istock</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
     <name>pritice Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <!-- 继承父包 -->
@@ -110,7 +110,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
-
+        <!--开启 cache 缓存-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- ehcache 缓存 -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
