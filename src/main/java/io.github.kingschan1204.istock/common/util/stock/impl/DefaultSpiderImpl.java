@@ -28,7 +28,6 @@ import java.util.*;
 
 /**
  * 默认爬虫
- *
  * @author chenguoxiang
  * @create 2018-01-31 14:02
  **/
@@ -263,6 +262,7 @@ public class DefaultSpiderImpl implements StockSpider {
 
     @Override
     public List<String> getStockCodeBySH() throws Exception {
+        List<String> list = new ArrayList<>();
         String url = "http://www.sse.com.cn/js/common/ssesuggestdata.js";
         log.info("craw sh codes :{}", url);
         Document infoDoc = Jsoup.connect(url).userAgent(useAgent)
@@ -271,7 +271,10 @@ public class DefaultSpiderImpl implements StockSpider {
                 .get();
         String result = StockSpider.findStrByRegx(infoDoc.html(), "60\\d{4}");
         String[] codes = result.split(",");
-        return Arrays.asList(codes);
+        Arrays.stream(codes).forEach(code ->{
+            list.add(StockSpider.formatStockCode(code));
+        });
+        return list;
     }
 
     @Override
@@ -289,7 +292,7 @@ public class DefaultSpiderImpl implements StockSpider {
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
         for (Object[] row : list) {
             if (row[0].toString().trim().matches("^00\\d{4}")) {
-                codes.add(row[0].toString().trim());
+                codes.add(StockSpider.formatStockCode(row[0].toString().trim()));
             }
         }
         return codes;

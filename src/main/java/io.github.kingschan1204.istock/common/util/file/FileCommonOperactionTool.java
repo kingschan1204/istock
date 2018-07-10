@@ -43,6 +43,7 @@ public class FileCommonOperactionTool {
            out.write(resultResponse.bodyAsBytes());
        }catch (Exception ex){
            log.error("{}",ex);
+           log.error("文件下载错误：{}",url);
            ex.printStackTrace();
        }finally {
            out.close();

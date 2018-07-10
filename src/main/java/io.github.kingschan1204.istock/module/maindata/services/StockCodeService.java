@@ -42,7 +42,6 @@ public class StockCodeService {
         codes.addAll(szCodes);
         codes.addAll(shCodes);
         codes.addAll(allcodes);
-
         codes.stream().forEach(code -> {
                     mongoTemplate.upsert(
                             new Query(Criteria.where("_id").is(code)),
