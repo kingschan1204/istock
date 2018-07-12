@@ -37,6 +37,7 @@ public class Stock {
     private Double dy;//实时股息率
     private Integer dyDate;//实时股息更新时间
     private Double fiveYearDy;//5年平均股息
+    private Double fiveYearRoe;//5年平均Roe
 
 
     public String getCode() {
@@ -215,6 +216,7 @@ public class Stock {
     public void setDyDate(Integer dyDate) {
         this.dyDate = dyDate;
     }
+
     public Integer getInfoDate() {
         return infoDate;
     }
@@ -229,5 +231,13 @@ public class Stock {
 
     public void setFiveYearDy(Double fiveYearDy) {
         this.fiveYearDy = fiveYearDy;
+    }
+
+    public Double getFiveYearRoe() {
+        return fiveYearRoe;
+    }
+
+    public void setFiveYearRoe(Double fiveYearRoe) {
+        this.fiveYearRoe = fiveYearRoe;
     }
 }
