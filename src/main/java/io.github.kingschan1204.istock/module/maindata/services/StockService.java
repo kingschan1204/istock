@@ -155,10 +155,10 @@ public class StockService {
             if(temp.containsKey("totalValue")&&temp.getDouble("totalValue")!=-1){
                 temp.put("totalValue",temp.getString("totalValue")+"亿");
             }
-            if(temp.containsKey("dividend")&&temp.getDouble("pb")==-1){
+            if(temp.containsKey("pb")&&temp.getDouble("pb")==-1){
                 temp.put("pb","--");
             }
-            if(temp.containsKey("dividend")&&temp.getDouble("pes")==-1){
+            if(temp.containsKey("pes")&&temp.getDouble("pes")==-1){
                 temp.put("pes","--");
             }
             if(temp.containsKey("ped")&&temp.getDouble("ped")==-1){

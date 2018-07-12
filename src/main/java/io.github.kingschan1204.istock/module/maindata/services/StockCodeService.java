@@ -45,7 +45,7 @@ public class StockCodeService {
         codes.stream().forEach(code -> {
                     mongoTemplate.upsert(
                             new Query(Criteria.where("_id").is(code)),
-                            new Update().set("_id", code),
+                            new Update().set("_id", code).set("hrdud",0).set("xlsError",0),
                             "stock_code"
                     );
                 }

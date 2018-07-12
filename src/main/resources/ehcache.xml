@@ -37,30 +37,13 @@ timeToIdleSeconds=y：缓存创建以后，最后一次访问缓存的日期至�
 timeToIdleSeconds=120；
 timeToLiveSeconds=180；
 表示此缓存最多可以存活3分钟，如果期间超过2分钟未访问 那么此缓存失效
-
-
-        -->
-
+-->
+    <!--task任务错误总次数统计数据保留12小时-->
+    <cache name="TaskError" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="43200" memoryStoreEvictionPolicy="LFU" />
     <!-- 历史Roe失败次数记录，保留10分钟  错误4次后过10分钟再很执行任务-->
-    <cache
-            name="ThsHisYearReportTask"
-            eternal="false"
-            maxElementsInMemory="1000"
-            overflowToDisk="false"
-            diskPersistent="false"
-            timeToLiveSeconds="600"
-            memoryStoreEvictionPolicy="LFU"
-    />
+    <cache name="ThsHisYearReportTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" />
     <!--动态股息错误记录  错误超过5次后过一个小时再执行任务-->
-    <cache
-            name="XueQiuStockDyTask"
-            eternal="false"
-            maxElementsInMemory="1000"
-            overflowToDisk="false"
-            diskPersistent="false"
-            timeToLiveSeconds="3600"
-            memoryStoreEvictionPolicy="LFU"
-    />
+    <cache name="XueQiuStockDyTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="3600" memoryStoreEvictionPolicy="LFU" />
 
 </ehcache>
 

@@ -82,7 +82,7 @@ public class ThsStockInfoTask {
                 ;
             }
         }
-        log.info(String.format("info更新耗时：%s ms ,影响行: %s", (System.currentTimeMillis() - start),affected));
+        log.info(String.format("craw stock info and update data use ：%s ms ,affected rows : %s", (System.currentTimeMillis() - start),affected));
     }
 
 }

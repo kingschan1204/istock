@@ -97,7 +97,7 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("todayMax", today_max);//今日最高价
             json.put("todayMin", today_min);//今日最低价
             json.put("yesterdayPrice", zs);//昨收
-            json.put("priceDate", new Date());
+            json.put("priceDate", StockDateUtil.getCurrentDateTimeNumber());
             rows.add(json);
         }
         return rows;
@@ -180,11 +180,11 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONArray getHistoryROE(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=%s", code);
-        String path = null;//String.format("./data/%s_main_year.xls", code);
-        String referrer=String.format("http://stockpage.10jqka.com.cn/600725/finance/",code);
+        String path = String.format("./data/%s_main_year.xls", code);
+        String referrer=String.format("http://basic.10jqka.com.cn/%s/finance.html",code);
         if (!new File(path).exists()) {
             //下载
-            path= FileCommonOperactionTool.downloadFile(url, referrer,"./data/", null);
+            path= FileCommonOperactionTool.downloadFile(url, referrer,"./data/", code+".xls");
         }else{
             log.info("文件存在，直接读取：{}",path);
         }

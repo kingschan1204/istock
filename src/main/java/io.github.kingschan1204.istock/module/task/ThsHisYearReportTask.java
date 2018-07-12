@@ -61,9 +61,10 @@ public class ThsHisYearReportTask {
 
     @Scheduled(cron = "*/6 * * * * ?")
     public void execute() throws Exception {
-        if (StockDateUtil.stockOpenTime()) { //开盘时间不处理
+        Long start = System.currentTimeMillis();
+        /*if (StockDateUtil.stockOpenTime()) { //开盘时间不处理
             return;
-        }
+        }*/
         if(stopTask()){
             log.info("错误次数过多，不执行任务!");
             return;
@@ -71,12 +72,12 @@ public class ThsHisYearReportTask {
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("hrdud").lt(dateNumber-3); //3天更新一把
-        Criteria c2 = Criteria.where("hrdud").exists(false);
-        Query query = new Query(cr.orOperator(c1,c2));
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        Criteria c2 = Criteria.where("xlsError").is(0);
+        Query query = new Query(cr.andOperator(c1,c2));
+        /*List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
         orders.add(new Sort.Order(Sort.Direction.ASC,"_id"));
         Sort sort = new Sort(orders);
-        query.with(sort);
+        query.with(sort);*/
         query.limit(2);
         List<StockCode> list = template.find(query, StockCode.class);
         if(null==list||list.size()==0){
@@ -99,8 +100,14 @@ public class ThsHisYearReportTask {
             } catch (Exception e) {
                 e.printStackTrace();
                 ehcacheUtil.addKey(cacheName,"error",getErrorTotal()+1);
+                template.upsert(
+                        new Query(Criteria.where("_id").is(code.getCode())),new Update().set("xlsError", 1),
+                        "stock_code"
+                );
             }
         });
+        log.info(String.format("download xls and update data use ：%s ms ", (System.currentTimeMillis() - start)));
+        //end
 
     }
 }

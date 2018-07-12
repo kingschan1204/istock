@@ -139,6 +139,16 @@ public class StockDateUtil {
     }
 
     /**
+     * 得到当前时间的Long数字
+     * @return
+     */
+    public static Long getCurrentDateTimeNumber() {
+        String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System
+                .currentTimeMillis()));
+        return Long.valueOf(date);
+    }
+
+    /**
      * 获取某年第一天日期
      *
      * @param year 年份
@@ -177,5 +187,6 @@ public class StockDateUtil {
                 .currentTimeMillis()));
         return Integer.parseInt(year);
     }
+
 
 }
