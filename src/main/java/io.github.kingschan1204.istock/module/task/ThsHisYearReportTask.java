@@ -62,9 +62,6 @@ public class ThsHisYearReportTask {
     @Scheduled(cron = "*/6 * * * * ?")
     public void execute() throws Exception {
         Long start = System.currentTimeMillis();
-        /*if (StockDateUtil.stockOpenTime()) { //开盘时间不处理
-            return;
-        }*/
         if(stopTask()){
             log.info("错误次数过多，不执行任务!");
             return;
@@ -74,10 +71,6 @@ public class ThsHisYearReportTask {
         Criteria c1 = Criteria.where("hrdud").lt(dateNumber-3); //3天更新一把
         Criteria c2 = Criteria.where("xlsError").is(0);
         Query query = new Query(cr.andOperator(c1,c2));
-        /*List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
-        orders.add(new Sort.Order(Sort.Direction.ASC,"_id"));
-        Sort sort = new Sort(orders);
-        query.with(sort);*/
         query.limit(2);
         List<StockCode> list = template.find(query, StockCode.class);
         if(null==list||list.size()==0){

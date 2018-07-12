@@ -23,7 +23,7 @@ public class EastmoneySpider extends DefaultSpiderImpl {
 
     private Logger log = LoggerFactory.getLogger(EastmoneySpider.class);
     @Value("${eastmoney.token}")
-    private String token ;
+    private String token;
 
     /**
      * ReportingPeriod:报告期
@@ -46,38 +46,39 @@ public class EastmoneySpider extends DefaultSpiderImpl {
         String regex = "T.*";
         String apiUrl = String.format("http://dcfm.eastmoney.com/EM_MutiSvcExpandInterface/api/js/get?type=DCSOBS&token=%s&p=1&ps=50&sr=-1&st=ReportingPeriod&filter=&cmd=%s", token, code);
         String referer = String.format("http://data.eastmoney.com/yjfp/detail/%s.html", code);
-        Document doc=null;
-        try{
-             doc = Jsoup.connect(apiUrl).userAgent(useAgent)
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(apiUrl).userAgent(useAgent)
                     .timeout(10000)
                     .ignoreContentType(true)
                     .referrer(referer).get();
-        }catch (SocketTimeoutException e){
-            log.error("抓取超时：{}",apiUrl);
+        } catch (SocketTimeoutException e) {
+            log.error("抓取超时：{}", apiUrl);
             return new JSONArray();
         }
         JSONArray data = JSONArray.parseArray(doc.text());
-        if(null==data)return new JSONArray();
-
+        if (null == data) {
+            return new JSONArray();
+        }
         JSONArray jsons = new JSONArray();
         JSONObject temp;
         for (int i = 0; i < data.size(); i++) {
             JSONObject item = data.getJSONObject(i);
             temp = new JSONObject();
             temp.put("code", code);
-            String title=item.getString("ReportingPeriod").replaceAll(regex, "");
-            if(title.matches("^\\d{4}\\-12-31$")){
-                title=title.replaceAll("\\-.*","")+"年报";
+            String title = item.getString("ReportingPeriod").replaceAll(regex, "");
+            if (title.matches("^\\d{4}\\-12-31$")) {
+                title = title.replaceAll("\\-.*", "") + "年报";
             }
-            if(title.matches("^\\d{4}\\-06-30$")){
-                title=title.replaceAll("\\-.*","")+"中报";
+            if (title.matches("^\\d{4}\\-06-30$")) {
+                title = title.replaceAll("\\-.*", "") + "中报";
             }
-            temp.put("title",title);//报告期
+            temp.put("title", title);//报告期
             temp.put("releaseDate", item.getString("ResultsbyDate").replaceAll(regex, ""));//披露时间
             temp.put("plan", item.getString("AllocationPlan"));//分配预案
             temp.put("sgbl", intFormart(item.getString("SGBL")));//送股比例
             temp.put("zgbl", intFormart(item.getString("ZGBL")));//转股比例
-            temp.put("percent",doubleFormat(item.getString("GXL"),true));//股息率
+            temp.put("percent", doubleFormat(item.getString("GXL"), true));//股息率
             temp.put("gqdjr", item.getString("GQDJR").replaceAll(regex, ""));//股权登记日
             temp.put("cxcqr", item.getString("CQCXR").replaceAll(regex, ""));//除息除权日
             temp.put("progress", item.getString("ProjectProgress"));//进度
@@ -85,7 +86,7 @@ public class EastmoneySpider extends DefaultSpiderImpl {
             jsons.add(temp);
 
         }
-        log.info("{}:抓取成功!",code);
+        log.info("{}:抓取成功!", code);
         return jsons;
     }
 
@@ -102,17 +103,17 @@ public class EastmoneySpider extends DefaultSpiderImpl {
      * @param math
      * @return
      */
-    public double doubleFormat(String math,boolean percent) {
-        String regex_number="^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";
-        if(math.matches(regex_number)){
+    public double doubleFormat(String math, boolean percent) {
+        String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";
+        if (math.matches(regexNumber)) {
             Double d = Double.parseDouble(math);
-            if(percent){
-                d=d*100;
+            if (percent) {
+                d = d * 100;
             }
             BigDecimal b = new BigDecimal(d);
             return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
-       return 0d;
+        return 0d;
     }
 
 

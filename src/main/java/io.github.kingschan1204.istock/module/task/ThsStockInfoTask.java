@@ -59,7 +59,7 @@ public class ThsStockInfoTask {
             try {
                 JSONObject info = spider.getStockInfo(stock.getCode());
                 item = info.toJavaObject(Stock.class);
-                if (null == item) return;
+                if (null == item) {return;}
                 WriteResult wr = template.upsert(
                         new Query(Criteria.where("_id").is(stock.getCode())),
                         new Update()

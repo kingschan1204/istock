@@ -74,7 +74,6 @@ public class StockService {
                 //save dividend
                 List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
                 template.remove(new Query(Criteria.where("code").is(scode)),StockHisDividend.class);
-//                stockHisDividendRepository.save(stockHisDividendList);
             }
             json.put("dividend",percent);
             json.put("dividendDate",date);
@@ -132,7 +131,7 @@ public class StockService {
         //排序
         List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
         orders.add(new Sort.Order(
-                psort.equalsIgnoreCase("asc")?Sort.Direction.ASC:Sort.Direction.DESC
+                "asc".equalsIgnoreCase(psort) ?Sort.Direction.ASC:Sort.Direction.DESC
                 ,orderfidld));
         Sort sort = new Sort(orders);
         query.with(sort);

@@ -76,8 +76,8 @@ public class DefaultSpiderImpl implements StockSpider {
             double xj = StockSpider.mathFormat(data[4]);
             double zs = StockSpider.mathFormat(data[3]);
             double zf = (xj - zs) / zs * 100;
-            double today_max = StockSpider.mathFormat(data[5]);
-            double today_min = StockSpider.mathFormat(data[6]);
+            double todayMax = StockSpider.mathFormat(data[5]);
+            double todayMin = StockSpider.mathFormat(data[6]);
             json = new JSONObject();
             if (xj == 0) { //一般这种是停牌的
                 json.put("fluctuate", 0);//波动
@@ -94,8 +94,8 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("type", StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));
             json.put("name", data[1].replaceAll("\\s", ""));//名称
             json.put("price", xj);//现价
-            json.put("todayMax", today_max);//今日最高价
-            json.put("todayMin", today_min);//今日最低价
+            json.put("todayMax", todayMax);//今日最高价
+            json.put("todayMin", todayMin);//今日最低价
             json.put("yesterdayPrice", zs);//昨收
             json.put("priceDate", StockDateUtil.getCurrentDateTimeNumber());
             rows.add(json);
@@ -154,7 +154,7 @@ public class DefaultSpiderImpl implements StockSpider {
             for (int i = 1; i < rows.size(); i++) {
                 String rowtext = rows.get(i).select("td").text();
                 String[] data = rowtext.split(" ");
-                if (data[6].equals("--") || data[9].equals("--")) {
+                if ("--".equals(data[6]) || "--".equals(data[9])) {
                     continue;
                 }
                 log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
@@ -235,6 +235,7 @@ public class DefaultSpiderImpl implements StockSpider {
      * @return
      * @throws Exception
      */
+    @Override
     public JSONObject getDy(int page) throws Exception {
         String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=symbol&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.31&size=100";
         url = String.format(url, page);

@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  **/
 public interface StockSpider {
 
-    static final String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
+    static final String REGEX_NUMBER = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
 
     /**
      * 将股票代码转换成新浪接口的格式http://hq.sinajs.cn/list=
@@ -107,7 +107,7 @@ public interface StockSpider {
      */
     static Double mathFormat(String value) {
         String v = value.replaceAll("[^0-9|\\.|\\-]", "");
-        if (v.matches(regexNumber)) {
+        if (v.matches(REGEX_NUMBER)) {
             return Double.valueOf(v);
         }
         return -1D;
@@ -121,13 +121,14 @@ public interface StockSpider {
      */
     static void enableSSLSocket() throws KeyManagementException, NoSuchAlgorithmException {
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return new X509Certificate[0];
             }
-
+            @Override
             public void checkClientTrusted(X509Certificate[] certs, String authType) {
             }
-
+            @Override
             public void checkServerTrusted(X509Certificate[] certs, String authType) {
             }
         }};
