@@ -8,6 +8,9 @@ import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,7 @@ import java.util.*;
  * @create 2018-03-29 14:50
  **/
 @Component
-public class StockDividendTask {
+public class StockDividendTask implements Job {
 
     private Logger log = LoggerFactory.getLogger(StockDividendTask.class);
 
@@ -41,7 +44,7 @@ public class StockDividendTask {
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
 
-    @Scheduled(cron = "*/6 * * * * ?")
+//    @Scheduled(cron = "*/6 * * * * ?")
     public void stockDividendExecute() throws Exception {
         Integer dateNumber = StockDateUtil.getCurrentDateNumber()-3;
         Criteria cr = new Criteria();
@@ -120,4 +123,12 @@ public class StockDividendTask {
         return ret;
     }
 
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        try {
+            stockDividendExecute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

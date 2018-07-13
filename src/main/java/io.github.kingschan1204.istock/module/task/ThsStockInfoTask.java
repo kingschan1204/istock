@@ -36,7 +36,7 @@ public class ThsStockInfoTask {
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
 
-    @Scheduled(cron = "*/6 * * * * ?")
+//    @Scheduled(cron = "*/6 * * * * ?")
     public void stockInfoExecute() throws Exception {
         if (!StockDateUtil.stockOpenTime()) {
             return;

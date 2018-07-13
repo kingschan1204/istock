@@ -59,7 +59,7 @@ public class ThsHisYearReportTask {
     }
 
 
-    @Scheduled(cron = "*/6 * * * * ?")
+//    @Scheduled(cron = "*/6 * * * * ?")
     public void execute() throws Exception {
         Long start = System.currentTimeMillis();
         if(stopTask()){
@@ -68,7 +68,8 @@ public class ThsHisYearReportTask {
         }
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         Criteria cr = new Criteria();
-        Criteria c1 = Criteria.where("hrdud").lt(dateNumber-3); //3天更新一把
+        //3天更新一把
+        Criteria c1 = Criteria.where("hrdud").lt(dateNumber-3);
         Criteria c2 = Criteria.where("xlsError").is(0);
         Query query = new Query(cr.andOperator(c1,c2));
         query.limit(2);

@@ -60,7 +60,7 @@ public class XueQiuStockDyTask {
         return val;
     }
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+//    @Scheduled(cron = "0 0/1 * * * ?")
     public void stockDividendExecute() throws Exception {
         int day = StockDateUtil.getCurrentWeekDay();
         if (day == 6 || day == 0) {

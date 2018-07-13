@@ -24,7 +24,7 @@ public class StockCodeTask {
     @Autowired
     private StockCodeService stockCodeService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(cron = "0 0 0 * * ?")
     public void stockCodeExecute()throws Exception{
         Long start =System.currentTimeMillis();
         stockCodeService.saveAllStockCode();
