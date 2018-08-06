@@ -9,6 +9,9 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDyQueue;
 import io.github.kingschan1204.istock.module.maindata.repository.StockDyQueueRepository;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,7 @@ import java.util.List;
  * @create 2018-03-29 14:50
  **/
 @Component
-public class XueQiuStockDyTask {
+public class XueQiuStockDyTask implements Job{
 
     private Logger log = LoggerFactory.getLogger(XueQiuStockDyTask.class);
 
@@ -61,14 +64,37 @@ public class XueQiuStockDyTask {
     }
 
 //    @Scheduled(cron = "0 0/1 * * * ?")
-    public void stockDividendExecute() throws Exception {
+   /* public void stockDividendExecute() throws Exception {
+    }*/
+
+    public void uptateDy(JSONObject data) {
+        int affected = 0;//受影响行
+        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        JSONArray rows = data.getJSONArray("list");
+        List<Stock> list = rows.toJavaList(Stock.class);
+        for (Stock stock : list) {
+            WriteResult wr = template.updateFirst(
+                    new Query(Criteria.where("_id").is(stock.getCode())),
+                    new Update()
+                            .set("dy", stock.getDy())
+                            .set("dyDate", dateNumber),
+                    "stock"
+            );
+            affected += wr.getN();
+        }
+        log.info("dy 批处理：共{}条，本次更新{}条", list.size(), affected);
+
+    }
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         int day = StockDateUtil.getCurrentWeekDay();
         if (day == 6 || day == 0) {
             log.debug("非交易时间不执行操作...");
             return;
         }
         if(stopTask()){
-            log.info("错误次数过多，不执行任务!");
+            log.error("错误次数过多，不执行任务!");
             return;
         }
         Long start = System.currentTimeMillis();
@@ -101,25 +127,5 @@ public class XueQiuStockDyTask {
             log.error("dy 出错了:{}", ex);
             ex.printStackTrace();
         }
-
-    }
-
-    public void uptateDy(JSONObject data) {
-        int affected = 0;//受影响行
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
-        JSONArray rows = data.getJSONArray("list");
-        List<Stock> list = rows.toJavaList(Stock.class);
-        for (Stock stock : list) {
-            WriteResult wr = template.updateFirst(
-                    new Query(Criteria.where("_id").is(stock.getCode())),
-                    new Update()
-                            .set("dy", stock.getDy())
-                            .set("dyDate", dateNumber),
-                    "stock"
-            );
-            affected += wr.getN();
-        }
-        log.info("dy 批处理：共{}条，本次更新{}条", list.size(), affected);
-
     }
 }

@@ -8,6 +8,9 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisRoeRepository;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,7 @@ import java.util.List;
  * @create 2018-07-09 17:28
  **/
 @Component
-public class ThsHisYearReportTask {
+public class ThsHisYearReportTask implements Job{
     private Logger log = LoggerFactory.getLogger(ThsHisYearReportTask.class);
 
     @Autowired
@@ -60,7 +63,11 @@ public class ThsHisYearReportTask {
 
 
 //    @Scheduled(cron = "*/6 * * * * ?")
-    public void execute() throws Exception {
+  /*  public void execute() throws Exception {
+    }*/
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         Long start = System.currentTimeMillis();
         if(stopTask()){
             log.info("错误次数过多，不执行任务!");
@@ -102,6 +109,5 @@ public class ThsHisYearReportTask {
         });
         log.info(String.format("download xls and update data use ：%s ms ", (System.currentTimeMillis() - start)));
         //end
-
     }
 }

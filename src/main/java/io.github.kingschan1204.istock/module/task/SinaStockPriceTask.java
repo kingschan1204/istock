@@ -7,6 +7,9 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,7 @@ import java.util.List;
  * @create 2018-03-29 14:50
  **/
 @Component
-public class SinaStockPriceTask {
+public class SinaStockPriceTask implements Job {
 
     private Logger log = LoggerFactory.getLogger(SinaStockPriceTask.class);
 
@@ -39,7 +42,11 @@ public class SinaStockPriceTask {
     private StockCodeService stockCodeService;
 
 //    @Scheduled(cron = "0 0/2 * * * ?")
-    public void stockPriceExecute() throws Exception {
+   /* public void stockPriceExecute() throws Exception {
+    }*/
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         if (!StockDateUtil.stockOpenTime()) {
             return;
         }
@@ -61,10 +68,7 @@ public class SinaStockPriceTask {
             }
 
         }
-
-
     }
-
 
     public void updateStockPrice(List<String> codes) throws Exception {
         JSONArray jsons = spider.getStockPrice(codes.toArray(new String[]{}));
@@ -86,4 +90,6 @@ public class SinaStockPriceTask {
             );
         });
     }
+
+
 }
