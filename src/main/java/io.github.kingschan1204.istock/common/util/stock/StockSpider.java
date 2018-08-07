@@ -1,12 +1,14 @@
 package io.github.kingschan1204.istock.common.util.stock;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
+import org.jsoup.Jsoup;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -74,6 +76,20 @@ public interface StockSpider {
         }
 
     }
+
+    /**
+     * 是否工作日
+     * @param date
+     * @return
+     */
+    static boolean isWorkDay(String date) throws IOException {
+        String api =String.format("http://api.goseek.cn/Tools/holiday?date=%s",date);
+        String result = Jsoup.connect(api).timeout(3000).ignoreContentType(true).get().text();
+        //{"code":10001,"data":2}  工作日对应结果为 0, 休息日对应结果为 1, 节假日对应的结果为 2
+        JSONObject json = JSON.parseObject(result);
+        return json.getIntValue("data")==0;
+    }
+
 
     /**
      * 提取文本中匹配正则的字符串
@@ -210,5 +226,6 @@ public interface StockSpider {
      * @throws Exception
      */
     List<String> getStockCodeBySZ() throws Exception;
+
 
 }
