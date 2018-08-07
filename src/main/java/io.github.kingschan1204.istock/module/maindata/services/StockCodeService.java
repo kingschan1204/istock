@@ -6,9 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -28,31 +31,37 @@ public class StockCodeService {
 
     /**
      * 保存所有代码
+     *
      * @throws Exception
      */
     public void saveAllStockCode() throws Exception {
-        List<String> szCodes=stockSpider.getStockCodeBySZ();
-        List<String> shCodes=stockSpider.getStockCodeBySH();
-        List<String> allcodes= stockSpider.getAllStockCode();
-        szCodes.stream().forEach(code->
-            mongoTemplate.save(new StockCode(StockSpider.formatStockCode(code)))
+        List<String> szCodes = stockSpider.getStockCodeBySZ();
+        List<String> shCodes = stockSpider.getStockCodeBySH();
+        List<String> allcodes = stockSpider.getAllStockCode();
+        HashSet<String> codes = new HashSet<String>();
+        codes.addAll(szCodes);
+        codes.addAll(shCodes);
+        codes.addAll(allcodes);
+        codes.stream().forEach(code -> {
+                    mongoTemplate.upsert(
+                            new Query(Criteria.where("_id").is(code)),
+                            new Update().set("_id", code).set("hrdud",0).set("xlsError",0),
+                            "stock_code"
+                    );
+                }
         );
-        shCodes.stream().forEach(code->
-            mongoTemplate.save(new StockCode(StockSpider.formatStockCode(code)))
-        );
-        allcodes.stream().forEach(code->
-                mongoTemplate.save(new StockCode(code))
-        );
+
 
     }
 
 
     /**
      * 返回所有代码
+     *
      * @return
      */
-    public List<StockCode> getAllStockCodes(){
-       return  mongoTemplate.find(new Query(),StockCode.class);
+    public List<StockCode> getAllStockCodes() {
+        return mongoTemplate.find(new Query(), StockCode.class);
 
     }
 

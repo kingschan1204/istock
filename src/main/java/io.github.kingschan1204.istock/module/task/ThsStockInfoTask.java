@@ -6,6 +6,9 @@ import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,7 @@ import java.util.List;
  * @create 2018-03-29 14:50
  **/
 @Component
-public class ThsStockInfoTask {
+public class ThsStockInfoTask implements Job{
 
     private Logger log = LoggerFactory.getLogger(ThsStockInfoTask.class);
 
@@ -36,8 +39,13 @@ public class ThsStockInfoTask {
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
 
-    @Scheduled(cron = "*/6 * * * * ?")
-    public void stockInfoExecute() throws Exception {
+//    @Scheduled(cron = "*/6 * * * * ?")
+    /*public void stockInfoExecute() throws Exception {
+
+    }*/
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         if (!StockDateUtil.stockOpenTime()) {
             return;
         }
@@ -59,7 +67,7 @@ public class ThsStockInfoTask {
             try {
                 JSONObject info = spider.getStockInfo(stock.getCode());
                 item = info.toJavaObject(Stock.class);
-                if (null == item) return;
+                if (null == item) {return;}
                 WriteResult wr = template.upsert(
                         new Query(Criteria.where("_id").is(stock.getCode())),
                         new Update()
@@ -82,7 +90,6 @@ public class ThsStockInfoTask {
                 ;
             }
         }
-        log.info(String.format("info更新耗时：%s ms ,影响行: %s", (System.currentTimeMillis() - start),affected));
+        log.info(String.format("craw stock info and update data use ：%s ms ,affected rows : %s", (System.currentTimeMillis() - start),affected));
     }
-
 }

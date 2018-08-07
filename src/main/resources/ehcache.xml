@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false">
+    <!-- <diskStore path="./ehcache/"/>
+    <defaultCache
+        maxElementsInMemory="1000"
+        eternal="false"
+        timeToIdleSeconds="120"
+        timeToLiveSeconds="120"
+        overflowToDisk="false"
+    />-->
+    <!--
+            name:cache唯一标识
+            eternal：缓存是否永久有效
+            maxElementsInMemory：内存中最大缓存对象数
+            overflowToDisk(true,false)：缓存对象达到最大数后，将缓存写到硬盘中
+            diskPersistent：硬盘持久化
+            timeToIdleSeconds：缓存清除时间 (秒)
+            timeToLiveSeconds：缓存存活时间（秒）
+            memoryStoreEvictionPolicy：缓存清空策略
+            1.FIFO：first in first out 先进先出算法，即先放入缓存的先被移除；
+            2.LFU： Less Frequently Used 最久未使用算法，使用时间距离现在最久的那个被移除；
+            3.LRU：Least Recently Used  最近最少使用算法，一定时间段内使用次数（频率）最少的那个被移除；
+
+            timeToLiveSeconds和timeToIdleSeconds
+timeToLiveSeconds=x：缓存自创建日期起至失效时的间隔时间x；
+timeToIdleSeconds=y：缓存创建以后，最后一次访问缓存的日期至失效之时的时间间隔y；
+
+如果仅有timeToLiveSeconds那么自创建时间开始 间隔x后缓存失效；
+如果没有timeToLiveSeconds那么自最后一次访问缓存 间隔y后 缓存失效；
+如果既有timeToLiveSeconds也有timeToIdleSeconds那么取最小数算作间隔时间；min(x,y);
+经过测试其计算原则是：
+若自创建缓存后一直都没有访问缓存，那么间隔x后失效，若自创建缓存后有N次访问缓存，那么计算(最后一次访问缓存时间+y ) 即：按照timeToIdleSeconds计算，但总存活时间不超过 y;
+
+举例：
+timeToIdleSeconds=120；
+timeToLiveSeconds=180；
+表示此缓存最多可以存活3分钟，如果期间超过2分钟未访问 那么此缓存失效
+-->
+    <!--task任务错误总次数统计数据保留12小时-->
+    <cache name="TaskError" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="43200" memoryStoreEvictionPolicy="LFU" />
+    <!-- 历史Roe失败次数记录，保留10分钟  错误4次后过10分钟再很执行任务-->
+    <cache name="ThsHisYearReportTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" />
+    <!--动态股息错误记录  错误超过5次后过一个小时再执行任务-->
+    <cache name="XueQiuStockDyTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="3600" memoryStoreEvictionPolicy="LFU" />
+
+</ehcache>
+

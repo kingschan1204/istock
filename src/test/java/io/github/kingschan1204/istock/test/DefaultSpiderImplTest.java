@@ -68,16 +68,6 @@ public class DefaultSpiderImplTest {
         System.out.println(jsons.getJSONObject(0));
         System.out.println(jsons);
     }
-    @Ignore
-    @Test
-    public void getHistoryPE() throws Exception {
-        System.out.println(spider.getHistoryPE(code).toJSONString());
-    }
-    @Ignore
-    @Test
-    public void getHistoryPB() throws Exception {
-        System.out.println(spider.getHistoryPB(code).toJSONString());
-    }
 
     @Ignore
     @Test

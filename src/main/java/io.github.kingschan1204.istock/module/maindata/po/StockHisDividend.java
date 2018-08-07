@@ -14,19 +14,19 @@ public class StockHisDividend {
 
     //{"date":"2017-07-07","code":"600519","year":"2016年报","executeDate":"2017-07-01","remark":"10派67.87元(含税)","percent":1.44}
     @Id
-    private String _id;
+    private String id;
     private String code;
     private String title;
     private String executeDate;
     private String remark;
     private Double percent;
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCode() {

@@ -1,229 +1,245 @@
 <#compress>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>股票筛选</title>
-    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-    <script src="/plugs/jqgrid/jquery.jqGrid.min.js"></script>
-    <script src="/plugs/jqgrid/grid.locale-cn.js"></script>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"  crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" media="screen"  href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
-    <script src="/bootstrap/js/bootstrap.min.js"  ></script>
-    <style>
-        div.header
-        　　 {
-            　　text-align: center;
-        }
-        #app span{margin-left: 10px; }
-    </style>
-</head>
-<body style="padding: 20px 0px 0px 10px;overflow: hidden;">
-<div class="row" style="margin-bottom: 10px;">
-    <div class="col-md-12" style="padding-left: 30px;">
-        <form class="form-inline" onkeydown="if(event.keyCode==13){reloadStock(); return false;}">
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-addon">$</div>
-                    <input type="text" class="form-control" id="stockCode" placeholder="代码 / 股票名称" maxlength="6" >
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <select class="form-control" id="stockType" placeholder="市场">
-                        <option value="">全部</option>
-                        <option value="sz">深市</option>
-                        <option value="sh">沪市</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-addon">PB</div>
-                    <input type="text" class="form-control" id="stockPb" placeholder="0.1-1(市净率>=0.1<=1)" maxlength="10" >
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <div class="input-group-addon">股息(动)</div>
-                    <input type="text" class="form-control" id="stockDy" placeholder="3-10(动态股息>=3<=10)" maxlength="10" >
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary" id="search_btn">查询</button>
-            <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
-
-            <!-- Single button -->
-            <div class="btn-group">
-                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    历史数据 <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="#"  id="dy_btn">历史分红</a></li>
-                    <li><a href="#" id="roe_btn">历史净资产收益率</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#" id="pe_btn">历史市盈率</a></li>
-                    <li><a href="#" id="pb_btn">历史市净率</a></li>
-                </ul>
-            </div>
-        </form>
-    </div>
-</div>
-
-<table id="jqGrid"></table>
-<div id="jqGridPager"></div>
-
-</body>
-</html>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#jqGrid").jqGrid({
-            url:  "/stock/q",
-            width: window.screen.availWidth - 20,
-            autowidth: false,
-            shrinkToFit: false,
-            multiselect: false,//复选框
-            rownumbers: true,
-            loadtext: '正在加载数据请稍后...',
-            mtype: "GET",
-            styleUI: 'Bootstrap',
-            datatype: "json",
-            colNames: ['代码', '名称','市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', 'ROE', '每股净资产','股息(动)','股息(静)','上次分红', '行业'],
-            colModel: [
-
-                {label: 'code', name: 'code', width: 100},
-                {label: 'name', name: 'name', width: 150},
-                {label: 'type', name: 'type', width: 40},
-                {label: 'price', name: 'price', width: 50, align: 'right'},
-                {label: 'yesterdayPrice', name: 'yesterdayPrice', width: 60, align: 'right'},
-
-                {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right'},
-                {label: 'ped', name: 'ped', width: 70, align: 'right'},
-                {label: 'pes', name: 'pes', width: 70, align: 'right'},
-                {label: 'pb', name: 'pb', width: 60, align: 'right'},
-
-                {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
-                {label: 'roe', name: 'roe', width: 70, align: 'right'},
-                {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
-                {label: 'dy', name: 'dy', width: 70, align: 'right'},
-                {label: 'dividend', name: 'dividend', width: 70, align: 'right'},
-                {label: 'dividendDate', name: 'dividendDate', width: 90},
-                {label: 'industry', name: 'industry', width: 130}
-//                {label: 'sVersion', name: 'sVersion', width: 650}
-            ],
-            viewrecords: true,
-            rowList: [10, 20, 30, 60],
-            //height: '90%',
-            rowNum: 20,
-            pager: "#jqGridPager",
-            gridComplete: function () {
-                var ids = $("#jqGrid").getDataIDs();
-                for (var i = 0; i < ids.length; i++) {
-                    var rowData = $("#jqGrid").getRowData(ids[i]);
-                    if (parseFloat(rowData.fluctuate) <= 0) {
-                        $("#jqGrid").find('#' + ids[i]).find("td").css("color", "green");
-                    }else{
-                        $("#jqGrid").find('#' + ids[i]).find("td").css("color", "red");
-                    }
-                }
-            },
-            ondblClickRow: function(id){
-                //双击行
-               /* var rowData = $("#jqGrid").getRowData(id);
-                window.open("/stock/his_dy/"+rowData.code);*/
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>股票筛选</title>
+        <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" media="screen" href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
+        <style>
+            div.header
+            　　 {
+                　　text-align: center;
             }
-        });
-        //$("#jqGrid").jqGrid("setFrozenColumns");
-        doResize();
-    });
-    var t=document.documentElement.clientWidth;
-    window.onresize = function(){
-        if(t != document.documentElement.clientWidth){
-            t = document.documentElement.clientWidth;
+
+            #app span {
+                margin-left: 10px;
+            }
+        </style>
+    </head>
+    <body style="padding: 20px 0px 0px 10px;overflow: hidden;">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="padding-left: 30px;">
+            <form class="form-inline" onkeydown="if(event.keyCode==13){reloadStock(); return false;}">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">$</div>
+                        <input type="text" class="form-control" id="stockCode" placeholder="代码 / 股票名称" maxlength="6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <select class="form-control" id="stockType" placeholder="市场">
+                            <option value="">全部</option>
+                            <option value="sz">深市</option>
+                            <option value="sh">沪市</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">PB</div>
+                        <input type="text" class="form-control" id="stockPb" placeholder="0.1-1(市净率>=0.1<=1)"
+                               maxlength="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <select class="form-control" id="dyType" placeholder="股息类型">
+                            <option value="dy">股息(动)</option>
+                            <option value="dividend">股息(静)</option>
+                            <option value="fiveYearDy">5年平均股息</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="stockDy" placeholder="3-10(股息>=3<=10)"
+                               maxlength="10">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="search_btn">查询</button>
+                <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
+
+                <!-- Single button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        历史数据 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" id="dy_btn">历史分红</a></li>
+                        <li><a href="#" id="roe_btn">历史净资产收益率</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" id="his_btn">历史pb/pe/股价</a></li>
+                        <li><a href="#" id="report_btn">历史财务报表</a></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+    </body>
+    </html>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/plugs/jqgrid/grid.locale-cn.js"></script>
+    <script src="http://pb0jb6dzz.bkt.clouddn.com/jquery.jqGrid.min.js"></script>
+    <!--/plugs/jqgrid/jquery.jqGrid.min.js-->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#jqGrid").jqGrid({
+                url: "/stock/q",
+                width: window.screen.availWidth - 20,
+                autowidth: false,
+                shrinkToFit: false,
+                multiselect: false,//复选框
+                rownumbers: true,
+                loadtext: '正在加载数据请稍后...',
+                mtype: "GET",
+                styleUI: 'Bootstrap',
+                datatype: "json",
+                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '股息(静)', '5年平均股息','最新ROE','5年平均ROE', '上次分红', '行业'],
+                colModel: [
+
+                    {label: 'code', name: 'code', width: 100},
+                    {label: 'name', name: 'name', width: 150},
+                    {label: 'type', name: 'type', width: 40},
+                    {label: 'price', name: 'price', width: 50, align: 'right'},
+                    {label: 'yesterdayPrice', name: 'yesterdayPrice', width: 60, align: 'right'},
+
+                    {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right'},
+                    {label: 'ped', name: 'ped', width: 70, align: 'right'},
+                    {label: 'pes', name: 'pes', width: 70, align: 'right'},
+                    {label: 'pb', name: 'pb', width: 60, align: 'right'},
+
+                    {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
+                    {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
+                    {label: 'dy', name: 'dy', width: 70, align: 'right'},
+                    {label: 'dividend', name: 'dividend', width: 70, align: 'right'},
+                    {label: 'fiveYearDy', name: 'fiveYearDy', width: 90, align: 'right'},
+                    {label: 'roe', name: 'roe', width: 75, align: 'right'},
+                    {label: 'fiveYearRoe', name: 'fiveYearRoe', width: 96, align: 'right'},
+                    {label: 'dividendDate', name: 'dividendDate', width: 90},
+                    {label: 'industry', name: 'industry', width: 130}
+//                {label: 'sVersion', name: 'sVersion', width: 650}
+                ],
+                viewrecords: true,
+                rowList: [10, 20, 30, 60],
+                //height: '90%',
+                rowNum: 20,
+                pager: "#jqGridPager",
+                gridComplete: function () {
+                    var ids = $("#jqGrid").getDataIDs();
+                    for (var i = 0; i < ids.length; i++) {
+                        var rowData = $("#jqGrid").getRowData(ids[i]);
+                        if (parseFloat(rowData.fluctuate) <= 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td").css("color", "green");
+                        } else {
+                            $("#jqGrid").find('#' + ids[i]).find("td").css("color", "red");
+                        }
+                    }
+                },
+                ondblClickRow: function (id) {
+                    //双击行
+                    /* var rowData = $("#jqGrid").getRowData(id);
+                     window.open("/stock/his_dy/"+rowData.code);*/
+                }
+            });
+            //$("#jqGrid").jqGrid("setFrozenColumns");
             doResize();
+        });
+        var t = document.documentElement.clientWidth;
+        window.onresize = function () {
+            if (t != document.documentElement.clientWidth) {
+                t = document.documentElement.clientWidth;
+                doResize();
+            }
         }
-    }
 
-    function getPageSize() {
-        var winW, winH;
-        if(window.innerHeight) {// all except IE
-            winW = window.innerWidth;
-            winH = window.innerHeight;
-        } else if (document.documentElement && document.documentElement.clientHeight) {// IE 6 Strict Mode
-            winW = document.documentElement.clientWidth;
-            winH = document.documentElement.clientHeight;
-        } else if (document.body) { // other
-            winW = document.body.clientWidth;
-            winH = document.body.clientHeight;
-        }  // for small pages with total size less then the viewport
-        return {WinW:winW, WinH:winH};
-    }
-
-    function doResize() {
-        var ss = getPageSize();
-        $("#jqGrid").jqGrid('setGridWidth', ss.WinW-10).jqGrid('setGridHeight', ss.WinH-150);
-    }
-
-
-
-    //刷新列表
-    function reloadStock(){
-        //此处可以添加对查询数据的合法验证
-        var code = $("#stockCode").val();
-        var type = $("#stockType").val();
-        var pb =$("#stockPb").val();
-        var dy =$("#stockDy").val();
-        $("#jqGrid").jqGrid('setGridParam',{
-            datatype:'json',
-            postData:{'code':code,'type':type,'pb':pb,'dy':dy},
-            page:1
-        }).trigger("reloadGrid");
-    }
-
-    $("#search_btn").click(function(){
-        reloadStock();
-    });
-    $("#refresh_btn").click(function(){
-        $("#stockCode").val("");
-        $("#stockType").val("");
-        $("#stockPb").val("");
-        $("#stockDy").val("");
-        reloadStock();
-    });
-    $("#dy_btn").click(function(){
-        var ids = $("#jqGrid").jqGrid('getGridParam','selrow');
-        if(null==ids){
-            alert("请选择要查看的股票!");
-            return ;
+        function getPageSize() {
+            var winW, winH;
+            if (window.innerHeight) {// all except IE
+                winW = window.innerWidth;
+                winH = window.innerHeight;
+            } else if (document.documentElement && document.documentElement.clientHeight) {// IE 6 Strict Mode
+                winW = document.documentElement.clientWidth;
+                winH = document.documentElement.clientHeight;
+            } else if (document.body) { // other
+                winW = document.body.clientWidth;
+                winH = document.body.clientHeight;
+            }  // for small pages with total size less then the viewport
+            return {WinW: winW, WinH: winH};
         }
-        var rowData = $("#jqGrid").jqGrid('getRowData',ids);
-        window.open("/stock/his_dy/"+rowData.code);
-    });
-    $("#roe_btn").click(function(){
-        var ids = $("#jqGrid").jqGrid('getGridParam','selrow');
-        if(null==ids){
-            alert("请选择要查看的股票!");
-            return ;
+
+        function doResize() {
+            var ss = getPageSize();
+            $("#jqGrid").jqGrid('setGridWidth', ss.WinW - 10).jqGrid('setGridHeight', ss.WinH - 150);
         }
-        var rowData = $("#jqGrid").jqGrid('getRowData',ids);
-        window.open("/stock/his_roe/"+rowData.code);
-    });
-    $("#pe_btn").click(function(){
-        var ids = $("#jqGrid").jqGrid('getGridParam','selrow');
-        if(null==ids){
-            alert("请选择要查看的股票!");
-            return ;
+        //刷新列表
+        function reloadStock() {
+            //此处可以添加对查询数据的合法验证
+            var code = $("#stockCode").val();
+            var type = $("#stockType").val();
+            var pb = $("#stockPb").val();
+            var dy = $("#dyType").val() + "-" + $("#stockDy").val();
+            $("#jqGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy},
+                page: 1
+            }).trigger("reloadGrid");
         }
-        var rowData = $("#jqGrid").jqGrid('getRowData',ids);
-        window.open("/stock/his_pe/"+rowData.code);
-    });
-    $("#pb_btn").click(function(){
-        var ids = $("#jqGrid").jqGrid('getGridParam','selrow');
-        if(null==ids){
-            alert("请选择要查看的股票!");
-            return ;
-        }
-        var rowData = $("#jqGrid").jqGrid('getRowData',ids);
-        window.open("/stock/his_pb/"+rowData.code);
-    });
-</script>
+
+        $("#search_btn").click(function () {
+            reloadStock();
+        });
+        $("#refresh_btn").click(function () {
+            $("#stockCode").val("");
+            $("#stockType").val("");
+            $("#stockPb").val("");
+            $("#stockDy").val("");
+            reloadStock();
+        });
+        $("#dy_btn").click(function () {
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/his_dy/" + rowData.code);
+        });
+        $("#roe_btn").click(function () {
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/his_roe/" + rowData.code);
+        });
+
+        $("#his_btn").click(function () {
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/info/" + rowData.code);
+        });
+        $("#report_btn").click(function () {
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/report/" + rowData.code);
+        });
+
+    </script>
 </#compress>

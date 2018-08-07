@@ -30,6 +30,7 @@
             <th>股息率</td>
             <th>除权除息日</td>
             <th>方案进度</td>
+            <th>来源</td>
 
             </thead>
             <#list rows as row>
@@ -40,6 +41,7 @@
                     <td>${row.percent}%</td>
                     <td>${row.cxcqr}</td>
                     <td>${row.progress}</td>
+                    <td>${row.from}</td>
                 </tr>
             </#list>
         </table>

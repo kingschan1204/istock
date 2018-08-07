@@ -3,8 +3,6 @@ package io.github.kingschan1204.istock.module.maindata.po;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 /**
  * stock maindata
  *
@@ -23,7 +21,7 @@ public class Stock {
     private Double fluctuate;
     private Double todayMax;
     private Double todayMin;
-    private Date priceDate;
+    private Long priceDate;
     private String industry;
     private String mainBusiness;
     private Double totalValue;
@@ -33,11 +31,13 @@ public class Stock {
     private Double pes;
     private Double ped;
     private Integer infoDate;
-    private String dividendDate;
+    private String dividendDate;//静态分红日期
     private Double dividend;
-    private Integer dividendUpdateDay;
+    private Integer dividendUpdateDay;//静态分红更新时间
     private Double dy;//实时股息率
     private Integer dyDate;//实时股息更新时间
+    private Double fiveYearDy;//5年平均股息
+    private Double fiveYearRoe;//5年平均Roe
 
 
     public String getCode() {
@@ -104,11 +104,11 @@ public class Stock {
         this.todayMin = todayMin;
     }
 
-    public Date getPriceDate() {
+    public Long getPriceDate() {
         return priceDate;
     }
 
-    public void setPriceDate(Date priceDate) {
+    public void setPriceDate(Long priceDate) {
         this.priceDate = priceDate;
     }
 
@@ -216,11 +216,28 @@ public class Stock {
     public void setDyDate(Integer dyDate) {
         this.dyDate = dyDate;
     }
+
     public Integer getInfoDate() {
         return infoDate;
     }
 
     public void setInfoDate(Integer infoDate) {
         this.infoDate = infoDate;
+    }
+
+    public Double getFiveYearDy() {
+        return fiveYearDy;
+    }
+
+    public void setFiveYearDy(Double fiveYearDy) {
+        this.fiveYearDy = fiveYearDy;
+    }
+
+    public Double getFiveYearRoe() {
+        return fiveYearRoe;
+    }
+
+    public void setFiveYearRoe(Double fiveYearRoe) {
+        this.fiveYearRoe = fiveYearRoe;
     }
 }

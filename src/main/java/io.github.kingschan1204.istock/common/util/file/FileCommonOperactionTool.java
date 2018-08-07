@@ -19,17 +19,23 @@ public class FileCommonOperactionTool {
     /**
      * 通过指定的文件下载URL以及下载目录下载文件
      * @param url      下载url路径
+     * @referrer        来源
      * @param dir      存放目录
      * @param filename 文件名
      * @throws Exception
      */
-    public static String downloadFile(String url, String dir, String filename) throws Exception {
+    public static String downloadFile(String url,String referrer, String dir, String filename) throws Exception {
         log.info("start download file :{}",url);
         //Open a URL Stream
         Connection.Response resultResponse = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")
+                .referrer(referrer)
                 .ignoreContentType(true).execute();
         String defaultFileName="";
+        if(resultResponse.statusCode()!=200){
+            log.error("文件下载失败：{}",url);
+            throw new Exception(String.format("文件下载失败：%s 返回码:%s",url,resultResponse.statusCode()));
+        }
         if(resultResponse.contentType().contains("name")){
             String[] list =resultResponse.contentType().split(";");
             defaultFileName = Arrays.stream(list)
@@ -43,10 +49,12 @@ public class FileCommonOperactionTool {
            out.write(resultResponse.bodyAsBytes());
        }catch (Exception ex){
            log.error("{}",ex);
+           log.error("文件下载失败：{}",url);
            ex.printStackTrace();
        }finally {
            out.close();
        }
         return path;
     }
+
 }
