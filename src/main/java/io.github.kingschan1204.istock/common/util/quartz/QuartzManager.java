@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * quartz 任务管理工具类
+ *
  * @author chenguoxiang
  * @create 2018-07-13 14:46
  **/
@@ -27,8 +28,8 @@ public class QuartzManager {
      * @param cron             时间设置，参考quartz说明文档
      * @Description: 添加一个定时任务
      */
-    public  void addJob(String jobName, String jobGroupName,
-                              String triggerName, String triggerGroupName, Class jobClass, String cron) {
+    public void addJob(String jobName, String jobGroupName,
+                       String triggerName, String triggerGroupName, Class jobClass, String cron) {
         try {
             Scheduler sched = schedulerFactoryBean.getScheduler();//schedulerFactory.getScheduler();
 
@@ -47,7 +48,7 @@ public class QuartzManager {
             sched.scheduleJob(jobDetail, trigger);
             // 启动
             if (!sched.isShutdown()) {
-                log.info("添加定时任务{} , class:{}  执行频率：{}",jobName,jobClass.getName(),cron);
+                log.info("添加定时任务{} , class:{}  执行频率：{}", jobName, jobClass.getName(), cron);
                 sched.start();
             }
         } catch (Exception e) {
@@ -57,6 +58,7 @@ public class QuartzManager {
 
     /**
      * 修改一个任务的触发时间
+     *
      * @param jobName
      * @param jobGroupName
      * @param triggerName      触发器名
@@ -64,8 +66,8 @@ public class QuartzManager {
      * @param cron             时间设置，参考quartz说明文档
      * @Description: 修改一个任务的触发时间
      */
-    public  void modifyJobTime(String jobName,
-                                     String jobGroupName, String triggerName, String triggerGroupName, String cron) {
+    public void modifyJobTime(String jobName,
+                              String jobGroupName, String triggerName, String triggerGroupName, String cron) {
         try {
             Scheduler sched = schedulerFactoryBean.getScheduler();
             TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
@@ -88,7 +90,7 @@ public class QuartzManager {
                 trigger = (CronTrigger) triggerBuilder.build();
                 // 方式一 ：修改一个任务的触发时间
                 sched.rescheduleJob(triggerKey, trigger);
-                log.info("添加定时任务{} , 执行频率：{}",jobName,cron);
+                log.info("添加定时任务{} , 执行频率：{}", jobName, cron);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -97,14 +99,15 @@ public class QuartzManager {
 
     /**
      * 删除一个job
+     *
      * @param jobName
      * @param jobGroupName
      * @param triggerName
      * @param triggerGroupName
      * @Description: 移除一个任务
      */
-    public  void removeJob(String jobName, String jobGroupName,
-                                 String triggerName, String triggerGroupName) {
+    public void removeJob(String jobName, String jobGroupName,
+                          String triggerName, String triggerGroupName) {
         try {
             Scheduler sched = schedulerFactoryBean.getScheduler();
             TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
@@ -114,16 +117,17 @@ public class QuartzManager {
             sched.unscheduleJob(triggerKey);
             // 删除任务
             sched.deleteJob(JobKey.jobKey(jobName, jobGroupName));
-            log.info("添加定时任务{}",jobName);
+            log.info("删除定时任务{}", jobName);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+
     /**
      * @Description:启动所有定时任务
      */
-    public  void startJobs() {
+    public void startJobs() {
         try {
             Scheduler sched = schedulerFactoryBean.getScheduler();
             sched.start();
@@ -136,7 +140,7 @@ public class QuartzManager {
     /**
      * @Description:关闭所有定时任务
      */
-    public  void shutdownJobs() {
+    public void shutdownJobs() {
         try {
             Scheduler sched = schedulerFactoryBean.getScheduler();
             if (!sched.isShutdown()) {
@@ -146,5 +150,26 @@ public class QuartzManager {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 暂停全部任务
+     *
+     * @throws SchedulerException
+     */
+    public void pauseAll() throws Exception {
+        schedulerFactoryBean.getScheduler().pauseAll();
+        log.info("暂停所有任务");
+    }
+
+
+    /**
+     * 恢复所有任务
+     *
+     * @throws Exception
+     */
+    public void resumeAll() throws Exception {
+        schedulerFactoryBean.getScheduler().resumeAll();
+        log.info("恢复所有任务");
     }
 }
