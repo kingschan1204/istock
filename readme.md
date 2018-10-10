@@ -16,7 +16,7 @@
 
 ## Demo 效果 
 
-:link: [点我查看效果](http://stock.51so.info/) (demo版) :link:
+:link: [点我查看效果](http://211.159.182.106/) (demo版) :link:
 
 ## :boom: 效果图 :boom:
 
