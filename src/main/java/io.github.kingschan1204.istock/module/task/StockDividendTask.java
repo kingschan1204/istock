@@ -124,7 +124,7 @@ public class StockDividendTask implements Job {
                         "stock"
                 );
                 affected+=wr.getN();
-                log.info("{}分红抓取,耗时{},获得{}行数据",stock.getCode(),(System.currentTimeMillis()-start),affected);
+                log.info("{}分红抓取,耗时{}ms,获得{}行数据",stock.getCode(),(System.currentTimeMillis()-start),affected);
             }
 
     }

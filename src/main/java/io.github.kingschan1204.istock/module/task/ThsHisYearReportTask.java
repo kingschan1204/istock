@@ -82,7 +82,7 @@ public class ThsHisYearReportTask implements Job{
         query.limit(2);
         List<StockCode> list = template.find(query, StockCode.class);
         if(null==list||list.size()==0){
-            log.info("his year report data 当前已全部更新完!");
+//            log.info("his year report data 当前已全部更新完!");
             return ;
         }
         list.stream().forEach(code ->{
