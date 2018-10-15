@@ -8,7 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
+/**
+ * spring boot 启动类
+ * @author kings.chan
+ */
 @Controller
 @EnableCaching
 @SpringBootApplication

@@ -129,7 +129,7 @@ public class StockService {
         //分页
         query.skip((pageindex-1)*pagesize).limit(pagesize);
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
         orders.add(new Sort.Order(
                 "asc".equalsIgnoreCase(psort) ?Sort.Direction.ASC:Sort.Direction.DESC
                 ,orderfidld));

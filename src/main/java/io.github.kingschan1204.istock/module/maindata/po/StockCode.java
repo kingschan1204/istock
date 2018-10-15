@@ -13,8 +13,14 @@ public class StockCode {
 
     @Id
     private String code;
-    private Integer hrdud;//history report data update date 历史年度报表更新时间
-    private Integer xlsError;//下载xls错误
+    /**
+     * history report data update date 历史年度报表更新时间
+     */
+    private Integer hrdud;
+    /**
+     * 下载xls错误
+     */
+    private Integer xlsError;
 
     public StockCode(){}
     public StockCode(String code){

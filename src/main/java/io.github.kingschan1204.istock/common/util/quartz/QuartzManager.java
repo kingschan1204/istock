@@ -31,8 +31,7 @@ public class QuartzManager {
     public void addJob(String jobName, String jobGroupName,
                        String triggerName, String triggerGroupName, Class jobClass, String cron) {
         try {
-            Scheduler sched = schedulerFactoryBean.getScheduler();//schedulerFactory.getScheduler();
-
+            Scheduler sched = schedulerFactoryBean.getScheduler();
             // 任务名，任务组，任务执行类
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
             // 触发器

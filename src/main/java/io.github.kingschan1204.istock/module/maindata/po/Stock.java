@@ -31,13 +31,31 @@ public class Stock {
     private Double pes;
     private Double ped;
     private Integer infoDate;
-    private String dividendDate;//静态分红日期
+    /**
+     * 静态分红日期
+     */
+    private String dividendDate;
     private Double dividend;
-    private Integer dividendUpdateDay;//静态分红更新时间
-    private Double dy;//实时股息率
-    private Integer dyDate;//实时股息更新时间
-    private Double fiveYearDy;//5年平均股息
-    private Double fiveYearRoe;//5年平均Roe
+    /**
+     * 静态分红更新时间
+     */
+    private Integer dividendUpdateDay;
+    /**
+     * 实时股息率
+     */
+    private Double dy;
+    /**
+     * 实时股息更新时间
+     */
+    private Integer dyDate;
+    /**
+     * 5年平均股息
+     */
+    private Double fiveYearDy;
+    /**
+     * 5年平均Roe
+     */
+    private Double fiveYearRoe;
 
 
     public String getCode() {

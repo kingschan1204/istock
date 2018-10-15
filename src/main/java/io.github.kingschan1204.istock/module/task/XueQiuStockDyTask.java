@@ -63,12 +63,10 @@ public class XueQiuStockDyTask implements Job{
         return val;
     }
 
-//    @Scheduled(cron = "0 0/1 * * * ?")
-   /* public void stockDividendExecute() throws Exception {
-    }*/
 
     public void uptateDy(JSONObject data) {
-        int affected = 0;//受影响行
+        //受影响行
+        int affected = 0;
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         JSONArray rows = data.getJSONArray("list");
         List<Stock> list = rows.toJavaList(Stock.class);

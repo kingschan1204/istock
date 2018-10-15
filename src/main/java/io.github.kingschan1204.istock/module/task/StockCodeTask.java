@@ -13,7 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * 代码定时更新任务
+ * @author kings.chan
  */
 @Component
 public class StockCodeTask implements Job{
@@ -26,11 +27,6 @@ public class StockCodeTask implements Job{
     private MongoTemplate template;
     @Autowired
     private StockCodeService stockCodeService;
-
-/*//    @Scheduled(cron = "0 0 0 * * ?")
-    public void stockCodeExecute()throws Exception{
-
-    }*/
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {

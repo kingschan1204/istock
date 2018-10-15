@@ -4,7 +4,7 @@
     <groupId>io.github.kingschan1204</groupId>
     <artifactId>istock</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.4</version>
+    <version>1.6.5</version>
     <name>pritice Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <!-- 继承父包 -->
