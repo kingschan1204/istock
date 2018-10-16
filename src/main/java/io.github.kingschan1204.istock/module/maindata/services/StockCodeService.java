@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * ${DESCRIPTION}
  *
  * @author chenguoxiang
  * @create 2018-04-08 17:11
@@ -37,11 +36,9 @@ public class StockCodeService {
     public void saveAllStockCode() throws Exception {
         List<String> szCodes = stockSpider.getStockCodeBySZ();
         List<String> shCodes = stockSpider.getStockCodeBySH();
-        List<String> allcodes = stockSpider.getAllStockCode();
         HashSet<String> codes = new HashSet<String>();
         codes.addAll(szCodes);
         codes.addAll(shCodes);
-        codes.addAll(allcodes);
         codes.stream().forEach(code -> {
                     mongoTemplate.upsert(
                             new Query(Criteria.where("_id").is(code)),

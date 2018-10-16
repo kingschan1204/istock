@@ -41,10 +41,6 @@ public class SinaStockPriceTask implements Job {
     @Autowired
     private StockCodeService stockCodeService;
 
-//    @Scheduled(cron = "0 0/2 * * * ?")
-   /* public void stockPriceExecute() throws Exception {
-    }*/
-
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         if (!StockDateUtil.stockOpenTime()) {

@@ -14,6 +14,8 @@ import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
+import io.github.kingschan1204.istock.module.maindata.vo.StockVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -137,59 +139,15 @@ public class StockService {
         query.with(sort);
         //code
         List<Stock> list =template.find(query,Stock.class);
-        JSONArray jsons = JSONArray.parseArray(JSONArray.toJSONString(list));
-        JSONObject temp;
-        for (int i = 0; i <jsons.size() ; i++) {
-            temp =jsons.getJSONObject(i);
-            temp.put("fluctuate",temp.getString("fluctuate")+"%");
-
-            if(temp.containsKey("roe")){
-                if(temp.getDouble("roe")!=-1){
-                    temp.put("roe",temp.getString("roe")+"%");
-                }else {
-                    temp.put("roe","--");
-                }
-
-            }
-            if(temp.containsKey("totalValue")&&temp.getDouble("totalValue")!=-1){
-                temp.put("totalValue",temp.getString("totalValue")+"亿");
-            }
-            if(temp.containsKey("pb")&&temp.getDouble("pb")==-1){
-                temp.put("pb","--");
-            }
-            if(temp.containsKey("pes")&&temp.getDouble("pes")==-1){
-                temp.put("pes","--");
-            }
-            if(temp.containsKey("ped")&&temp.getDouble("ped")==-1){
-                temp.put("ped","--");
-            }
-            if(temp.containsKey("bvps")&&temp.getDouble("bvps")==-1){
-                temp.put("bvps","--");
-            }
-            if(temp.containsKey("dividend")){
-                if(temp.getDouble("dividend")!=-1){
-                    temp.put("dividend",temp.getString("dividend")+"%");
-                }
-            }else {
-                temp.put("dividend","--");
-            }
-            if(temp.containsKey("dy")){
-                temp.put("dy",temp.getString("dy")+"%");
-            }
-            if(temp.containsKey("fiveYearDy")){
-                temp.put("fiveYearDy",temp.getString("fiveYearDy")+"%");
-            }
-            if(temp.containsKey("fiveYearRoe")){
-                temp.put("fiveYearRoe",temp.getString("fiveYearRoe")+"%");
-            }
-
-        }
-
+        //原始数据在vo对象里进行格式转换
+        List<StockVo> temp = JSON.parseArray(JSON.toJSONString(list), StockVo.class);
         JSONObject data= new JSONObject();
         long pagetotal=total%pagesize==0?total/pagesize:total/pagesize+1;
-        data.put("rows",jsons);
-        data.put("total",pagetotal);//有多少页
-        data.put("records",total);// 总共有多少条记录
+        data.put("rows",JSONArray.parseArray(JSON.toJSONString(temp)));
+        //有多少页
+        data.put("total",pagetotal);
+        // 总共有多少条记录
+        data.put("records",total);
         data.put("page",pageindex);
         return data.toJSONString();
     }
@@ -204,7 +162,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
         orders.add(new Sort.Order(Sort.Direction.ASC,"title"));
         Sort sort = new Sort(orders);
         query.with(sort);
@@ -218,7 +176,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
         orders.add(new Sort.Order(Sort.Direction.ASC,"year"));
         Sort sort = new Sort(orders);
         query.with(sort);

@@ -228,8 +228,11 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
+        //报告期 年
         Object[] year = list.get(1);
+        //净资产收益率
         Object[] roe = list.get(10);
+        //净资产收益率-摊薄
         Object[] roeTb = list.get(11);
         JSONArray jsons = new JSONArray();
         JSONObject json;

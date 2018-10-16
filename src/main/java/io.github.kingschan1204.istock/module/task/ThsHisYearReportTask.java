@@ -62,10 +62,6 @@ public class ThsHisYearReportTask implements Job{
     }
 
 
-//    @Scheduled(cron = "*/6 * * * * ?")
-  /*  public void execute() throws Exception {
-    }*/
-
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         Long start = System.currentTimeMillis();
