@@ -74,7 +74,7 @@ public class StockCtrl {
             BasicDBObject item = iter.next();
             String code = item.getString("_id");
             BasicDBObject value = (BasicDBObject) item.get("value");
-            if (value.containsKey("size") && value.getInt("size") > 4) {
+            if (value.containsField("size") && value.getInt("size") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
                 WriteResult wr = template.upsert(
                         new Query(Criteria.where("_id").is(code)),
@@ -105,7 +105,7 @@ public class StockCtrl {
             BasicDBObject item = iter.next();
             String code = item.getString("_id");
             BasicDBObject value = (BasicDBObject) item.get("value");
-            if (value.containsKey("size") && value.getInt("size") > 4) {
+            if (value.containsField("size") && value.getInt("size") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
                 WriteResult wr = template.upsert(
                         new Query(Criteria.where("_id").is(code)),

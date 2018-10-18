@@ -69,10 +69,14 @@ public class JisiluSpilder extends DefaultSpiderImpl {
             List<String> list = StockSpider.findStringByRegx(js.html(), "\\[.*\\]");
             //依次顺序 0:日期  1:PRICE  2:PB  3:PE
             String replaceRegex = "\'|\\[|\\]";
-            String dates[] = list.get(0).replaceAll(replaceRegex, "").split(",");//日期
-            String prices[] = list.get(1).replaceAll(replaceRegex, "").split(",");//价格
-            String pbs[] = list.get(2).replaceAll(replaceRegex, "").split(",");//市净率
-            String pes[] = list.get(3).replaceAll(replaceRegex, "").split(",");//市盈率
+            //日期
+            String dates[] = list.get(0).replaceAll(replaceRegex, "").split(",");
+            //价格
+            String prices[] = list.get(1).replaceAll(replaceRegex, "").split(",");
+            //市净率
+            String pbs[] = list.get(2).replaceAll(replaceRegex, "").split(",");
+            //市盈率
+            String pes[] = list.get(3).replaceAll(replaceRegex, "").split(",");
             JSONArray hisJson = new JSONArray();
             for (int i = 0; i < dates.length; i++) {
                 double price=Double.parseDouble(prices[i]);
