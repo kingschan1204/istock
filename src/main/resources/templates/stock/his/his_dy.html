@@ -10,6 +10,7 @@
     </title>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <script src="/plugs/echar/infographic.js"></script>
     <!--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>-->
@@ -53,13 +54,16 @@
 
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
+    var myChart = echarts.init(document.getElementById('main'),'infographic');
 
     // 指定图表的配置项和数据
     var option = {
         title: {
             text: '<#if stock??>${stock.name}<#else>${code!""}</#if> - 各年度分红情况',
-            subtext: ''
+            subtext: '',
+            x:'center',
+            y:'top',
+            textAlign:'center'
         },
         tooltip: {
             trigger: 'axis'
@@ -105,7 +109,8 @@
                     data: [
                         {type: 'average', name: '平均值'}
                     ]
-                }
+                },
+                areaStyle: {}
             }
 
         ]

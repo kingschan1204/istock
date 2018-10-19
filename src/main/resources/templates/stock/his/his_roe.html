@@ -9,6 +9,7 @@
         历史净资产收益率</title>
     <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <script src="/plugs/echar/infographic.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -52,7 +53,7 @@
 
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
-    var roeChart = echarts.init(document.getElementById('roe'));
+    var roeChart = echarts.init(document.getElementById('roe'),'infographic');
 
     // 指定图表的配置项和数据
     var option = {
@@ -104,7 +105,8 @@
                     data: [
                         {type: 'average', name: '平均值'}
                     ]
-                }
+                },
+                areaStyle: {}
             }
 
         ]
