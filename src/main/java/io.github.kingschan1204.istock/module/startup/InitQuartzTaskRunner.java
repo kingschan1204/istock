@@ -24,7 +24,14 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 "sinaPriceTask-trigger",
                 "sinaPriceTask-trigger-group",
                 SinaStockPriceTask.class,
-                "0 0/2 * * * ?");
+                "0 0/1 * * * ?");
+
+        quartzManager.addJob("tencentPriceTask",
+                "tencentPriceTask-group",
+                "tencentPriceTask-trigger",
+                "tencentPriceTask-trigger-group",
+                TencentStockPriceTask.class,
+                "0 0/1 * * * ?");
 
         quartzManager.addJob("stockCodeTask",
                 "stockCodeTask-group",
