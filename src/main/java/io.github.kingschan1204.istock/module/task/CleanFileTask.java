@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.module.task;
 
+import io.github.kingschan1204.istock.common.util.out.font.ColorFont;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisPbPe;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.Arrays;
 
+import static org.fusesource.jansi.Ansi.Color.GREEN;
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.ansi;
+
 /**
  * 数据文件清理
  * @author chenguoxiang
@@ -21,7 +26,7 @@ import java.util.Arrays;
 @Component
 public class CleanFileTask implements Job {
 
-    private Logger log = LoggerFactory.getLogger(CleanFileTask.class);
+    private static Logger log = LoggerFactory.getLogger(CleanFileTask.class);
     @Autowired
     private MongoTemplate mongoTemplate;
     @Override
@@ -30,11 +35,12 @@ public class CleanFileTask implements Job {
         File f = new File("./data/");
         if(!f.exists()){return;}
         Arrays.stream(f.listFiles()).forEach(file ->{
-            log.info("清理文件:{}-{}",file.getName(),file.delete());
+            log.info("清理文件:{} {}", ColorFont.out(file.getName(),RED),ColorFont.out(file.delete(),GREEN));
         });
 
         mongoTemplate.dropCollection(StockHisPbPe.class);
-        log.info("删除历史pb,pe,price数据");
+        log.info("{}",ansi().eraseScreen().fg(RED).a("删除历史pb,pe,price数据").reset());
 
     }
+
 }

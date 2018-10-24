@@ -1,10 +1,8 @@
 package io.github.kingschan1204.istock.module.task;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import io.github.kingschan1204.istock.common.util.out.font.ColorFont;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
-import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
 import org.quartz.Job;
@@ -14,14 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * 定时更新深市股票价格
@@ -63,7 +60,10 @@ public class SinaStockPriceTask implements Job {
             }
 
         }
-        log.info(String.format("深市数据更新共%s只股票,更新耗时：%s ms",codes.size(), (System.currentTimeMillis() - start)));
+        log.info("深市数据更新共：{}只股票,更新耗时：{}ms",
+                ColorFont.out(String.valueOf(codes.size()),RED),
+                ColorFont.out((System.currentTimeMillis() - start),RED));
+
     }
 
 
