@@ -39,11 +39,6 @@ public class ThsStockInfoTask implements Job{
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
 
-//    @Scheduled(cron = "*/6 * * * * ?")
-    /*public void stockInfoExecute() throws Exception {
-
-    }*/
-
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         if (!StockDateUtil.stockOpenTime()) {

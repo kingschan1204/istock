@@ -18,11 +18,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 定时更新分红情况
@@ -43,12 +43,6 @@ public class StockDividendTask implements Job {
     private MongoTemplate template;
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
-
-//    @Scheduled(cron = "*/6 * * * * ?")
-   /* public void stockDividendExecute() throws Exception {
-
-
-    }*/
 
     /**
      * 同花顺和东方财富的并集
