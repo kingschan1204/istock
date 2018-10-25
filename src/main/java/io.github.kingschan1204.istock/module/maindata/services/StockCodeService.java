@@ -84,31 +84,6 @@ public class StockCodeService {
         return mongoTemplate.find(new Query(Criteria.where("_id").regex("sz")), StockCode.class);
     }
 
-    /**
-     * 更新股票价格
-     * @param codes
-     * @param spider
-     * @throws Exception
-     */
-    public void updateStockPrice(List<String> codes,StockSpider spider) throws Exception {
-        JSONArray jsons = spider.getStockPrice(codes.toArray(new String[]{}));
-        List<Stock> stocks = JSON.parseArray(jsons.toJSONString(), Stock.class);
-        stocks.stream().forEach(stock -> {
-            mongoTemplate.upsert(
-                    new Query(Criteria.where("_id").is(stock.getCode())),
-                    new Update()
-                            .set("_id", stock.getCode())
-                            .set("type", stock.getType())
-                            .set("name", stock.getName())
-                            .set("price", stock.getPrice())
-                            .set("yesterdayPrice", stock.getYesterdayPrice())
-                            .set("fluctuate", stock.getFluctuate())
-                            .set("todayMax", stock.getTodayMax())
-                            .set("todayMin", stock.getTodayMin())
-                            .set("priceDate", stock.getPriceDate()),
-                    "stock"
-            );
-        });
-    }
+
 
 }

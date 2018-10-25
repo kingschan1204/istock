@@ -4,6 +4,7 @@ import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
+import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -32,6 +33,8 @@ public class SinaStockPriceTask implements Job {
     private MongoTemplate template;
     @Autowired
     private StockCodeService stockCodeService;
+    @Autowired
+    private StockService stockService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -45,7 +48,7 @@ public class SinaStockPriceTask implements Job {
             list.add(codes.get(i).getCode());
             if (i > 0 && (i % 300 == 0 || i == codes.size() - 1)) {
                 try {
-                    stockCodeService.updateStockPrice(list, spider);
+                    stockService.updateStockPrice(list, spider);
                     list = new ArrayList<>();
                     Thread.sleep(800);
                 } catch (Exception ex) {
