@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.module.task;
 
-import io.github.kingschan1204.istock.common.util.out.font.ColorFont;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
@@ -13,12 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.fusesource.jansi.Ansi.Color.RED;
-import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * 定时更新深市股票价格
@@ -50,7 +45,7 @@ public class SinaStockPriceTask implements Job {
             list.add(codes.get(i).getCode());
             if (i > 0 && (i % 300 == 0 || i == codes.size() - 1)) {
                 try {
-                    stockCodeService.updateStockPrice(list,spider);
+                    stockCodeService.updateStockPrice(list, spider);
                     list = new ArrayList<>();
                     Thread.sleep(800);
                 } catch (Exception ex) {
@@ -60,13 +55,9 @@ public class SinaStockPriceTask implements Job {
             }
 
         }
-        log.info("深市数据更新共：{}只股票,更新耗时：{}ms",
-                ColorFont.out(String.valueOf(codes.size()),RED),
-                ColorFont.out((System.currentTimeMillis() - start),RED));
+        log.info("深市数据更新共：{}只股票,更新耗时：{}ms", codes.size(), (System.currentTimeMillis() - start));
 
     }
-
-
 
 
 }

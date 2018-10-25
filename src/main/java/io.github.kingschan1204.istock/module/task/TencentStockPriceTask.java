@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.module.task;
 
-import io.github.kingschan1204.istock.common.util.out.font.ColorFont;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCode;
@@ -13,14 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static org.fusesource.jansi.Ansi.Color.RED;
-import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * 定时更新沪市股票价格
@@ -62,9 +57,7 @@ public class TencentStockPriceTask implements Job {
             }
 
         }
-        log.info("沪市数据更新共：{}只股票,更新耗时：{}ms",
-                ColorFont.out(String.valueOf(codes.size()),RED),
-                ColorFont.out((System.currentTimeMillis() - start),RED));
+        log.info("沪市数据更新共：{}只股票,更新耗时：{}ms",codes.size(),(System.currentTimeMillis() - start));
     }
 
 
