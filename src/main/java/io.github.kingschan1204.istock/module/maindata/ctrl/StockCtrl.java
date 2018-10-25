@@ -5,7 +5,6 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,8 +44,6 @@ public class StockCtrl {
         }
     }
 
-    @Autowired
-    private MongoTemplate template;
 
     @ResponseBody
     @RequestMapping(value = "/stock/mapReduce/5years_dy")
