@@ -3,7 +3,6 @@ package io.github.kingschan1204.istock.module.maindata.ctrl;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
-import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

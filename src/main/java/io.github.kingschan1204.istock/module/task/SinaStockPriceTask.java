@@ -2,8 +2,8 @@ package io.github.kingschan1204.istock.module.task;
 
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
-import io.github.kingschan1204.istock.module.maindata.po.StockCode;
-import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
+import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
+import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -32,7 +32,7 @@ public class SinaStockPriceTask implements Job {
     @Autowired
     private MongoTemplate template;
     @Autowired
-    private StockCodeService stockCodeService;
+    private StockCodeInfoService stockCodeInfoService;
     @Autowired
     private StockService stockService;
 
@@ -42,7 +42,7 @@ public class SinaStockPriceTask implements Job {
             return;
         }
         Long start = System.currentTimeMillis();
-        List<StockCode> codes = stockCodeService.getSZStockCodes();
+        List<StockCodeInfo> codes = stockCodeInfoService.getSZStockCodes();
         List<String> list = new ArrayList<>();
         for (int i = 0; i < codes.size(); i++) {
             list.add(codes.get(i).getCode());

@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +39,32 @@ public class StockCodeInfoService {
         //先删除再新增
         mongoTemplate.dropCollection(StockCodeInfo.class);
         mongoTemplate.insertAll(list);
+    }
+
+    /**
+     * 返回所有代码
+     *
+     * @return
+     */
+    public List<StockCodeInfo> getAllStockCodes() {
+        return mongoTemplate.find(new Query(), StockCodeInfo.class);
+
+    }
+
+    /**
+     * 返回沪市代码
+     * @return
+     */
+    public List<StockCodeInfo> getSHStockCodes() {
+        return mongoTemplate.find(new Query(Criteria.where("type").is("sh")), StockCodeInfo.class);
+
+    }
+
+    /**
+     * 返回深市代码
+     * @return
+     */
+    public List<StockCodeInfo> getSZStockCodes() {
+        return mongoTemplate.find(new Query(Criteria.where("type").is("sz")), StockCodeInfo.class);
     }
 }
