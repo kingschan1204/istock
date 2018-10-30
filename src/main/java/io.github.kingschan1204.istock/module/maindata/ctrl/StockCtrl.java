@@ -2,6 +2,7 @@ package io.github.kingschan1204.istock.module.maindata.ctrl;
 
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class StockCtrl {
     @Autowired
     private StockService service;
     @Autowired
-    private StockCodeService stockCodeService;
+    private StockCodeInfoService stockCodeInfoService;
     @Autowired
     private StockSpider spider;
 
@@ -33,10 +34,10 @@ public class StockCtrl {
 
 
     @ResponseBody
-    @RequestMapping(value = "/stock/init_code", method = RequestMethod.POST)
+    @RequestMapping(value = "/stock/refresh_code", method = RequestMethod.POST)
     public String initCode() {
         try {
-            stockCodeService.saveAllStockCode();
+            stockCodeInfoService.refreshCode();
             return "success";
         } catch (Exception e) {
             e.printStackTrace();

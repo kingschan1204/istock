@@ -17,12 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.*;
 
