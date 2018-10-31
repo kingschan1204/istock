@@ -45,7 +45,7 @@ public class SinaStockPriceTask implements Job {
         List<StockCodeInfo> codes = stockCodeInfoService.getSZStockCodes();
         List<String> list = new ArrayList<>();
         for (int i = 0; i < codes.size(); i++) {
-            list.add(codes.get(i).getCode());
+            list.add(String.format("%s%s",codes.get(i).getType(),codes.get(i).getCode()));
             if (i > 0 && (i % 300 == 0 || i == codes.size() - 1)) {
                 try {
                     stockService.updateStockPrice(list, spider);
