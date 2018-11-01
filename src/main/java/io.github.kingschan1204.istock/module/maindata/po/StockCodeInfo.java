@@ -32,6 +32,16 @@ public class StockCodeInfo {
     //上市日期
     private Integer list_date;
 
+
+    /**
+     * info 信息更新日
+     */
+    private Integer infoDate;
+    /**
+     * 持有人更新日
+     */
+    private Integer holdersDate;
+
     //init method
     public StockCodeInfo(){    }
 
@@ -49,6 +59,7 @@ public class StockCodeInfo {
         this.market=data.getString(6);
         this.list_status=data.getString(7);
         this.list_date=data.getInteger(8);
+        this.infoDate= 0;
     }
 
 
@@ -124,5 +135,21 @@ public class StockCodeInfo {
 
     public void setList_date(Integer list_date) {
         this.list_date = list_date;
+    }
+
+    public Integer getInfoDate() {
+        return infoDate;
+    }
+
+    public void setInfoDate(Integer infoDate) {
+        this.infoDate = infoDate;
+    }
+
+    public Integer getHoldersDate() {
+        return holdersDate;
+    }
+
+    public void setHoldersDate(Integer holdersDate) {
+        this.holdersDate = holdersDate;
     }
 }

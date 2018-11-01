@@ -23,12 +23,14 @@ public class StockServiceTest {
     private StockCompanyService stockCompanyService;
     @Autowired
     private StockCodeInfoService stockCodeService;
+    @Autowired
+    private StockTopHoldersService stockTopHoldersService;
 
     @Test
     public void saveAllCode()   {
         Long start =System.currentTimeMillis();
         try {
-            stockCompanyService.refreshStockCompany();
+            stockTopHoldersService.refreshTopHolders("600519.SH");
         }catch (Exception ex){
             ex.printStackTrace();
         }

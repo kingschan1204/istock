@@ -80,10 +80,10 @@ public interface StockSpider {
     /**
      * 是否工作日
      * @param date
-     * @return
+     * @return true 工作日 false 非工作日
      * @throws IOException
      */
-    static boolean isWorkDay(String date) throws IOException {
+    static boolean isWorkDay(Integer date) throws IOException {
         String api =String.format("http://api.goseek.cn/Tools/holiday?date=%s",date);
         String result = Jsoup.connect(api).timeout(3000).ignoreContentType(true).get().text();
         //{"code":10001,"data":2}  工作日对应结果为 0, 休息日对应结果为 1, 节假日对应的结果为 2

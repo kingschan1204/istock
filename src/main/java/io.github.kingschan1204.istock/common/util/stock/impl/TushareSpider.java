@@ -28,6 +28,22 @@ public class TushareSpider  {
     private RestTemplate restTemplate=new RestTemplate();
     final String api="http://api.tushare.pro";
 
+    /**
+     * 格式化成tushare API所需格式
+     * @param code
+     * @return
+     */
+   public  static String formatCode(String code) {
+        //5开头，沪市基金或权证 60开头上证
+        if (code.matches("^60.*|^5.*")) {
+            return String.format("%s.SH", code);
+        }
+        //1开头的，是深市基金 00开头是深圳
+        else if (code.matches("^1.*|^00.*|^300...")) {
+            return String.format("%s.SZ", code);
+        }
+        return null;
+    }
 
     /**
      * post 方式提交

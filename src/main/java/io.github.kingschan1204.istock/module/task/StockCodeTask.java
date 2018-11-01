@@ -2,6 +2,7 @@ package io.github.kingschan1204.istock.module.task;
 
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
+import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -26,12 +27,15 @@ public class StockCodeTask implements Job{
     private MongoTemplate template;
     @Autowired
     private StockCodeInfoService stockCodeInfoService;
+    @Autowired
+    private StockCompanyService stockCompanyService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         Long start =System.currentTimeMillis();
         try {
             stockCodeInfoService.refreshCode();
+            stockCompanyService.refreshStockCompany();
         } catch (Exception e) {
             log.error("代码更新错误：{}",e);
             e.printStackTrace();

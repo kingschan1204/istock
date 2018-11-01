@@ -1,6 +1,7 @@
 package io.github.kingschan1204.istock;
 
 import io.github.kingschan1204.istock.module.startup.InitQuartzTaskRunner;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -29,6 +30,8 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication sa = new SpringApplication(Application.class);
+        sa.setBannerMode(Banner.Mode.OFF);
+        sa.run( args);
     }
 }

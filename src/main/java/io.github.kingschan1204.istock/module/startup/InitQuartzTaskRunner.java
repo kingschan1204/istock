@@ -33,6 +33,20 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 TencentStockPriceTask.class,
                 "0/30 * * * * ?");
 
+        quartzManager.addJob("stockInfoTask",
+                "stockInfoTask-group",
+                "stockInfoTask-trigger",
+                "stockInfoTask-trigger-group",
+                ThsStockInfoTask.class,
+                "0/30 * * * * ?");
+
+        quartzManager.addJob("stockHoldersTask",
+                "stockHoldersTask-group",
+                "stockHoldersTask-trigger",
+                "stockHoldersTask-trigger-group",
+                StockTopHoldersTask.class,
+                "0/30 * * * * ?");
+
         quartzManager.addJob("stockCodeTask",
                 "stockCodeTask-group",
                 "stockCodeTask-trigger",
@@ -55,12 +69,7 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 ThsHisYearReportTask.class,
                 "6 * * * * ?");
 
-        quartzManager.addJob("stockInfoTask",
-                "stockInfoTask-group",
-                "stockInfoTask-trigger",
-                "stockInfoTask-trigger-group",
-                ThsStockInfoTask.class,
-                "6 * * * * ?");
+
 
         quartzManager.addJob("xueqiuDyTask",
                 "xueqiuDyTask-group",
