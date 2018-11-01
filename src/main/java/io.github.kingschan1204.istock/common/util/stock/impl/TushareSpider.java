@@ -23,9 +23,9 @@ import org.springframework.web.client.RestTemplate;
 public class TushareSpider  {
 
     @Value("${tushare.token}")
-    private String tuToken;
+    private String tuToken="66cdab7a757dcb728f8833f732a928791d67b6f38e1cd8d94bb79a0d";
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate=new RestTemplate();
     final String api="http://api.tushare.pro";
 
 
@@ -77,8 +77,24 @@ public class TushareSpider  {
         return items;
     }
 
+    /**
+     * 得到前10大持有人
+     * @param code
+     * @return
+     */
+    public JSONArray getStockTopHolders(String code){
+        JSONObject json = new JSONObject();
+        //接口名称
+        json.put("api_name","top10_holders");
+        json.put("params",JSON.parse(String.format("{'ts_code':'%s'}",code)));
+        json.put("fields","ts_code,ann_date,end_date,holder_name,hold_amount,hold_ratio");
+        String result = post(json);
+        JSONObject datas= JSON.parseObject(result);
+        JSONArray items =datas.getJSONObject("data").getJSONArray("items");
+        return items;
+    }
     public static void main(String[] args) {
-        System.out.println(new TushareSpider().getStockCompany());
+        System.out.println(new TushareSpider().getStockTopHolders("600519.SH"));
 
     }
 }
