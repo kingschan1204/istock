@@ -61,7 +61,6 @@ public class StockTopHoldersTask implements Job{
         if(null==list||list.size()==0){
             return ;
         }
-        int affected=0;
         for (StockCodeInfo stock :list) {
             try {
                 stockTopHoldersService.refreshTopHolders(TushareSpider.formatCode(stock.getCode()));
