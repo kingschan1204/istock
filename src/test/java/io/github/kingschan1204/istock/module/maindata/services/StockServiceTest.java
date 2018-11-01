@@ -20,12 +20,18 @@ public class StockServiceTest {
     @Autowired
     private MongoTemplate template;
     @Autowired
+    private StockCompanyService stockCompanyService;
+    @Autowired
     private StockCodeInfoService stockCodeService;
 
     @Test
-    public void saveAllCode() throws Exception {
+    public void saveAllCode()   {
         Long start =System.currentTimeMillis();
-        stockCodeService.refreshCode();
+        try {
+            stockCompanyService.refreshStockCompany();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         System.out.println(String.format("更新代码共耗时：%s ms",(System.currentTimeMillis()-start)));
     }
 

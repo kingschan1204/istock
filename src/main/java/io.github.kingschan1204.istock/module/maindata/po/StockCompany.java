@@ -45,9 +45,11 @@ public class StockCompany {
         this.website=json.getString(9);
         this.email=json.getString(10);
         this.office=json.getString(11);
-        this.employees=json.getInteger(12);
-        this.mainBusiness=json.getString(13);
-        this.businessScope=json.getString(14);
+        this.mainBusiness=json.getString(12);
+        this.employees=json.getInteger(13);
+        if (null!=json.get(14)){
+            this.businessScope=json.getString(14).replaceFirst("^主.*\\:","");
+        }
 
     }
 

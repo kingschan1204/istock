@@ -30,7 +30,7 @@ public class StockCompanyService {
      */
     public void refreshStockCompany(){
         List<StockCompany> list = new ArrayList<StockCompany>();
-        JSONArray rows =tushareSpider.getStockCodeList();
+        JSONArray rows =tushareSpider.getStockCompany();
         for (int i = 0; i < rows.size(); i++) {
             list.add(new StockCompany(rows.getJSONArray(i)));
         }
