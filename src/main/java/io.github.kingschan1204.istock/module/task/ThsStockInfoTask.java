@@ -59,7 +59,6 @@ public class ThsStockInfoTask implements Job{
         query.limit(4);
         List<StockCodeInfo> list = template.find(query, StockCodeInfo.class);
         if(null==list||list.size()==0){
-            log.info("stock info 今日已全部更新完!");
             return ;
         }
         int affected=0;

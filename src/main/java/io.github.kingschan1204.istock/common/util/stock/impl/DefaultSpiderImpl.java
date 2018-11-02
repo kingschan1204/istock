@@ -215,7 +215,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONArray getHistoryROE(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=%s", code);
-        String path = String.format("./data/%s_main_year.xls", code);
+        String path = String.format("./data/%s.xls", code);
         String referrer=String.format("http://basic.10jqka.com.cn/%s/finance.html",code);
         if (!new File(path).exists()) {
             //下载

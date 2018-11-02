@@ -41,6 +41,14 @@ public class StockCodeInfo {
      * 持有人更新日
      */
     private Integer holdersDate;
+    /**
+     * 年报excel下载时间
+     */
+    private Integer yearReportDate;
+    /**
+     * xls下载错误数
+     */
+    private Integer xlsError;
 
     //init method
     public StockCodeInfo(){    }
@@ -60,6 +68,10 @@ public class StockCodeInfo {
         this.list_status=data.getString(7);
         this.list_date=data.getInteger(8);
         this.infoDate= 0;
+        this.holdersDate=0;
+        this.yearReportDate=0;
+        this.xlsError=0;
+
     }
 
 
@@ -151,5 +163,21 @@ public class StockCodeInfo {
 
     public void setHoldersDate(Integer holdersDate) {
         this.holdersDate = holdersDate;
+    }
+
+    public Integer getYearReportDate() {
+        return yearReportDate;
+    }
+
+    public void setYearReportDate(Integer yearReportDate) {
+        this.yearReportDate = yearReportDate;
+    }
+
+    public Integer getXlsError() {
+        return xlsError;
+    }
+
+    public void setXlsError(Integer xlsError) {
+        this.xlsError = xlsError;
     }
 }

@@ -3,6 +3,8 @@ package io.github.kingschan1204.istock.common.util.stock.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -11,6 +13,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -110,7 +115,22 @@ public class TushareSpider  {
         return items;
     }
     public static void main(String[] args) {
-        System.out.println(new TushareSpider().getStockTopHolders("600519.SH"));
-
+        try {
+            //{"date":"2018-11-01 18:06:25","code":200,"address":"湖南省长沙市 电信","ip":"113.246.64.67"}
+            System.setProperty("https.maxRedirects", "50");
+            System.getProperties().setProperty("https.proxySet", "true");
+            System.getProperties().setProperty("https.proxyHost", "114.116.10.21");
+            System.getProperties().setProperty("https.proxyPort", "3128");
+            StockSpider.enableSSLSocket();
+            String json =Jsoup.connect("https://api.ttt.sh/ip/qqwry/").get().text();
+            JSONObject j = JSON.parseObject(json);
+            System.out.println(j);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
     }
 }

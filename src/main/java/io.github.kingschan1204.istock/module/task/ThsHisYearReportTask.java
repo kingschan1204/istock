@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
-import io.github.kingschan1204.istock.module.maindata.po.StockCode;
+import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisRoeRepository;
 import org.quartz.Job;
@@ -14,14 +14,12 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**
@@ -72,11 +70,12 @@ public class ThsHisYearReportTask implements Job{
         Integer dateNumber = StockDateUtil.getCurrentDateNumber();
         Criteria cr = new Criteria();
         //3天更新一把
-        Criteria c1 = Criteria.where("hrdud").lt(dateNumber-3);
+        Criteria c1 = Criteria.where("yearReportDate").lt(dateNumber-3);
         Criteria c2 = Criteria.where("xlsError").is(0);
-        Query query = new Query(cr.andOperator(c1,c2));
+        Criteria c3 = Criteria.where("yearReportDate").exists(false);
+        Query query = new Query(cr.orOperator(c3,new Criteria().andOperator(c1,c2)));
         query.limit(2);
-        List<StockCode> list = template.find(query, StockCode.class);
+        List<StockCodeInfo> list = template.find(query, StockCodeInfo.class);
         if(null==list||list.size()==0){
             return ;
         }
@@ -90,15 +89,15 @@ public class ThsHisYearReportTask implements Job{
                 stockHisRoeRepository.save(lis);
                 template.upsert(
                         new Query(Criteria.where("_id").is(code.getCode())),
-                        new Update().set("hrdud", dateNumber),
-                        "stock_code"
+                        new Update().set("yearReportDate", dateNumber),
+                        "stock_code_info"
                 );
             } catch (Exception e) {
                 e.printStackTrace();
                 ehcacheUtil.addKey(cacheName,"error",getErrorTotal()+1);
                 template.upsert(
                         new Query(Criteria.where("_id").is(code.getCode())),new Update().set("xlsError", 1),
-                        "stock_code"
+                        "stock_code_info"
                 );
             }
         });
