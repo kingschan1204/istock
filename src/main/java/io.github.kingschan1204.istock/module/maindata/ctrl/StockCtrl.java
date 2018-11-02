@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.maindata.ctrl;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
+import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ public class StockCtrl {
     @Autowired
     private StockCodeInfoService stockCodeInfoService;
     @Autowired
+    private StockCompanyService stockCompanyService;
+    @Autowired
     private StockSpider spider;
 
     @RequestMapping("/stock/q")
@@ -37,6 +40,18 @@ public class StockCtrl {
     public String initCode() {
         try {
             stockCodeInfoService.refreshCode();
+            return "success";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/stock/refresh_company", method = RequestMethod.POST)
+    public String initCompany() {
+        try {
+            stockCompanyService.refreshStockCompany();
             return "success";
         } catch (Exception e) {
             e.printStackTrace();

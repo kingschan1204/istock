@@ -229,7 +229,7 @@
                 return;
             }
             var rowData = $("#jqGrid").jqGrid('getRowData', ids);
-            window.open("/stock/info/" + rowData.code);
+            window.open("/stock/hisdata/" + rowData.code);
         });
         $("#report_btn").click(function () {
             var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');

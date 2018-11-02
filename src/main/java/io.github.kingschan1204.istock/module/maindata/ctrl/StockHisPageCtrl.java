@@ -121,7 +121,7 @@ public class StockHisPageCtrl {
     @Autowired
     private MongoTemplate template;
 
-    @RequestMapping("/stock/info/{code}")
+    @RequestMapping("/stock/hisdata/{code}")
     public ModelAndView getStockInfo(@PathVariable String code) throws Exception {
         ModelAndView mav = new ModelAndView(template_path + "his_pbpe");
         StringBuilder date = new StringBuilder();

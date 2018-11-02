@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情</title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <script src="/plugs/echar/infographic.js"></script>
+    <!--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.5.17/vue.min.js"></script>
+    <style>
+        .info-title{
+            font-family: 微软雅黑;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body >
+    <div class="container"  id="app">
+        <div class="row">
+            <div class="col-md-12 text-center"><h3>基本信息</h3></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">代码</div>
+            <div class="col-md-2">{{info._id}}</div>
+            <div class="col-md-2 info-title">名称</div>
+            <div class="col-md-2">{{info.name}}</div>
+            <div class="col-md-2 info-title">行业</div>
+            <div class="col-md-2">{{info.industry}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">当前价格</div>
+            <div class="col-md-2">{{info.price}}</div>
+            <div class="col-md-2 info-title">昨收</div>
+            <div class="col-md-2">{{info.yesterdayPrice}}</div>
+            <div class="col-md-2 info-title">涨幅</div>
+            <div class="col-md-2">{{info.fluctuate}}%</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">今日最高</div>
+            <div class="col-md-2">{{info.todayMax}}</div>
+            <div class="col-md-2 info-title">今日最低</div>
+            <div class="col-md-2">{{info.todayMin}}</div>
+            <div class="col-md-2 info-title">市值</div>
+            <div class="col-md-2">{{info.totalValue}}亿</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">市净率</div>
+            <div class="col-md-2">{{info.pb}}</div>
+            <div class="col-md-2 info-title">净资产收益率</div>
+            <div class="col-md-2">{{info.roe}}%</div>
+            <div class="col-md-2 info-title">每股收益</div>
+            <div class="col-md-2">{{info.bvps}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">市盈率(静)</div>
+            <div class="col-md-2">{{info.pes}}</div>
+            <div class="col-md-2 info-title">市盈率(动)</div>
+            <div class="col-md-2">{{info.ped}}</div>
+            <div class="col-md-2 info-title">最新股息</div>
+            <div class="col-md-2">{{info.dy}}%</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">上次分红</div>
+            <div class="col-md-2">{{info.dividend}}%</div>
+            <div class="col-md-2 info-title">上次分红日期</div>
+            <div class="col-md-2">{{info.dividendDate}}</div>
+            <div class="col-md-2 info-title">最新股息</div>
+            <div class="col-md-2">{{info.dy}}%</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">五年平均股息</div>
+            <div class="col-md-2">{{info.fiveYearDy}}%</div>
+            <div class="col-md-2 info-title">五年平均ROE</div>
+            <div class="col-md-2">{{info.fiveYearRoe}}%</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center"><h3>公司信息</h3></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">公司全名</div>
+            <div class="col-md-3">{{info.info[0].fullname}}</div>
+            <div class="col-md-1 info-title">所在地</div>
+            <div class="col-md-2">{{info.company[0].province}} - {{info.info[0].area}}</div>
+            <div class="col-md-2 info-title">上市日期</div>
+            <div class="col-md-2">{{info.info[0].list_date}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">所属板块</div>
+            <div class="col-md-2">{{info.info[0].market}}</div>
+            <div class="col-md-2 info-title">法人代表</div>
+            <div class="col-md-2">{{info.company[0].chairman}}</div>
+            <div class="col-md-2 info-title">总经理</div>
+            <div class="col-md-2">{{info.company[0].manager}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">董秘</div>
+            <div class="col-md-2">{{info.company[0].secretary}}</div>
+            <div class="col-md-2 info-title">注册资本</div>
+            <div class="col-md-2">{{info.company[0].regCapital}}</div>
+            <div class="col-md-2 info-title">注册日期</div>
+            <div class="col-md-2">{{info.company[0].setupDate}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">公司主页</div>
+            <div class="col-md-2"><a target="_blank">{{info.company[0].website}}</a></div>
+            <div class="col-md-2 info-title">电子邮件</div>
+            <div class="col-md-2">{{info.company[0].email}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">办公室</div>
+            <div class="col-md-4">{{info.company[0].office}}</div>
+            <div class="col-md-2 info-title">员工人数</div>
+            <div class="col-md-2">{{info.company[0].employees}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">主要业务及产品</div>
+            <div class="col-md-10">{{info.company[0].mainBusiness}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">经营范围</div>
+            <div class="col-md-10">{{info.company[0].businessScope}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">公司介绍</div>
+            <div class="col-md-10">{{info.company[0].introduction}}</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center"><h3>10大股东</h3></div>
+        </div>
+        <div class="row">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <th>持有者</th>
+                    <th>公告日期</th>
+                    <th>报告期</th>
+                    <th>持有数量（股）</th>
+                    <th>持有比例</th>
+                </thead>
+                <tr v-for="item in info.holders">
+                    <td>{{item.holderName}}</td>
+                    <td>{{item.annDate}}</td>
+                    <td>{{item.endDate}}</td>
+                    <td>{{item.holdAmount}}</td>
+                    <td>{{item.holdRatio}}%</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+    var result =${data};
+    var app = new Vue({
+        el: '#app',
+        data: {
+            info:result
+        }
+    });
+</script>
+</html>
