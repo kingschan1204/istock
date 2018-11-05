@@ -30,9 +30,13 @@ public class StockCompanyService {
      */
     public void refreshStockCompany(){
         List<StockCompany> list = new ArrayList<StockCompany>();
-        JSONArray rows =tushareSpider.getStockCompany();
-        for (int i = 0; i < rows.size(); i++) {
-            list.add(new StockCompany(rows.getJSONArray(i)));
+        JSONArray rows_sh =tushareSpider.getStockShCompany();
+        JSONArray rows_sz =tushareSpider.getStockSZCompany();
+        for (int i = 0; i < rows_sh.size(); i++) {
+            list.add(new StockCompany(rows_sh.getJSONArray(i)));
+        }
+        for (int i = 0; i < rows_sz.size(); i++) {
+            list.add(new StockCompany(rows_sz.getJSONArray(i)));
         }
         //先删除再新增
         mongoTemplate.dropCollection(StockCompany.class);

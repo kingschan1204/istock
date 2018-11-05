@@ -18,7 +18,11 @@ import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -64,6 +68,13 @@ public class StockInfoService {
         Query query = new BasicQuery(dbObject,fieldObject);
         query.addCriteria(Criteria.where("code").is(code));
         List<StockTopHolders> holders=  mongoTemplate.find(query, StockTopHolders.class);
+        /*Map<String,List<StockTopHolders>> map =holders.stream().collect(Collectors.groupingBy(StockTopHolders::getHolderName));
+        holders=new ArrayList<StockTopHolders>();
+        map.forEach((key, value) ->{
+            System.out.println(JSON.toJSON(value));
+        });
+
+        System.out.println(map);*/
         JSONArray jsonHolders=JSONArray.parseArray(JSON.toJSONString(holders));
         data.put("holders",jsonHolders);
         return data;

@@ -84,17 +84,34 @@ public class TushareSpider  {
     }
 
     /**
-     *获取上市公司基础信息
+     *获取上海公司基础信息
      * @return
      */
-    public JSONArray getStockCompany(){
+    public JSONArray getStockShCompany(){
         JSONObject json = new JSONObject();
         //接口名称
         json.put("api_name","stock_company");
+        json.put("params",JSON.parse("{'exchange':'SSE'}"));
         json.put("fields","ts_code,chairman,manager,secretary,reg_capital,setup_date,province,city,introduction,website,email,office,employees,main_business,business_scope");
         String result = post(json);
-        JSONObject datas= JSON.parseObject(result);
-        JSONArray items =datas.getJSONObject("data").getJSONArray("items");
+        JSONObject data= JSON.parseObject(result);
+        JSONArray items =data.getJSONObject("data").getJSONArray("items");
+        return items;
+    }
+
+    /**
+     *获取深圳公司基础信息
+     * @return
+     */
+    public JSONArray getStockSZCompany(){
+        JSONObject json = new JSONObject();
+        //接口名称
+        json.put("api_name","stock_company");
+        json.put("params",JSON.parse("{'exchange':'SZSE'}"));
+        json.put("fields","ts_code,chairman,manager,secretary,reg_capital,setup_date,province,city,introduction,website,email,office,employees,main_business,business_scope");
+        String result = post(json);
+        JSONObject data= JSON.parseObject(result);
+        JSONArray items =data.getJSONObject("data").getJSONArray("items");
         return items;
     }
 
