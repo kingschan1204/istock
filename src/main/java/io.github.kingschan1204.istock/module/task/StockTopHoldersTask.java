@@ -65,7 +65,7 @@ public class StockTopHoldersTask implements Job{
             try {
                 stockTopHoldersService.refreshTopHolders(TushareSpider.formatCode(stock.getCode()));
                 template.upsert(
-                        new Query(Criteria.where("_id").is(stock.getCode())),
+                        new Query(Criteria.where("code").is(stock.getCode())),
                         new Update().set("holdersDate",StockDateUtil.getCurrentDateNumber()),"stock_code_info");
             } catch (Exception e) {
                 e.printStackTrace();
