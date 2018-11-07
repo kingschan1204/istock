@@ -2,8 +2,6 @@ package io.github.kingschan1204.istock.module.maindata.services;
 
 import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.stock.impl.TushareSpider;
-import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.po.StockTopHolders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +45,9 @@ public class StockTopHoldersService {
                 break;
             }
         }
+        String query_code=code.replaceAll("\\D+","");
         //先删除再新增
-        mongoTemplate.remove(new Query(Criteria.where("code").is(code)),StockTopHolders.class);
+        mongoTemplate.remove(new Query(Criteria.where("code").is(query_code)),StockTopHolders.class);
         mongoTemplate.insertAll(list);
     }
 
