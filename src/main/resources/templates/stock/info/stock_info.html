@@ -9,7 +9,6 @@
     <!--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.5.17/vue.min.js"></script>
     <style>
@@ -43,7 +42,7 @@
             <div class="col-md-2 info-title">昨收</div>
             <div class="col-md-2">{{stock.yesterdayPrice}}</div>
             <div class="col-md-2 info-title">涨幅</div>
-            <div class="col-md-2">{{stock.fluctuate}}</div>
+            <div class="col-md-2"><span v-html="toStockColorFont(stock.fluctuate)"></span></div>
         </div>
         <div class="row">
             <div class="col-md-2 info-title">今日最高</div>
@@ -74,8 +73,6 @@
             <div class="col-md-2">{{stock.dividend}}</div>
             <div class="col-md-2 info-title">上次分红日期</div>
             <div class="col-md-2">{{stock.dividendDate}}</div>
-            <div class="col-md-2 info-title">最新股息</div>
-            <div class="col-md-2">{{stock.dy}}</div>
         </div>
         <div class="row">
             <div class="col-md-2 info-title">五年平均股息</div>
@@ -188,6 +185,14 @@
                     rows.push(row);
                 }
                 return rows;
+            },
+            toStockColorFont:function(value){
+                var val =parseFloat(value);
+                if(val>0){
+                    return "<span style='color:red;'>"+value+"</span>";
+                }
+                return "<span style='color:green;'>"+value+"</span>";
+
             }
         }
     });
