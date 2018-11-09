@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.task;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
@@ -71,14 +72,14 @@ public class XueQiuStockDyTask implements Job{
         JSONArray rows = data.getJSONArray("list");
         List<Stock> list = rows.toJavaList(Stock.class);
         for (Stock stock : list) {
-            WriteResult wr = template.updateFirst(
+            UpdateResult updateResult = template.updateFirst(
                     new Query(Criteria.where("_id").is(stock.getCode())),
                     new Update()
                             .set("dy", stock.getDy())
                             .set("dyDate", dateNumber),
                     "stock"
             );
-            affected += wr.getN();
+            affected += updateResult.getModifiedCount();
         }
         log.info("dy 批处理：共{}条，本次更新{}条", list.size(), affected);
 

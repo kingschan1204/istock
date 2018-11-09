@@ -86,7 +86,7 @@ public class ThsHisYearReportTask implements Job{
                 jsons = spider.getHistoryROE(codestr);
                 List<StockHisRoe> lis = JSON.parseArray(jsons.toJSONString(),StockHisRoe.class);
                 template.remove(new Query(Criteria.where("code").is(codestr)),StockHisRoe.class);
-                stockHisRoeRepository.save(lis);
+                stockHisRoeRepository.saveAll(lis);
                 template.upsert(
                         new Query(Criteria.where("_id").is(code.getCode())),
                         new Update().set("yearReportDate", dateNumber),

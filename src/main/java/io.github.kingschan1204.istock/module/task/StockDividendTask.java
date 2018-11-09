@@ -1,7 +1,7 @@
 package io.github.kingschan1204.istock.module.task;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.List;
@@ -105,14 +106,14 @@ public class StockDividendTask implements Job {
                     //save dividend
                     List<StockDividend> stockDividendList = JSONArray.parseArray(dividends.toJSONString(), StockDividend.class);
                     template.remove(new Query(Criteria.where("code").is(stock.getCode())), StockDividend.class);
-                    stockHisDividendRepository.save(stockDividendList);
+                    stockHisDividendRepository.saveAll(stockDividendList);
                     affected = stockDividendList.size();
                 }
             } catch (Exception e) {
                 log.error("error:{}", e);
                 e.printStackTrace();
             }
-            WriteResult wr = template.upsert(
+            UpdateResult updateResult = template.upsert(
                     new Query(Criteria.where("_id").is(stock.getCode())),
                     new Update()
                             .set("_id", stock.getCode())
@@ -121,7 +122,7 @@ public class StockDividendTask implements Job {
                             .set("dividendUpdateDay", dateNumber),
                     "stock"
             );
-            affected += wr.getN();
+            affected += updateResult.getModifiedCount();
             log.info("{}分红抓取,耗时{}ms,获得{}行数据", stock.getCode(), (System.currentTimeMillis() - start), affected);
         }
 

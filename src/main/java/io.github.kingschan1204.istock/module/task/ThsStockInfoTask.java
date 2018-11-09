@@ -2,6 +2,7 @@ package io.github.kingschan1204.istock.module.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
@@ -68,7 +69,7 @@ public class ThsStockInfoTask implements Job{
                 JSONObject info = spider.getStockInfo(stock.getCode());
                 item = info.toJavaObject(Stock.class);
                 if (null == item) {return;}
-                WriteResult wr = template.upsert(
+                UpdateResult updateResult = template.upsert(
                         new Query(Criteria.where("_id").is(stock.getCode())),
                         new Update()
                                 .set("_id", stock.getCode())
@@ -86,7 +87,7 @@ public class ThsStockInfoTask implements Job{
                 template.upsert(
                         new Query(Criteria.where("_id").is(stock.getCode())),
                         new Update().set("infoDate", item.getInfoDate()),"stock_code_info");
-                affected+=wr.getN();
+                affected+=updateResult.getModifiedCount();
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("{}",e);

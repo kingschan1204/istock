@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.swing.*;
+
 /**
  * spring boot 启动类
  * @author kings.chan
@@ -30,8 +32,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication sa = new SpringApplication(Application.class);
-        sa.setBannerMode(Banner.Mode.OFF);
-        sa.run( args);
+        SpringApplication.run(Application.class,args);
     }
 }

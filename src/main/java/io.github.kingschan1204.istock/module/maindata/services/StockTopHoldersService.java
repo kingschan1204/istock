@@ -2,6 +2,7 @@ package io.github.kingschan1204.istock.module.maindata.services;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.DeleteResult;
 import io.github.kingschan1204.istock.common.util.stock.impl.TushareSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockTopHolders;
 import org.slf4j.Logger;
@@ -48,9 +49,9 @@ public class StockTopHoldersService {
         }
         String query_code=code.replaceAll("\\D+","");
         //先删除再新增
-        WriteResult wr= mongoTemplate.remove(new Query(Criteria.where("code").is(query_code)),StockTopHolders.class);
+        DeleteResult dr= mongoTemplate.remove(new Query(Criteria.where("code").is(query_code)),StockTopHolders.class);
         mongoTemplate.insertAll(list);
-        log.info("top10 holders :remove {} ,insert {} ",wr.getN(),list.size());
+        log.info("top10 holders :remove {} ,insert {} ",dr.getDeletedCount(),list.size());
     }
 
 }

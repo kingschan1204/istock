@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import io.github.kingschan1204.istock.module.maindata.po.StockTopHolders;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +62,8 @@ public class StockInfoService {
         JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(list));
         JSONObject data =jsonArray.getJSONObject(0);
         //查股东
-        DBObject dbObject = new BasicDBObject();
-        DBObject fieldObject = new BasicDBObject();
+        Document dbObject = new Document();
+        Document fieldObject = new Document();
         fieldObject.put("_id", false);
         fieldObject.put("code", false);
         Query query = new BasicQuery(dbObject,fieldObject);

@@ -7,6 +7,9 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
@@ -16,6 +19,7 @@ import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import io.github.kingschan1204.istock.module.maindata.vo.StockVo;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,10 +31,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Stock service
@@ -66,8 +67,8 @@ public class StockService {
      * @return
      */
     public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
-        DBObject dbObject = new BasicDBObject();
-        DBObject fieldObject = new BasicDBObject();
+        Document dbObject = new Document();
+        Document  fieldObject = new Document();
         fieldObject.put("todayMax", false);
         fieldObject.put("todayMin", false);
         fieldObject.put("priceDate", false);
@@ -76,6 +77,8 @@ public class StockService {
         fieldObject.put("infoDate", false);
         fieldObject.put("dividendUpdateDay", false);
         Query query = new BasicQuery(dbObject,fieldObject);
+        //Projections.exclude(Arrays.asList("todayMax","todayMin","priceDate","mainBusiness","dyDate","infoDate","dividendUpdateDay"));
+
         Optional<String> code =Optional.ofNullable(pcode);
         if (code.isPresent()){
             if(pcode.matches("\\d{6}")){
@@ -106,12 +109,8 @@ public class StockService {
         //分页
         query.skip((pageindex-1)*pagesize).limit(pagesize);
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        orders.add(new Sort.Order(
-                "asc".equalsIgnoreCase(psort) ?Sort.Direction.ASC:Sort.Direction.DESC
-                ,orderfidld));
-        Sort sort = new Sort(orders);
-        query.with(sort);
+        Sort.Direction sortd="asc".equalsIgnoreCase(psort) ?Sort.Direction.ASC:Sort.Direction.DESC;
+        query.with(new Sort(sortd,orderfidld));
         //code
         List<Stock> list =template.find(query,Stock.class);
         //原始数据在vo对象里进行格式转换
@@ -137,10 +136,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        orders.add(new Sort.Order(Sort.Direction.ASC,"title"));
-        Sort sort = new Sort(orders);
-        query.with(sort);
+        query.with(new Sort(Sort.Direction.ASC,"title"));
         //code
         List<StockDividend> list =template.find(query,StockDividend.class);
         return list;
@@ -156,10 +152,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        orders.add(new Sort.Order(Sort.Direction.ASC,"year"));
-        Sort sort = new Sort(orders);
-        query.with(sort);
+        query.with(new Sort(Sort.Direction.ASC,"year"));
         //code
         List<StockHisRoe> list =template.find(query,StockHisRoe.class);
        return list;
@@ -181,14 +174,14 @@ public class StockService {
         StringBuilder date = new StringBuilder();
 
         JSONObject data= jisiluSpilder.crawHisPbPePriceAndReports(code);
-        List<DBObject> list = new ArrayList<>();
-        DBCollection hisdata = template.getCollection("stock_his_pe_pb");
-        DBCollection report = template.getCollection("stock_report");
+        List<Document> list = new ArrayList<Document>();
+        MongoCollection<Document> hisdata = template.getCollection("stock_his_pe_pb");
+        MongoCollection<Document> report = template.getCollection("stock_report");
 
         JSONArray hisdataJsons=data.getJSONArray("hisdata");
         for (int i = 0; i <hisdataJsons.size() ; i++) {
             JSONObject row = hisdataJsons.getJSONObject(i);
-            DBObject object = new BasicDBObject();
+            Document object = new Document();
             object.put("code",code);
             object.put("date",row.getString("date"));
             object.put("pb",row.getDouble("pb"));
@@ -208,7 +201,7 @@ public class StockService {
 
             list.add(object);
             if ((i != 0 && i %1000 == 0)||i==hisdataJsons.size()-1){
-                hisdata.insert(list);
+                hisdata.insertMany(list);
                 list.clear();
             }
         }
@@ -218,14 +211,14 @@ public class StockService {
         list = new ArrayList<>();
         for (int i = 0; i <reportJsons.size() ; i++) {
             JSONObject row = reportJsons.getJSONObject(i);
-            DBObject object = new BasicDBObject();
+            Document object = new Document();
             object.put("code",code);
             object.put("releaseDay",row.getString("releaseDay"));
             object.put("link",row.getString("link"));
             object.put("title",row.getString("title"));
             list.add(object);
             if ((i != 0 && i %1000 == 0)||i==reportJsons.size()-1){
-                report.insert(list);
+                report.insertMany(list);
                 list.clear();
             }
         }
@@ -287,7 +280,7 @@ public class StockService {
             BasicDBObject value = (BasicDBObject) item.get("value");
             if (value.containsField("size") && value.getInt("size") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
-                WriteResult wr = template.upsert(
+                UpdateResult updateResult = template.upsert(
                         new Query(Criteria.where("_id").is(code)),
                         new Update()
                                 .set("_id", code)
@@ -317,7 +310,7 @@ public class StockService {
             BasicDBObject value = (BasicDBObject) item.get("value");
             if (value.containsField("size") && value.getInt("size") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
-                WriteResult wr = template.upsert(
+                template.upsert(
                         new Query(Criteria.where("_id").is(code)),
                         new Update()
                                 .set("_id", code)
