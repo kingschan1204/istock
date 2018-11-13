@@ -28,9 +28,9 @@ import java.security.NoSuchAlgorithmException;
 public class TushareSpider  {
 
     @Value("${tushare.token}")
-    private String tuToken="66cdab7a757dcb728f8833f732a928791d67b6f38e1cd8d94bb79a0d";
+    private String tuToken;
     @Autowired
-    private RestTemplate restTemplate=new RestTemplate();
+    private RestTemplate restTemplate;
     final String api="http://api.tushare.pro";
 
     /**
@@ -136,10 +136,11 @@ public class TushareSpider  {
             //{"date":"2018-11-01 18:06:25","code":200,"address":"湖南省长沙市 电信","ip":"113.246.64.67"}
             System.setProperty("https.maxRedirects", "50");
             System.getProperties().setProperty("https.proxySet", "true");
-            System.getProperties().setProperty("https.proxyHost", "114.116.10.21");
+            System.getProperties().setProperty("https.proxyHost", "203.86.26.9");
             System.getProperties().setProperty("https.proxyPort", "3128");
             StockSpider.enableSSLSocket();
-            String json =Jsoup.connect("https://api.ttt.sh/ip/qqwry/").get().text();
+            String url ="https://api.ttt.sh/ip/qqwry/";
+            String json =Jsoup.connect(url).get().text();
             JSONObject j = JSON.parseObject(json);
             System.out.println(j);
         } catch (IOException e) {
