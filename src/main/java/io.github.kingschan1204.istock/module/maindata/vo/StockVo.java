@@ -1,61 +1,47 @@
-package io.github.kingschan1204.istock.module.maindata.po;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+package io.github.kingschan1204.istock.module.maindata.vo;
 
 /**
- * stock maindata
+ * stock 主数据vo
  * @author chenguoxiang
- * @create 2018-03-27 10:15
+ * @create 2018-10-16 14:41
+ * http://localhost/stock/q?rows=20&page=1&sidx=&sord=asc&
  **/
-@Document(collection = "stock")
-public class Stock {
+public class StockVo {
 
-    @Id
     private String code;
     private String type;
     private String name;
     private Double price;
     private Double yesterdayPrice;
-    private Double fluctuate;
+    private String fluctuate;
     private Double todayMax;
     private Double todayMin;
     private Long priceDate;
     private String industry;
-    private String mainBusiness;
-    private Double totalValue;
-    private Double pb;
-    private Double roe;
-    private Double bvps;
-    private Double pes;
-    private Double ped;
+    private String totalValue;
+    private String pb;
+    private String roe;
+    private String bvps;
+    private String pes;
+    private String ped;
     private Integer infoDate;
     /**
      * 静态分红日期
      */
     private String dividendDate;
-    private Double dividend;
-    /**
-     * 静态分红更新时间
-     */
-    private Integer dividendUpdateDay;
+    private String dividend;
     /**
      * 实时股息率
      */
-    private Double dy;
-    /**
-     * 实时股息更新时间
-     */
-    private Integer dyDate;
+    private String dy;
     /**
      * 5年平均股息
      */
-    private Double fiveYearDy;
+    private String fiveYearDy;
     /**
      * 5年平均Roe
      */
-    private Double fiveYearRoe;
-
+    private String fiveYearRoe;
 
     public String getCode() {
         return code;
@@ -97,12 +83,12 @@ public class Stock {
         this.yesterdayPrice = yesterdayPrice;
     }
 
-    public Double getFluctuate() {
+    public String getFluctuate() {
         return fluctuate;
     }
 
     public void setFluctuate(Double fluctuate) {
-        this.fluctuate = fluctuate;
+        this.fluctuate = String.format("%s%%",fluctuate);
     }
 
     public Double getTodayMax() {
@@ -137,101 +123,52 @@ public class Stock {
         this.industry = industry;
     }
 
-    public String getMainBusiness() {
-        return mainBusiness;
-    }
-
-    public void setMainBusiness(String mainBusiness) {
-        this.mainBusiness = mainBusiness;
-    }
-
-    public Double getTotalValue() {
+    public String getTotalValue() {
         return totalValue;
     }
 
     public void setTotalValue(Double totalValue) {
-        this.totalValue = totalValue;
+        this.totalValue = -1==totalValue?"--":String.format("%s亿",totalValue);
     }
 
-    public Double getPb() {
+    public String getPb() {
         return pb;
     }
 
     public void setPb(Double pb) {
-        this.pb = pb;
+        this.pb = -1==pb?"--":String.format("%s",pb);
     }
 
-    public Double getRoe() {
+    public String getRoe() {
         return roe;
     }
 
     public void setRoe(Double roe) {
-        this.roe = roe;
+        this.roe = -1==roe?"--":String.format("%s%%",roe);
     }
 
-    public Double getBvps() {
+    public String getBvps() {
         return bvps;
     }
 
     public void setBvps(Double bvps) {
-        this.bvps = bvps;
+        this.bvps =  -1==bvps?"--":String.format("%s",bvps);
     }
 
-    public Double getPes() {
+    public String getPes() {
         return pes;
     }
 
     public void setPes(Double pes) {
-        this.pes = pes;
+        this.pes = -1==pes?"--":String.format("%s",pes);
     }
 
-    public Double getPed() {
+    public String getPed() {
         return ped;
     }
 
     public void setPed(Double ped) {
-        this.ped = ped;
-    }
-
-
-    public String getDividendDate() {
-        return dividendDate;
-    }
-
-    public void setDividendDate(String dividendDate) {
-        this.dividendDate = dividendDate;
-    }
-
-    public Double getDividend() {
-        return dividend;
-    }
-
-    public void setDividend(Double dividend) {
-        this.dividend = dividend;
-    }
-
-    public Integer getDividendUpdateDay() {
-        return dividendUpdateDay;
-    }
-
-    public void setDividendUpdateDay(Integer dividendUpdateDay) {
-        this.dividendUpdateDay = dividendUpdateDay;
-    }
-
-    public Double getDy() {
-        return dy;
-    }
-
-    public void setDy(Double dy) {
-        this.dy = dy;
-    }
-
-    public Integer getDyDate() {
-        return dyDate;
-    }
-
-    public void setDyDate(Integer dyDate) {
-        this.dyDate = dyDate;
+        this.ped = -1==ped?"--":String.format("%s",ped);
     }
 
     public Integer getInfoDate() {
@@ -242,19 +179,50 @@ public class Stock {
         this.infoDate = infoDate;
     }
 
-    public Double getFiveYearDy() {
+    public String getDividendDate() {
+        return dividendDate;
+    }
+
+    public void setDividendDate(String dividendDate) {
+        this.dividendDate = dividendDate;
+    }
+
+    public String getDividend() {
+        return dividend;
+    }
+
+    public void setDividend(Double dividend) {
+        if(0==dividend){
+            this.dividend="";
+            return;
+        }
+        this.dividend =  -1==dividend?"--":String.format("%s%%",dividend);
+    }
+
+    public String getDy() {
+        return dy;
+    }
+
+    public void setDy(Double dy) {
+        this.dy = -1==dy?"--":String.format("%s%%",dy);
+    }
+
+    public String getFiveYearDy() {
         return fiveYearDy;
     }
 
     public void setFiveYearDy(Double fiveYearDy) {
-        this.fiveYearDy = fiveYearDy;
+        this.fiveYearDy = -1==fiveYearDy?"--":String.format("%s%%",fiveYearDy);
     }
 
-    public Double getFiveYearRoe() {
+    public String getFiveYearRoe() {
         return fiveYearRoe;
     }
 
     public void setFiveYearRoe(Double fiveYearRoe) {
-        this.fiveYearRoe = fiveYearRoe;
+        this.fiveYearRoe = -1==fiveYearRoe?"--":String.format("%s%%",fiveYearRoe);
+    }
+
+    public StockVo() {
     }
 }

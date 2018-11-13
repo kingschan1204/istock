@@ -4,7 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Created by kingschan on 2018/7/6.
+ * 代码定时更新任务
+ * @author kings.chan
+ * @date 2018-7-6
  */
 @Document(collection = "stock_report")
 public class StockReport  {

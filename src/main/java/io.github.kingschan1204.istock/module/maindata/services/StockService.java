@@ -6,23 +6,29 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
+import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisDividend;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
+import io.github.kingschan1204.istock.module.maindata.vo.StockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,48 +52,19 @@ public class StockService {
     @Autowired
     private JisiluSpilder jisiluSpilder;
 
+
     /**
-     * add stock code
-     *
-     * @param codes
-     * @throws Exception
+     * 查询股票
+     * @param pageindex 页码
+     * @param pagesize 显示多少条
+     * @param pcode  代码、名称
+     * @param type   市场
+     * @param pb 市净值
+     * @param dy 股息
+     * @param orderfidld 排序字段
+     * @param psort 排序方式
+     * @return
      */
-    public void addStock(String... codes) throws Exception {
-        JSONArray jsons = spider.getStockPrice(codes);
-        for (int i = 0; i < jsons.size(); i++) {
-            JSONObject json = jsons.getJSONObject(i);
-            String scode=json.getString("code");
-            JSONObject info=spider.getStockInfo(scode);
-            //"date":"2017-07-07","code":"600519","year":"2016年报","executeDate":"2017-07-01","remark":"10派67.87元(含税)","percent":1.44}
-            JSONArray dividends=spider.getHistoryDividendRate(scode);
-            JSONObject dividend;
-            String date="";
-            Double percent=0D;
-            if(null!=dividends&&dividends.size()>0){
-                for (int j = 0; j < dividends.size(); j++) {
-                    if(dividends.getJSONObject(j).getDouble("percent")>0){
-                        percent=dividends.getJSONObject(j).getDoubleValue("percent");
-                        date=dividends.getJSONObject(j).getString("date");
-                        break;
-                    }
-                }
-                //save dividend
-                List<StockHisDividend> stockHisDividendList = JSONArray.parseArray(dividends.toJSONString(),StockHisDividend.class);
-                template.remove(new Query(Criteria.where("code").is(scode)),StockHisDividend.class);
-            }
-            json.put("dividend",percent);
-            json.put("dividendDate",date);
-            json.putAll(info);
-            // his roe
-            stockHisRoeService.addStockHisRoe(scode);
-        }
-        List<Stock> list = JSON.parseArray(jsons.toJSONString(), Stock.class);
-        stockRepository.save(list);
-    }
-
-
-
-
     public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
         DBObject dbObject = new BasicDBObject();
         DBObject fieldObject = new BasicDBObject();
@@ -129,7 +106,7 @@ public class StockService {
         //分页
         query.skip((pageindex-1)*pagesize).limit(pagesize);
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
         orders.add(new Sort.Order(
                 "asc".equalsIgnoreCase(psort) ?Sort.Direction.ASC:Sort.Direction.DESC
                 ,orderfidld));
@@ -137,66 +114,22 @@ public class StockService {
         query.with(sort);
         //code
         List<Stock> list =template.find(query,Stock.class);
-        JSONArray jsons = JSONArray.parseArray(JSONArray.toJSONString(list));
-        JSONObject temp;
-        for (int i = 0; i <jsons.size() ; i++) {
-            temp =jsons.getJSONObject(i);
-            temp.put("fluctuate",temp.getString("fluctuate")+"%");
-
-            if(temp.containsKey("roe")){
-                if(temp.getDouble("roe")!=-1){
-                    temp.put("roe",temp.getString("roe")+"%");
-                }else {
-                    temp.put("roe","--");
-                }
-
-            }
-            if(temp.containsKey("totalValue")&&temp.getDouble("totalValue")!=-1){
-                temp.put("totalValue",temp.getString("totalValue")+"亿");
-            }
-            if(temp.containsKey("pb")&&temp.getDouble("pb")==-1){
-                temp.put("pb","--");
-            }
-            if(temp.containsKey("pes")&&temp.getDouble("pes")==-1){
-                temp.put("pes","--");
-            }
-            if(temp.containsKey("ped")&&temp.getDouble("ped")==-1){
-                temp.put("ped","--");
-            }
-            if(temp.containsKey("bvps")&&temp.getDouble("bvps")==-1){
-                temp.put("bvps","--");
-            }
-            if(temp.containsKey("dividend")){
-                if(temp.getDouble("dividend")!=-1){
-                    temp.put("dividend",temp.getString("dividend")+"%");
-                }
-            }else {
-                temp.put("dividend","--");
-            }
-            if(temp.containsKey("dy")){
-                temp.put("dy",temp.getString("dy")+"%");
-            }
-            if(temp.containsKey("fiveYearDy")){
-                temp.put("fiveYearDy",temp.getString("fiveYearDy")+"%");
-            }
-            if(temp.containsKey("fiveYearRoe")){
-                temp.put("fiveYearRoe",temp.getString("fiveYearRoe")+"%");
-            }
-
-        }
-
+        //原始数据在vo对象里进行格式转换
+        List<StockVo> temp = JSON.parseArray(JSON.toJSONString(list), StockVo.class);
         JSONObject data= new JSONObject();
         long pagetotal=total%pagesize==0?total/pagesize:total/pagesize+1;
-        data.put("rows",jsons);
-        data.put("total",pagetotal);//有多少页
-        data.put("records",total);// 总共有多少条记录
+        data.put("rows",JSONArray.parseArray(JSON.toJSONString(temp)));
+        //有多少页
+        data.put("total",pagetotal);
+        // 总共有多少条记录
+        data.put("records",total);
         data.put("page",pageindex);
         return data.toJSONString();
     }
 
 
     /**
-     *
+     * 得到股票历史分红信息
      * @param code
      * @return
      */
@@ -204,7 +137,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
         orders.add(new Sort.Order(Sort.Direction.ASC,"title"));
         Sort sort = new Sort(orders);
         query.with(sort);
@@ -214,11 +147,16 @@ public class StockService {
     }
 
 
+    /**
+     * 得到股票历史roe
+     * @param code
+     * @return
+     */
     public List<StockHisRoe> getStockHisRoe(String code){
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();  //排序
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
         orders.add(new Sort.Order(Sort.Direction.ASC,"year"));
         Sort sort = new Sort(orders);
         query.with(sort);
@@ -299,6 +237,96 @@ public class StockService {
         result.add(pe.toString());
         result.add(reportJsons.toJSONString());
         return result;
+    }
+
+    /**
+     * 更新股票价格
+     * @param codes
+     * @param spider
+     * @throws Exception
+     */
+    public void updateStockPrice(List<String> codes,StockSpider spider) throws Exception {
+        JSONArray jsons = spider.getStockPrice(codes.toArray(new String[]{}));
+        List<Stock> stocks = JSON.parseArray(jsons.toJSONString(), Stock.class);
+        stocks.stream().forEach(stock -> {
+            template.upsert(
+                    new Query(Criteria.where("_id").is(stock.getCode())),
+                    new Update()
+                            .set("_id", stock.getCode())
+                            .set("type", stock.getType())
+                            .set("name", stock.getName())
+                            .set("price", stock.getPrice())
+                            .set("yesterdayPrice", stock.getYesterdayPrice())
+                            .set("fluctuate", stock.getFluctuate())
+                            .set("todayMax", stock.getTodayMax())
+                            .set("todayMin", stock.getTodayMin())
+                            .set("priceDate", stock.getPriceDate()),
+                    "stock"
+            );
+        });
+    }
+
+    /**
+     * 计算过去5年连续分红的平均股票股息
+     * @return
+     */
+    public void calculateFiveYearsDy() {
+        int year = StockDateUtil.getCurrentYear();
+        int fiveYearAgo = year - 5;
+        String startDate = StockDateUtil.getCurrYearLastDay(fiveYearAgo).toString();
+        String endDate = StockDateUtil.getCurrentDate();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("releaseDate").gte(startDate).lte(endDate));
+        MapReduceResults<BasicDBObject> result = template.mapReduce(query, "stock_dividend",
+                "classpath:/mapreduce/5years_dy/dy5years_map.js", "classpath:/mapreduce/5years_dy/dy5years_reduce.js",
+                new MapReduceOptions().outputCollection("stock_dy_statistics"), BasicDBObject.class);
+        Iterator<BasicDBObject> iter = result.iterator();
+        while (iter.hasNext()) {
+            BasicDBObject item = iter.next();
+            String code = item.getString("_id");
+            BasicDBObject value = (BasicDBObject) item.get("value");
+            if (value.containsField("size") && value.getInt("size") > 4) {
+                double percent = Double.parseDouble(value.getString("percent"));
+                WriteResult wr = template.upsert(
+                        new Query(Criteria.where("_id").is(code)),
+                        new Update()
+                                .set("_id", code)
+                                .set("fiveYearDy", percent),
+                        "stock"
+                );
+            }
+
+        }
+    }
+
+    /**
+     * 计算上市超5年的股息roe
+     * @param startYear 开始年份
+     * @param endYear 结束年份
+     */
+    public void calculateFiveYearsRoe(int startYear,int endYear) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
+        MapReduceResults<BasicDBObject> result = template.mapReduce(query, "stock_his_roe",
+                "classpath:/mapreduce/5years_roe/map.js", "classpath:/mapreduce/5years_roe/reduce.js",
+                new MapReduceOptions().outputCollection("stock_hisroe_statistics"), BasicDBObject.class);
+        Iterator<BasicDBObject> iter = result.iterator();
+        while (iter.hasNext()) {
+            BasicDBObject item = iter.next();
+            String code = item.getString("_id");
+            BasicDBObject value = (BasicDBObject) item.get("value");
+            if (value.containsField("size") && value.getInt("size") > 4) {
+                double percent = Double.parseDouble(value.getString("percent"));
+                WriteResult wr = template.upsert(
+                        new Query(Criteria.where("_id").is(code)),
+                        new Update()
+                                .set("_id", code)
+                                .set("fiveYearRoe", percent),
+                        "stock"
+                );
+            }
+
+        }
     }
 
 }

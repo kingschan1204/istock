@@ -31,9 +31,7 @@ public class JisiluSpilder extends DefaultSpiderImpl {
      * @return
      */
     public JSONObject crawHisPbPePriceAndReports(String code) throws Exception {
-//        String useAgent="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36";
         String referrer = "https://www.jisilu.cn/data/stock/dividend_rate/#cn";
-//        int timeout=8000;
         JSONObject result = new JSONObject();
         String url = String.format("https://www.jisilu.cn/data/stock/%s", code);
         log.info("craw jisilu page  :{}", url);
@@ -71,15 +69,30 @@ public class JisiluSpilder extends DefaultSpiderImpl {
             List<String> list = StockSpider.findStringByRegx(js.html(), "\\[.*\\]");
             //依次顺序 0:日期  1:PRICE  2:PB  3:PE
             String replaceRegex = "\'|\\[|\\]";
-            String dates[] = list.get(0).replaceAll(replaceRegex, "").split(",");//日期
-            String prices[] = list.get(1).replaceAll(replaceRegex, "").split(",");//价格
-            String pbs[] = list.get(2).replaceAll(replaceRegex, "").split(",");//市净率
-            String pes[] = list.get(3).replaceAll(replaceRegex, "").split(",");//市盈率
+            //日期
+            String dates[] = list.get(0).replaceAll(replaceRegex, "").split(",");
+            //价格
+            String prices[] = list.get(1).replaceAll(replaceRegex, "").split(",");
+            //市净率
+            String pbs[] = list.get(2).replaceAll(replaceRegex, "").split(",");
+            //市盈率
+            String pes[] = list.get(3).replaceAll(replaceRegex, "").split(",");
             JSONArray hisJson = new JSONArray();
             for (int i = 0; i < dates.length; i++) {
+                double price=Double.parseDouble(prices[i]);
+                if(i!=0){
+                    double lastPrice=Double.parseDouble(prices[i-1]);
+                    //如果价格 昨天和今天大于，小于 10%的幅度则为脏数据
+                    double maxPrice=lastPrice+(lastPrice*0.1);
+                    double minPrice=lastPrice-(lastPrice*0.1);
+                    if(price>maxPrice||price<minPrice){
+                        log.info("his price error data :{}|{}|{}",lastPrice,price,dates[i]);
+                        continue;
+                    }
+                }
                 JSONObject temp = new JSONObject();
                 temp.put("date", dates[i]);
-                temp.put("price", Double.parseDouble(prices[i]));
+                temp.put("price", price);
                 temp.put("pb", Double.parseDouble(pbs[i]));
                 temp.put("pe", Double.parseDouble(pes[i]));
                 hisJson.add(temp);

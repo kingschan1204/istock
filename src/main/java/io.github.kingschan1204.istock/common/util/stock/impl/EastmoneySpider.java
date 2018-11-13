@@ -73,16 +73,26 @@ public class EastmoneySpider extends DefaultSpiderImpl {
             if (title.matches("^\\d{4}\\-06-30$")) {
                 title = title.replaceAll("\\-.*", "") + "中报";
             }
-            temp.put("title", title);//报告期
-            temp.put("releaseDate", item.getString("ResultsbyDate").replaceAll(regex, ""));//披露时间
-            temp.put("plan", item.getString("AllocationPlan"));//分配预案
-            temp.put("sgbl", intFormart(item.getString("SGBL")));//送股比例
-            temp.put("zgbl", intFormart(item.getString("ZGBL")));//转股比例
-            temp.put("percent", doubleFormat(item.getString("GXL"), true));//股息率
-            temp.put("gqdjr", item.getString("GQDJR").replaceAll(regex, ""));//股权登记日
-            temp.put("cxcqr", item.getString("CQCXR").replaceAll(regex, ""));//除息除权日
-            temp.put("progress", item.getString("ProjectProgress"));//进度
-            temp.put("from", "east");//来源
+            //报告期
+            temp.put("title", title);
+            //披露时间
+            temp.put("releaseDate", item.getString("ResultsbyDate").replaceAll(regex, ""));
+            //分配预案
+            temp.put("plan", item.getString("AllocationPlan"));
+            //送股比例
+            temp.put("sgbl", intFormart(item.getString("SGBL")));
+            //转股比例
+            temp.put("zgbl", intFormart(item.getString("ZGBL")));
+            //股息率
+            temp.put("percent", doubleFormat(item.getString("GXL"), true));
+            //股权登记日
+            temp.put("gqdjr", item.getString("GQDJR").replaceAll(regex, ""));
+            //除息除权日
+            temp.put("cxcqr", item.getString("CQCXR").replaceAll(regex, ""));
+            //进度
+            temp.put("progress", item.getString("ProjectProgress"));
+            //来源
+            temp.put("from", "east");
             jsons.add(temp);
 
         }

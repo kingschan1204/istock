@@ -10,7 +10,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by kingschan on 2017/6/29.
+ * 代码定时更新任务
+ * @author kings.chan
+ * @date 2018-6-29
  */
 public class StockDateUtil {
 
@@ -111,8 +113,9 @@ public class StockDateUtil {
      */
     public static long dateToUnixTime(String dateString) throws ParseException {
         Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                .parse(dateString);// HH:mm:ss
-        long temp = date1.getTime();// JAVA的时间戳长度是13位
+                .parse(dateString);
+        // JAVA的时间戳长度是13位
+        long temp = date1.getTime();
         return temp / 1000;
     }
 

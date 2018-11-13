@@ -17,12 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -38,7 +35,10 @@ public class DefaultSpiderImpl implements StockSpider {
 
     private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
     @Value("${spider.timeout}")
-    protected int timeout;//8s超时
+    /**
+     * 8s超时
+     */
+    protected int timeout;
     @Value("${spider.useagent}")
     protected String useAgent;
     @Value("${xueqiu.token}")
@@ -79,24 +79,33 @@ public class DefaultSpiderImpl implements StockSpider {
             double todayMax = StockSpider.mathFormat(data[5]);
             double todayMin = StockSpider.mathFormat(data[6]);
             json = new JSONObject();
-            if (xj == 0) { //一般这种是停牌的
-                json.put("fluctuate", 0);//波动
+            //一般这种是停牌的
+            if (xj == 0) {
+                //波动
+                json.put("fluctuate", 0);
             } else {
                 NumberFormat nf = NumberFormat.getNumberInstance();
                 // 保留两位小数
                 nf.setMaximumFractionDigits(2);
                 // 如果不需要四舍五入，可以使用RoundingMode.DOWN
                 nf.setRoundingMode(RoundingMode.UP);
-                json.put("fluctuate", StockSpider.mathFormat(nf.format(zf)));//波动
+                //波动
+                json.put("fluctuate", StockSpider.mathFormat(nf.format(zf)));
             }
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-            json.put("code", data[0]);//代码
+            //代码
+            json.put("code", data[0]);
             json.put("type", StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));
-            json.put("name", data[1].replaceAll("\\s", ""));//名称
-            json.put("price", xj);//现价
-            json.put("todayMax", todayMax);//今日最高价
-            json.put("todayMin", todayMin);//今日最低价
-            json.put("yesterdayPrice", zs);//昨收
+            //名称
+            json.put("name", data[1].replaceAll("\\s", ""));
+            //现价
+            json.put("price", xj);
+            //今日最高价
+            json.put("todayMax", todayMax);
+            //今日最低价
+            json.put("todayMin", todayMin);
+            //昨收
+            json.put("yesterdayPrice", zs);
             json.put("priceDate", StockDateUtil.getCurrentDateTimeNumber());
             rows.add(json);
         }
@@ -112,27 +121,43 @@ public class DefaultSpiderImpl implements StockSpider {
         Elements table = doc.getElementsByTag("table");
         //第一个表格的第一行
         Elements tds = table.get(0).select("tr").get(0).select("td");
-        String zyyw = tds.get(0).text().replaceAll(regex, "");//主营业务
-        String sshy = tds.get(1).text().replaceAll(regex, "");//所属行业
+        //主营业务
+        String zyyw = tds.get(0).text().replaceAll(regex, "");
+        //所属行业
+        String sshy = tds.get(1).text().replaceAll(regex, "");
         Elements tds1 = table.get(1).select("td");
-        String dtsyl = tds1.get(0).text().replaceAll(regex, "");//市盈率(动态)
-        String sjljt = tds1.get(4).text().replaceAll(regex, "");//市盈率(静态)
-        String sjl = tds1.get(8).text().replaceAll(regex, "");//市净率
-        String zsz = tds1.get(11).text().replaceAll("\\D+", "");//总市值
-        double mgjzc = StockSpider.mathFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));//每股净资产
+        //市盈率(动态)
+        String dtsyl = tds1.get(0).text().replaceAll(regex, "");
+        //市盈率(静态)
+        String sjljt = tds1.get(4).text().replaceAll(regex, "");
+        //市净率
+        String sjl = tds1.get(8).text().replaceAll(regex, "");
+        //总市值
+        String zsz = tds1.get(11).text().replaceAll("\\D+", "");
+        //每股净资产
+        double mgjzc = StockSpider.mathFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));
         String jzcsyl = "-1";
         if (tds1.size() > 14) {
-            jzcsyl = tds1.get(14).select("span").get(1).text();//净资产收益率
+            //净资产收益率
+            jzcsyl = tds1.get(14).select("span").get(1).text();
         }
         JSONObject json = new JSONObject();
-        json.put("mainBusiness", zyyw);//主营业务
-        json.put("industry", sshy);//所属行业
-        json.put("ped", StockSpider.mathFormat(dtsyl));//市盈率(动态)
-        json.put("pes", StockSpider.mathFormat(sjljt));//市盈率(静态)
-        json.put("pb", StockSpider.mathFormat(sjl));//市净率
-        json.put("totalValue", StockSpider.mathFormat(zsz));//总市值
-        json.put("roe", StockSpider.mathFormat(jzcsyl));//净资产收益率
-        json.put("bvps", mgjzc);//每股净资产
+        //主营业务
+        json.put("mainBusiness", zyyw);
+        //所属行业
+        json.put("industry", sshy);
+        //市盈率(动态)
+        json.put("ped", StockSpider.mathFormat(dtsyl));
+        //市盈率(静态)
+        json.put("pes", StockSpider.mathFormat(sjljt));
+        //市净率
+        json.put("pb", StockSpider.mathFormat(sjl));
+        //总市值
+        json.put("totalValue", StockSpider.mathFormat(zsz));
+        //净资产收益率
+        json.put("roe", StockSpider.mathFormat(jzcsyl));
+        //每股净资产
+        json.put("bvps", mgjzc);
         json.put("infoDate", StockDateUtil.getCurrentDateNumber());
         json.put("code", stockCode);
         json.put("type", StockSpider.formatStockCode(stockCode).replaceAll("\\d", ""));
@@ -160,16 +185,26 @@ public class DefaultSpiderImpl implements StockSpider {
                 log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
                 json = new JSONObject();
                 json.put("code", stockCode);
-                json.put("title", data[0]);//报告期
-                json.put("releaseDate", data[1]);//披露时间  董事会日期
-                json.put("plan", data[4]);//分红方案
-                json.put("sgbl", 0);//送股比例
-                json.put("zgbl", 0);//转股比例
-                json.put("percent", StockSpider.mathFormat(data[9]));//分红率
-                json.put("gqdjr", data[5]);//股权登记日
-                json.put("cxcqr", data[6]);//除息除权日
-                json.put("progress", data[7]);//方案进度
-                json.put("from", "ths");//来源
+                //报告期
+                json.put("title", data[0]);
+                //披露时间  董事会日期
+                json.put("releaseDate", data[1]);
+                //分红方案
+                json.put("plan", data[4]);
+                //送股比例
+                json.put("sgbl", 0);
+                //转股比例
+                json.put("zgbl", 0);
+                //分红率
+                json.put("percent", StockSpider.mathFormat(data[9]));
+                //股权登记日
+                json.put("gqdjr", data[5]);
+                //除息除权日
+                json.put("cxcqr", data[6]);
+                //方案进度
+                json.put("progress", data[7]);
+                //来源
+                json.put("from", "ths");
                 jsons.add(json);
             }
             return jsons;
@@ -180,7 +215,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Override
     public JSONArray getHistoryROE(String code) throws Exception {
         String url = String.format("http://basic.10jqka.com.cn/api/stock/export.php?export=main&type=year&code=%s", code);
-        String path = String.format("./data/%s_main_year.xls", code);
+        String path = String.format("./data/%s.xls", code);
         String referrer=String.format("http://basic.10jqka.com.cn/%s/finance.html",code);
         if (!new File(path).exists()) {
             //下载
@@ -190,8 +225,11 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
+        //报告期 年
         Object[] year = list.get(1);
+        //净资产收益率
         Object[] roe = list.get(10);
+        //净资产收益率-摊薄
         Object[] roeTb = list.get(11);
         JSONArray jsons = new JSONArray();
         JSONObject json;

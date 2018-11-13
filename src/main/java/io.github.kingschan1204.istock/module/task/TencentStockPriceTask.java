@@ -13,21 +13,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 定时更新深市股票价格
+ * 定时更新沪市股票价格
  *
  * @author chenguoxiang
- * @create 2018-03-29 14:50
+ * @create 2018-10-24 14:50
  **/
 @Component
-public class SinaStockPriceTask implements Job {
+public class TencentStockPriceTask implements Job {
 
-    private Logger log = LoggerFactory.getLogger(SinaStockPriceTask.class);
+    private Logger log = LoggerFactory.getLogger(TencentStockPriceTask.class);
 
-    @Autowired
+    @Resource(name = "TencentSpider")
     private StockSpider spider;
     @Autowired
     private MongoTemplate template;
@@ -42,15 +44,15 @@ public class SinaStockPriceTask implements Job {
             return;
         }
         Long start = System.currentTimeMillis();
-        List<StockCodeInfo> codes = stockCodeInfoService.getSZStockCodes();
+        List<StockCodeInfo> codes = stockCodeInfoService.getSHStockCodes();
         List<String> list = new ArrayList<>();
         for (int i = 0; i < codes.size(); i++) {
             list.add(String.format("%s%s",codes.get(i).getType(),codes.get(i).getCode()));
             if (i > 0 && (i % 300 == 0 || i == codes.size() - 1)) {
                 try {
-                    stockService.updateStockPrice(list, spider);
+                    stockService.updateStockPrice(list,spider);
                     list = new ArrayList<>();
-                    Thread.sleep(800);
+                    TimeUnit.MILLISECONDS.sleep(800);
                 } catch (Exception ex) {
                     log.error("{}", ex);
                     ex.printStackTrace();
@@ -58,9 +60,10 @@ public class SinaStockPriceTask implements Job {
             }
 
         }
-        log.info("深市数据更新共：{}只股票,更新耗时：{}ms", codes.size(), (System.currentTimeMillis() - start));
-
+        log.info("沪市数据更新共：{}只股票,更新耗时：{}ms",codes.size(),(System.currentTimeMillis() - start));
     }
+
+
 
 
 }

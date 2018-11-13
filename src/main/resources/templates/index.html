@@ -60,7 +60,7 @@
                 </div>
                 <button type="button" class="btn btn-primary" id="search_btn">查询</button>
                 <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
-
+                <button type="button" class="btn btn-warning" id="baseinfo_btn">基本信息</button>
                 <!-- Single button -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
@@ -229,7 +229,7 @@
                 return;
             }
             var rowData = $("#jqGrid").jqGrid('getRowData', ids);
-            window.open("/stock/info/" + rowData.code);
+            window.open("/stock/hisdata/" + rowData.code);
         });
         $("#report_btn").click(function () {
             var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
@@ -240,6 +240,14 @@
             var rowData = $("#jqGrid").jqGrid('getRowData', ids);
             window.open("/stock/report/" + rowData.code);
         });
-
+        $("#baseinfo_btn").click(function (){
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/info/" + rowData.code);
+        });
     </script>
 </#compress>

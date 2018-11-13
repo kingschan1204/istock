@@ -1,7 +1,8 @@
 package io.github.kingschan1204.istock.module.task;
 
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
-import io.github.kingschan1204.istock.module.maindata.services.StockCodeService;
+import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
+import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -9,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * 代码定时更新任务
+ * @author kings.chan
  */
 @Component
 public class StockCodeTask implements Job{
@@ -25,18 +26,16 @@ public class StockCodeTask implements Job{
     @Autowired
     private MongoTemplate template;
     @Autowired
-    private StockCodeService stockCodeService;
-
-/*//    @Scheduled(cron = "0 0 0 * * ?")
-    public void stockCodeExecute()throws Exception{
-
-    }*/
+    private StockCodeInfoService stockCodeInfoService;
+    @Autowired
+    private StockCompanyService stockCompanyService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         Long start =System.currentTimeMillis();
         try {
-            stockCodeService.saveAllStockCode();
+            stockCodeInfoService.refreshCode();
+            stockCompanyService.refreshStockCompany();
         } catch (Exception e) {
             log.error("代码更新错误：{}",e);
             e.printStackTrace();

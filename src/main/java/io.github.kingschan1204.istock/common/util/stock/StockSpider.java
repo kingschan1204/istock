@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  **/
 public interface StockSpider {
 
-    static final String REGEX_NUMBER = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";//"^[-+]?[0-9]+(\\.[0-9]+)?$";
+    static final String REGEX_NUMBER = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";
 
     /**
      * 将股票代码转换成新浪接口的格式http://hq.sinajs.cn/list=
@@ -80,9 +80,10 @@ public interface StockSpider {
     /**
      * 是否工作日
      * @param date
-     * @return
+     * @return true 工作日 false 非工作日
+     * @throws IOException
      */
-    static boolean isWorkDay(String date) throws IOException {
+    static boolean isWorkDay(Integer date) throws IOException {
         String api =String.format("http://api.goseek.cn/Tools/holiday?date=%s",date);
         String result = Jsoup.connect(api).timeout(3000).ignoreContentType(true).get().text();
         //{"code":10001,"data":2}  工作日对应结果为 0, 休息日对应结果为 1, 节假日对应的结果为 2
@@ -156,9 +157,9 @@ public interface StockSpider {
 
     /**
      * 得到指定代码的价格
-     *
      * @param stockCode
      * @return
+     * @throws Exception
      */
     JSONArray getStockPrice(String[] stockCode) throws Exception;
 

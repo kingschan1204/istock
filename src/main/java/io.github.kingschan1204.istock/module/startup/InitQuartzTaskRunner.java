@@ -24,7 +24,28 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 "sinaPriceTask-trigger",
                 "sinaPriceTask-trigger-group",
                 SinaStockPriceTask.class,
-                "0 0/2 * * * ?");
+                "0/30 * * * * ?");
+
+        quartzManager.addJob("tencentPriceTask",
+                "tencentPriceTask-group",
+                "tencentPriceTask-trigger",
+                "tencentPriceTask-trigger-group",
+                TencentStockPriceTask.class,
+                "0/30 * * * * ?");
+
+        quartzManager.addJob("stockInfoTask",
+                "stockInfoTask-group",
+                "stockInfoTask-trigger",
+                "stockInfoTask-trigger-group",
+                ThsStockInfoTask.class,
+                "0/30 * * * * ?");
+
+        quartzManager.addJob("stockHoldersTask",
+                "stockHoldersTask-group",
+                "stockHoldersTask-trigger",
+                "stockHoldersTask-trigger-group",
+                StockTopHoldersTask.class,
+                "0/30 * * * * ?");
 
         quartzManager.addJob("stockCodeTask",
                 "stockCodeTask-group",
@@ -38,7 +59,7 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 "stockDividendTask-trigger",
                 "stockDividendTask-trigger-group",
                 StockDividendTask.class,
-                "*/6 * * * * ?");
+                "6 * * * * ?");
 
 
         quartzManager.addJob("hisRepoartTask",
@@ -46,14 +67,9 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 "hisRepoartTask-trigger",
                 "hisRepoartTask-trigger-group",
                 ThsHisYearReportTask.class,
-                "*/6 * * * * ?");
+                "6 * * * * ?");
 
-        quartzManager.addJob("stockInfoTask",
-                "stockInfoTask-group",
-                "stockInfoTask-trigger",
-                "stockInfoTask-trigger-group",
-                ThsStockInfoTask.class,
-                "*/6 * * * * ?");
+
 
         quartzManager.addJob("xueqiuDyTask",
                 "xueqiuDyTask-group",
@@ -61,6 +77,13 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 "xueqiuDyTask-trigger-group",
                 XueQiuStockDyTask.class,
                 "0 0/1 * * * ?");
+
+        quartzManager.addJob("CleanFileTask",
+                "CleanFileTask-group",
+                "CleanFileTask-trigger",
+                "CleanFileTask-trigger-group",
+                CleanFileTask.class,
+                "0 0 0 * * ?");
     }
 
     @Override
