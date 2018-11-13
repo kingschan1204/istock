@@ -2,10 +2,9 @@ package io.github.kingschan1204.istock.common.util.stock.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
@@ -17,11 +16,11 @@ import java.net.SocketTimeoutException;
  * @author chenguoxiang
  * @create 2018-04-12 14:37
  **/
+@Slf4j
 @RefreshScope
 @Component("EastmoneySpider")
 public class EastmoneySpider extends DefaultSpiderImpl {
 
-    private Logger log = LoggerFactory.getLogger(EastmoneySpider.class);
     @Value("${eastmoney.token}")
     private String token;
 

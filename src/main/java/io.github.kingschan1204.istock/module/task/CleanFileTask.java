@@ -1,11 +1,10 @@
 package io.github.kingschan1204.istock.module.task;
 
 import io.github.kingschan1204.istock.module.maindata.po.StockHisPbPe;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
@@ -17,10 +16,10 @@ import java.util.Arrays;
  * @author chenguoxiang
  * @create 2018-10-10 14:51
  **/
+@Slf4j
 @Component
 public class CleanFileTask implements Job {
 
-    private static Logger log = LoggerFactory.getLogger(CleanFileTask.class);
     @Autowired
     private MongoTemplate mongoTemplate;
     @Override

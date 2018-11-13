@@ -1,8 +1,6 @@
 package io.github.kingschan1204.istock.common.util.stock;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,9 +12,9 @@ import java.util.Date;
  * @author kings.chan
  * @date 2018-6-29
  */
+@Slf4j
 public class StockDateUtil {
 
-    private static Logger log = LoggerFactory.getLogger(StockDateUtil.class);
 
     /**
      * 得到当前系统的年月日时间

@@ -8,18 +8,16 @@ import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.List;
@@ -31,11 +29,9 @@ import java.util.Set;
  * @author chenguoxiang
  * @create 2018-03-29 14:50
  **/
+@Slf4j
 @Component
 public class StockDividendTask implements Job {
-
-    private Logger log = LoggerFactory.getLogger(StockDividendTask.class);
-
     @Resource(name = "EastmoneySpider")
     private EastmoneySpider eastmoneySpider;
     @Autowired

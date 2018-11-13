@@ -3,12 +3,11 @@ package io.github.kingschan1204.istock.common.util.stock.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,10 +18,9 @@ import java.util.List;
  * @author chenguoxiang
  * @create 2018-07-03 11:22
  **/
+@Slf4j
 @Component("JisiluSpilder")
 public class JisiluSpilder extends DefaultSpiderImpl {
-
-    private static Logger log = LoggerFactory.getLogger(JisiluSpilder.class);
 
     /**
      * 得到ipo上市日期，最近公开报表，历史数据

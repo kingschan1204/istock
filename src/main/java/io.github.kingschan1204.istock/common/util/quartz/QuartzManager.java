@@ -1,8 +1,7 @@
 package io.github.kingschan1204.istock.common.util.quartz;
 
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Component;
  * @author chenguoxiang
  * @create 2018-07-13 14:46
  **/
+@Slf4j
 @Component
 public class QuartzManager {
-    private static Logger log = LoggerFactory.getLogger(QuartzManager.class);
     @Autowired
     SchedulerFactoryBean schedulerFactoryBean;
 

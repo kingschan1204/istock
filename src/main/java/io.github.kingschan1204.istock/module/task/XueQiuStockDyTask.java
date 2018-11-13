@@ -2,7 +2,6 @@ package io.github.kingschan1204.istock.module.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mongodb.WriteResult;
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
@@ -10,19 +9,16 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDyQueue;
 import io.github.kingschan1204.istock.module.maindata.repository.StockDyQueueRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 /**
@@ -31,10 +27,9 @@ import java.util.List;
  * @author chenguoxiang
  * @create 2018-03-29 14:50
  **/
+@Slf4j
 @Component
 public class XueQiuStockDyTask implements Job{
-
-    private Logger log = LoggerFactory.getLogger(XueQiuStockDyTask.class);
 
     @Autowired
     private StockSpider spider;

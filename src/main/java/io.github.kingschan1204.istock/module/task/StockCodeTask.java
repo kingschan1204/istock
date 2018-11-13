@@ -3,11 +3,10 @@ package io.github.kingschan1204.istock.module.task;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
@@ -16,10 +15,9 @@ import org.springframework.stereotype.Component;
  * 代码定时更新任务
  * @author kings.chan
  */
+@Slf4j
 @Component
 public class StockCodeTask implements Job{
-
-    private Logger log = LoggerFactory.getLogger(StockCodeTask.class);
 
     @Autowired
     private StockSpider spider;

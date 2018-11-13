@@ -28,9 +28,9 @@ import java.security.NoSuchAlgorithmException;
 public class TushareSpider  {
 
     @Value("${tushare.token}")
-    private String tuToken="66cdab7a757dcb728f8833f732a928791d67b6f38e1cd8d94bb79a0d";
+    private String tuToken;
     @Autowired
-    private RestTemplate restTemplate=new RestTemplate();
+    private RestTemplate restTemplate;
     final String api="http://api.tushare.pro";
 
     /**
