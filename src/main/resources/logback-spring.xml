@@ -169,6 +169,9 @@
     <logger name="org.mongodb.driver">
         <level value="ERROR"/>
     </logger>
+    <logger name="org.apache.http">
+        <level value="INFO"/>
+    </logger>
     <logger name="io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl">
         <level value="ERROR"/>
     </logger>
