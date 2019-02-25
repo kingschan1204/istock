@@ -58,6 +58,7 @@ public class ThsStockInfoTask implements Job{
         }
         int affected=0;
         for (StockCodeInfo stock :list) {
+            if(!stock.getCode().matches("\\d{6}")){continue;}
             Stock item = null;
             try {
                 JSONObject info = spider.getStockInfo(stock.getCode());
@@ -83,9 +84,8 @@ public class ThsStockInfoTask implements Job{
                         new Update().set("infoDate", item.getInfoDate()),"stock_code_info");
                 affected+=updateResult.getModifiedCount();
             } catch (Exception e) {
+                log.error("{}-{}",stock.getCode(),e);
                 e.printStackTrace();
-                log.error("{}",e);
-                ;
             }
         }
         log.info(String.format("craw stock info and update data use ：%s ms ,affected rows : %s", (System.currentTimeMillis() - start),affected));
