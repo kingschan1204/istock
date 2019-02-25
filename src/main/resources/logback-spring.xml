@@ -8,16 +8,25 @@
     <!-- 动态日志级别 -->
     <jmxConfigurator/>
     <!-- 定义日志文件 输出位置 -->
-    <property name="log_dir" value="./logs/"/>
+    <property name="log_dir" value="/applogs/dm/"/>
     <!-- 日志最大的历史 30天 -->
     <property name="maxHistory" value="30"/>
-
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <!--
+    设置日志输出格式
+    %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n
+    -->
     <!-- ConsoleAppender 控制台输出日志 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                <!-- 设置日志输出格式 -->
-                %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n
+                ${CONSOLE_LOG_PATTERN}
             </pattern>
         </encoder>
     </appender>
@@ -135,10 +144,12 @@
         <!--<appender-ref ref="DEBUG" />
         <appender-ref ref="TRACE" />-->
     </root>
-
-    <logger name="io.github.kingschan1204.istock">
+    <logger name="com.netflix">
+        <level value="ERROR" />
+    </logger>
+    <logger name="io.github.kingschan1204">
         <!-- 打印debug级别日志及以上级别日志 -->
-        <level value="info"/>
+        <level value="debug"/>
         <!-- 控制台输出 -->
         <!--<appender-ref ref="console"/>-->
         <!-- 文件输出 -->
@@ -147,33 +158,6 @@
         <appender-ref ref="WARN"/>
         <appender-ref ref="DEBUG"/>
         <appender-ref ref="TRACE"/>
-    </logger>
-    <logger name="org.apache.commons">
-        <level value="ERROR"/>
-    </logger>
-    <logger name="org.springframework">
-        <level value="ERROR"/>
-    </logger>
-    <logger name="org.hibernate">
-        <level value="ERROR"/>
-    </logger>
-    <logger name="net.sf.ehcache">
-        <level value="ERROR"/>
-    </logger>
-    <logger name="org.apache.cxf">
-        <level value="ERROR"/>
-    </logger>
-    <logger name="org.springframework.transaction">
-        <level value="DEBUG"/>
-    </logger>
-    <logger name="org.mongodb.driver">
-        <level value="ERROR"/>
-    </logger>
-    <logger name="org.apache.http">
-        <level value="INFO"/>
-    </logger>
-    <logger name="io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl">
-        <level value="ERROR"/>
     </logger>
 
 </configuration>
