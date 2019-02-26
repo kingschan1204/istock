@@ -1,8 +1,10 @@
 package io.github.kingschan1204.istock.common.conf;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -21,6 +23,9 @@ public class SwaggerConfig {
 
     @Value("${info.version}")
     private String version;
+
+    @Autowired
+    Environment env;
 
 
     @Bean
@@ -50,6 +55,8 @@ public class SwaggerConfig {
             .description(description)
             .contact(new Contact("点链接给我发邮件", "", "kings.chan@qq.com"))
             .version(version)
+//            .licenseUrl("/admin/swagger-ui.html")
+//            .termsOfServiceUrl("/admin/swagger-ui.html")
             .build();
     }
 

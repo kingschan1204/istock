@@ -25,7 +25,8 @@ public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
             contextPath = "";
         }http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/**"+contextPath+"/**").authenticated()
+                .antMatchers("/**"+contextPath+"/**")
+                .authenticated()
                 .anyRequest().permitAll()
                 .and().httpBasic();
     }
