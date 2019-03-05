@@ -1,6 +1,7 @@
 package io.github.kingschan1204.istock.module.task;
 
 import io.github.kingschan1204.istock.module.maindata.po.StockHisPbPe;
+import io.github.kingschan1204.istock.module.maindata.po.StockReport;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -32,7 +33,8 @@ public class CleanFileTask implements Job {
         });
 
         mongoTemplate.dropCollection(StockHisPbPe.class);
-        log.info("{}","删除历史pb,pe,price数据");
+        mongoTemplate.dropCollection(StockReport.class);
+        log.info("{}","删除历史pb,pe,price,报表数据");
 
     }
 
