@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import org.jsoup.Jsoup;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
  * @author chenguoxiang
  * @create 2018-10-24 9:31
  **/
-@RefreshScope
+//@RefreshScope
 @Component("TencentSpider")
 public class TencentSpider extends DefaultSpiderImpl{
 

@@ -7,7 +7,6 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
  * @author chenguoxiang
  * @create 2018-10-30 9:31
  **/
-@RefreshScope
+//@RefreshScope
 @Component("TushareSpider")
 public class TushareSpider  {
 

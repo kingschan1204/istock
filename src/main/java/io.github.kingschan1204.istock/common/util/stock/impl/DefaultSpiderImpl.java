@@ -13,7 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +28,6 @@ import java.util.*;
  * @create 2018-01-31 14:02
  **/
 @Slf4j
-@RefreshScope
 @Primary
 @Component("DefaultSpiderImpl")
 public class DefaultSpiderImpl implements StockSpider {

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,7 +16,7 @@ import java.net.SocketTimeoutException;
  * @create 2018-04-12 14:37
  **/
 @Slf4j
-@RefreshScope
+//@RefreshScope
 @Component("EastmoneySpider")
 public class EastmoneySpider extends DefaultSpiderImpl {
 
