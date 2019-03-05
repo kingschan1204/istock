@@ -58,6 +58,16 @@
                                maxlength="10">
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <select id="industry" class="form-control" placeholder="所属行业">
+                            <option value="">请选择所属行业</option>
+                            <#list industry as text>
+                                <option value="${text}">${text}</option>
+                            </#list>
+                        </select>
+                    </div>
+                </div>
                 <button type="button" class="btn btn-primary" id="search_btn">查询</button>
                 <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
                 <button type="button" class="btn btn-warning" id="baseinfo_btn">基本信息</button>
@@ -186,9 +196,11 @@
             var type = $("#stockType").val();
             var pb = $("#stockPb").val();
             var dy = $("#dyType").val() + "-" + $("#stockDy").val();
+            var pb = $("#stockPb").val();
+            var industry = $("#industry").val();
             $("#jqGrid").jqGrid('setGridParam', {
                 datatype: 'json',
-                postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy},
+                postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy,'industry':industry},
                 page: 1
             }).trigger("reloadGrid");
         }

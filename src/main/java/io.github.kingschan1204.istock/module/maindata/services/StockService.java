@@ -23,6 +23,8 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -66,7 +68,7 @@ public class StockService {
      * @param psort 排序方式
      * @return
      */
-    public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
+    public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy,String industry, String orderfidld, String psort){
         Document dbObject = new Document();
         Document  fieldObject = new Document();
         fieldObject.put("todayMax", false);
@@ -103,6 +105,9 @@ public class StockService {
             double s = Double.parseDouble(dy.split("-")[1]);
             double d = Double.parseDouble(dy.split("-")[2]);
             query.addCriteria(Criteria.where(field).gte(s).lte(d));
+        }
+        if (null!=industry&&!industry.isEmpty()){
+            query.addCriteria(Criteria.where("industry").is(industry));
         }
         //记录总数
         Long total=template.count(query,Stock.class);
@@ -320,6 +325,26 @@ public class StockService {
             }
 
         }
+    }
+
+    /**
+     * 获取所有行业
+     * @return
+     */
+    public List<String> getAllIntruduce(){
+        AggregationResults<Document> a = template.aggregate(
+                Aggregation.newAggregation(
+                        Aggregation.group("industry").count().as("count"))
+                , Stock.class, Document.class);
+        List<String> list =new ArrayList<String>();
+        if(null!=a.getMappedResults()){
+            for (Document doc:a.getMappedResults()) {
+                String key =doc.getString("_id");
+                if(key.isEmpty()){continue;}
+                list.add(key);
+            }
+        }
+        return list;
     }
 
 }

@@ -40,14 +40,15 @@ public class StockCtrl {
             @ApiImplicitParam(name = "type", value = "市场类别", required = false, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "pb", value = "市净值", required = false, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "dy", value = "股息", required = false, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "industry", value = "所属行业", required = false, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "sidx", value = "排序字段", required = false, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "sord", value = "排序字段", required = false, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "sord", value = "排序方式", required = false, paramType = "query", dataType = "string"),
     })
     @GetMapping("/q")
-    public String queryStock(Integer page, Integer rows, String code, String type, String pb, String dy, String sidx, String sord) {
+    public String queryStock(Integer page, Integer rows, String code, String type, String pb, String dy,String industry, String sidx, String sord) {
         String order = (null == sord || sord.isEmpty()) ? "asc" : sord;
         String field = (null == sidx || sidx.isEmpty()) ? "_id" : sidx;
-        return service.queryStock(page, rows, code, type, pb, dy, field, order);
+        return service.queryStock(page, rows, code, type, pb, dy,industry, field, order);
     }
 
 
