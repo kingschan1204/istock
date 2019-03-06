@@ -44,7 +44,8 @@ public class StockTopHoldersTask implements Job{
             e.printStackTrace();
         }*/
         Long start = System.currentTimeMillis();
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        //3天更新一遍
+        Integer dateNumber = StockDateUtil.getCurrentDateNumber()-3;
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("holdersDate").lt(dateNumber);
         Criteria c2 = Criteria.where("holdersDate").exists(false);
