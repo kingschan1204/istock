@@ -1,4 +1,4 @@
-package io.github.kingschan1204.istock.module.startup;
+package io.github.kingschan1204.istock.common.startup;
 
 import io.github.kingschan1204.istock.common.util.quartz.QuartzManager;
 import io.github.kingschan1204.istock.module.task.*;
