@@ -1,6 +1,8 @@
 package io.github.kingschan1204.istock.module.maindata.po;
 
 import com.alibaba.fastjson.JSONArray;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author chenguoxiang
  * @create 2018-10-30 15:15
  **/
+@NoArgsConstructor
+@Data
 @Document(collection = "stock_code_info")
 public class StockCodeInfo {
 
@@ -50,9 +54,6 @@ public class StockCodeInfo {
      */
     private Integer xlsError;
 
-    //init method
-    public StockCodeInfo(){    }
-
     /**
      * data 来源于 tushareSpilder
      * @param data
@@ -74,110 +75,4 @@ public class StockCodeInfo {
 
     }
 
-
-
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-    public String getMarket() {
-        return market;
-    }
-
-    public void setMarket(String market) {
-        this.market = market;
-    }
-
-    public String getList_status() {
-        return list_status;
-    }
-
-    public void setList_status(String list_status) {
-        this.list_status = list_status;
-    }
-
-    public Integer getList_date() {
-        return list_date;
-    }
-
-    public void setList_date(Integer list_date) {
-        this.list_date = list_date;
-    }
-
-    public Integer getInfoDate() {
-        return infoDate;
-    }
-
-    public void setInfoDate(Integer infoDate) {
-        this.infoDate = infoDate;
-    }
-
-    public Integer getHoldersDate() {
-        return holdersDate;
-    }
-
-    public void setHoldersDate(Integer holdersDate) {
-        this.holdersDate = holdersDate;
-    }
-
-    public Integer getYearReportDate() {
-        return yearReportDate;
-    }
-
-    public void setYearReportDate(Integer yearReportDate) {
-        this.yearReportDate = yearReportDate;
-    }
-
-    public Integer getXlsError() {
-        return xlsError;
-    }
-
-    public void setXlsError(Integer xlsError) {
-        this.xlsError = xlsError;
-    }
 }
