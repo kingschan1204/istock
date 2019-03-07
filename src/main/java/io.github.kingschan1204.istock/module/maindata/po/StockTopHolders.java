@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @create 2018-11-01 10:47
  **/
 @Data
-@NoArgsConstructor
 @Document(collection = "stock_top_holders")
 public class StockTopHolders {
     @Id

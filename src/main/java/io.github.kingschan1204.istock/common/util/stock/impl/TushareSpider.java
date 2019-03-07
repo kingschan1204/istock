@@ -135,12 +135,11 @@ public class TushareSpider  {
             //{"date":"2018-11-01 18:06:25","code":200,"address":"湖南省长沙市 电信","ip":"113.246.64.67"}
             System.setProperty("https.maxRedirects", "50");
             System.getProperties().setProperty("https.proxySet", "true");
-            System.getProperties().setProperty("https.proxyHost", "114.116.10.21");
-            System.getProperties().setProperty("https.proxyPort", "3128");
+            System.getProperties().setProperty("https.proxyHost", "116.209.55.238");
+            System.getProperties().setProperty("https.proxyPort", "9999");
             StockSpider.enableSSLSocket();
-            String json =Jsoup.connect("https://api.ttt.sh/ip/qqwry/").get().text();
-            JSONObject j = JSON.parseObject(json);
-            System.out.println(j);
+            String json =Jsoup.connect("https://www.ipip.net/").get().text();
+            System.out.println(json);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
