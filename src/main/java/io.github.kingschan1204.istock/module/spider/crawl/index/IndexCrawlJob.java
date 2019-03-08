@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -27,15 +26,13 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class IndexCrawlJob implements Runnable {
 
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(15, new MyThreadFactory("crawlerJob-index"));
-    private ScheduledExecutorService scheduledExecutorService2 = Executors.newScheduledThreadPool(15, new MyThreadFactory("outJob-index"));
-
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(12, new MyThreadFactory("crawlerJob-index"));
+    private ScheduledExecutorService scheduledExecutorService2 = Executors.newScheduledThreadPool(5, new MyThreadFactory("outJob-index"));
 
     @Autowired
     private StockCodeInfoService stockCodeInfoService;
     @Autowired
     private MongoTemplate template;
-
 
     @Override
     public void run() {
@@ -47,7 +44,8 @@ public class IndexCrawlJob implements Runnable {
             list.add(String.format("%s%s", sz_codes.get(i).getType(), sz_codes.get(i).getCode()));
             if (i > 0 && (i % 300 == 0 || i == sz_codes.size() - 1)) {
                 try {
-                    scheduledExecutorService.scheduleAtFixedRate(new SinaIndexSpider(list.toArray(new String[]{}), stockQueue), 0, 3, TimeUnit.SECONDS);
+                    SinaIndexSpider sinaIndexSpider=  new SinaIndexSpider(list.toArray(new String[]{}), stockQueue);
+                    scheduledExecutorService.scheduleAtFixedRate(sinaIndexSpider, 0, 3, TimeUnit.SECONDS);
                     list = new ArrayList<>();
                     Thread.sleep(800);
                 } catch (Exception ex) {
@@ -65,7 +63,8 @@ public class IndexCrawlJob implements Runnable {
             list.add(String.format("%s%s", sh_codes.get(i).getType(), sh_codes.get(i).getCode()));
             if (i > 0 && (i % 300 == 0 || i == sh_codes.size() - 1)) {
                 try {
-                    scheduledExecutorService.scheduleAtFixedRate(new TencentIndexSpider(list.toArray(new String[]{}), stockQueue), 0, 3, TimeUnit.SECONDS);
+                    TencentIndexSpider tencentIndexSpider=new TencentIndexSpider(list.toArray(new String[]{}), stockQueue);
+                    scheduledExecutorService.scheduleAtFixedRate(tencentIndexSpider, 0, 3, TimeUnit.SECONDS);
                     list = new ArrayList<>();
                     TimeUnit.MILLISECONDS.sleep(800);
                 } catch (Exception ex) {

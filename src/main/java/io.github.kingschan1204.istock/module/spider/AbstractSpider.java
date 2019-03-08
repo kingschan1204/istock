@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.module.spider;
 
+import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -57,6 +58,7 @@ public abstract class AbstractSpider<T> implements Runnable,ISpider{
        }
         try {
             Long start=System.currentTimeMillis();
+            log.info(pageUrl);
             Connection.Response response =connection.execute();
             Document document=response.parse();
             webPage=new WebPage(System.currentTimeMillis()-start,pageUrl,document,document.html());
@@ -71,6 +73,10 @@ public abstract class AbstractSpider<T> implements Runnable,ISpider{
     @Override
     public void run() {
         try{
+            if(!StockDateUtil.stockOpenTime()){
+                System.out.println("非开市时间");
+                this.wait();
+            }
             WebPage webPage=crawlPage();
             parsePage(webPage);
         }catch (Exception ex){
