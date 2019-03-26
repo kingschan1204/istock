@@ -5,6 +5,7 @@ import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoServ
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import io.github.kingschan1204.istock.module.spider.crawl.index.IndexCrawlJob;
 import io.github.kingschan1204.istock.module.spider.crawl.info.InfoCrawlJob;
+import io.github.kingschan1204.istock.module.spider.schedule.ScheduleJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,14 +39,17 @@ public class Application {
 
     private static IndexCrawlJob indexCrawlJob;
     private static InfoCrawlJob infoCrawlJob;
+    private static ScheduleJob scheduleJob;
 
     @ResponseBody
     @RequestMapping("/start")
     public String start()throws Exception{
 //        indexCrawlJob=new IndexCrawlJob(stockCodeInfoService,template);
 //        Thread thread=new Thread(indexCrawlJob);
-        infoCrawlJob = new InfoCrawlJob(template);
-        Thread thread=new Thread(infoCrawlJob);
+//        infoCrawlJob = new InfoCrawlJob(template);
+        scheduleJob=new ScheduleJob(template);
+        Thread thread=new Thread(scheduleJob);
+        thread.setDaemon(true);
         thread.start();
         return "ok";
     }
@@ -53,7 +57,7 @@ public class Application {
     @ResponseBody
     @RequestMapping("/stop")
     public String stop()throws Exception{
-        infoCrawlJob.stopTask();
+        scheduleJob.stopTask();
         return "ok";
     }
 

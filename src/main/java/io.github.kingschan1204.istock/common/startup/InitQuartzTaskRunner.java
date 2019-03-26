@@ -19,26 +19,9 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        quartzManager.addJob("sinaPriceTask",
-                "sinaPriceTask-group",
-                "sinaPriceTask-trigger",
-                "sinaPriceTask-trigger-group",
-                SinaStockPriceTask.class,
-                "0/30 * * * * ?");
 
-        quartzManager.addJob("tencentPriceTask",
-                "tencentPriceTask-group",
-                "tencentPriceTask-trigger",
-                "tencentPriceTask-trigger-group",
-                TencentStockPriceTask.class,
-                "0/30 * * * * ?");
 
-        quartzManager.addJob("stockInfoTask",
-                "stockInfoTask-group",
-                "stockInfoTask-trigger",
-                "stockInfoTask-trigger-group",
-                ThsStockInfoTask.class,
-                "0/30 * * * * ?");
+
 
         quartzManager.addJob("stockHoldersTask",
                 "stockHoldersTask-group",
