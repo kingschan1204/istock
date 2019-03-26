@@ -9,13 +9,13 @@ import javax.servlet.annotation.WebListener;
 @Slf4j
 @WebListener
 public class JobContextListener implements ServletContextListener {
-    @Autowired
-    private IndexCrawlJob indexCrawlJob;
+//    @Autowired
+//    private IndexCrawlJob indexCrawlJob;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         log.debug("JobContextListener contextInitialized");
-        new Thread(indexCrawlJob).start();
+//        new Thread(indexCrawlJob).start();
     }
 
     @Override

@@ -39,8 +39,8 @@ public abstract class AbstractSpider<T> implements Runnable,ISpider{
     public WebPage crawlPage() {
         WebPage webPage=null;
         Connection connection =Jsoup.connect(pageUrl)
-                .timeout(timeOut)
-                .method(method);
+                .timeout(null==timeOut?8000:timeOut)
+                .method(null==method? Connection.Method.GET:method);
         if(null!=ignoreContentType){
             connection.ignoreContentType(ignoreContentType);
         }
@@ -73,10 +73,6 @@ public abstract class AbstractSpider<T> implements Runnable,ISpider{
     @Override
     public void run() {
         try{
-            if(!StockDateUtil.stockOpenTime()){
-                System.out.println("非开市时间");
-                this.wait();
-            }
             WebPage webPage=crawlPage();
             parsePage(webPage);
         }catch (Exception ex){

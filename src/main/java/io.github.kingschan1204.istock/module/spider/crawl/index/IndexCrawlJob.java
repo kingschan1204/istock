@@ -5,12 +5,10 @@ import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -23,16 +21,27 @@ import java.util.concurrent.TimeUnit;
  * @create 2019-03-07 11:18
  **/
 @Slf4j
-@Component
 public class IndexCrawlJob implements Runnable {
 
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(12, new MyThreadFactory("crawlerJob-index"));
-    private ScheduledExecutorService scheduledExecutorService2 = Executors.newScheduledThreadPool(5, new MyThreadFactory("outJob-index"));
+    private ScheduledExecutorService scheduledExecutorService ;
+    private ScheduledExecutorService scheduledExecutorService2 ;
 
-    @Autowired
     private StockCodeInfoService stockCodeInfoService;
-    @Autowired
     private MongoTemplate template;
+
+    public IndexCrawlJob(StockCodeInfoService stockCodeInfoService,MongoTemplate template){
+        scheduledExecutorService = Executors.newScheduledThreadPool(12, new MyThreadFactory("crawlerJob-index"));
+        scheduledExecutorService2 = Executors.newScheduledThreadPool(5, new MyThreadFactory("outJob-index"));
+        this.stockCodeInfoService=stockCodeInfoService;
+        this.template=template;
+    }
+
+    public void stopTask(){
+        scheduledExecutorService.shutdown();
+        scheduledExecutorService2.shutdown();
+        Thread.currentThread().interrupt();
+    }
+
 
     @Override
     public void run() {
@@ -47,7 +56,6 @@ public class IndexCrawlJob implements Runnable {
                     SinaIndexSpider sinaIndexSpider=  new SinaIndexSpider(list.toArray(new String[]{}), stockQueue);
                     scheduledExecutorService.scheduleAtFixedRate(sinaIndexSpider, 0, 3, TimeUnit.SECONDS);
                     list = new ArrayList<>();
-                    Thread.sleep(800);
                 } catch (Exception ex) {
                     log.error("{}", ex);
                     ex.printStackTrace();
