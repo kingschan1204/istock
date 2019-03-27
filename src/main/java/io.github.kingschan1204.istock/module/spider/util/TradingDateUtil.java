@@ -5,6 +5,9 @@ import io.github.kingschan1204.istock.module.spider.crawl.tradingdate.TradingDat
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
 
@@ -20,6 +23,32 @@ public class TradingDateUtil {
     private final String CACHE_NAME="TradingDate";
     @Autowired
     private EhcacheUtil ehcacheUtil;
+
+    /**
+     * 当前是否为交易时间
+     * @return
+     */
+    public boolean isTradingTimeNow() {
+        try{
+            LocalDateTime dateTime = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String day = dtf.format(dateTime);
+            if (isTradingDay(day)) {
+                if (isTradingTime(dateTime.getHour(), dateTime.getMinute())) {
+                    log.info("现在是交易时间");
+                    return true;
+                } else {
+                    log.info("现在不是交易时间");
+                    return false;
+                }
+            }
+        }catch (Exception ex){
+            log.error("{}",ex);
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
 
     /**
      * 是否为交易日
@@ -47,12 +76,29 @@ public class TradingDateUtil {
     }
 
     /**
-     * 是否为交易日间
+     * 是否为交易日间 9：30 ~ 11：30 13：00 ~ 15：00
      * @param hour
      * @param minute
      * @return
      */
     public  boolean isTradingTime(int hour,int minute){
+        if(hour>=9&&hour<=11){
+            if(hour==9&&minute<30){
+                //未到9点半
+                return false;
+            }else if(hour==11&&minute>30){
+                //超过11点半
+                return false;
+            }else{
+                return true;
+            }
+        }else if(hour>=13&&hour<=15){
+            if(hour==15&&minute>30){
+                return false;
+            }
+            //下午1点到3点
+            return true;
+        }
         return false;
     }
 

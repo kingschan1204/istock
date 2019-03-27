@@ -61,12 +61,7 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 XueQiuStockDyTask.class,
                 "0 0/1 * * * ?");
 
-        quartzManager.addJob("CleanFileTask",
-                "CleanFileTask-group",
-                "CleanFileTask-trigger",
-                "CleanFileTask-trigger-group",
-                CleanFileTask.class,
-                "0 0 0 * * ?");
+
     }
 
     @Override

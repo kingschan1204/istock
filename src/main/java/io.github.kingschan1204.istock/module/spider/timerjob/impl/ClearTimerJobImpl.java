@@ -1,31 +1,26 @@
-package io.github.kingschan1204.istock.module.task;
+package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
+import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisPbPe;
 import io.github.kingschan1204.istock.module.maindata.po.StockReport;
+import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.util.Arrays;
 
 /**
- * 数据文件清理
+ * 0点要执行的清理工作
  * @author chenguoxiang
- * @create 2018-10-10 14:51
+ * @create 2019-03-28 0:27
  **/
 @Slf4j
-@Component
-public class CleanFileTask implements Job {
+public class ClearTimerJobImpl implements ITimerJob {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+    public void execute() throws Exception {
+        MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         File f = new File("./data/");
         if(!f.exists()){return;}
         Arrays.stream(f.listFiles()).forEach(file ->{
@@ -35,7 +30,5 @@ public class CleanFileTask implements Job {
         mongoTemplate.dropCollection(StockHisPbPe.class);
         mongoTemplate.dropCollection(StockReport.class);
         log.info("{}","删除历史pb,pe,price,报表数据");
-
     }
-
 }
