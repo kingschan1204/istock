@@ -7,7 +7,7 @@ import io.github.kingschan1204.istock.module.spider.entity.WebPage;
  * @author chenguoxiang
  * @create 2019-03-07 9:26
  **/
-public interface ISpider {
+public interface IHtmlSpider {
     /**
      * 爬取页面
      * @return

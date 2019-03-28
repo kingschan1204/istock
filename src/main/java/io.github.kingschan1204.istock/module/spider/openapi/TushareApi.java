@@ -1,4 +1,4 @@
-package io.github.kingschan1204.istock.common.util.stock.impl;
+package io.github.kingschan1204.istock.module.spider.openapi;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
  **/
 //@RefreshScope
 @Component("TushareSpider")
-public class TushareSpider  {
+public class TushareApi {
 
     @Value("${tushare.token}")
     private String tuToken;

@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
-import io.github.kingschan1204.istock.module.spider.AbstractSpider;
+import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @create 2019-03-07 10:31
  **/
 @Slf4j
-public class SinaIndexSpider extends AbstractSpider<Stock>  {
+public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
 
-    public SinaIndexSpider(String[] stockCode,ConcurrentLinkedQueue<Stock> queue){
+    public SinaIndexSpider(String[] stockCode, ConcurrentLinkedQueue<Stock> queue){
         StringBuilder queryStr = new StringBuilder();
         for (String code : stockCode) {
             String resultCode = StockSpider.formatStockCode(code);

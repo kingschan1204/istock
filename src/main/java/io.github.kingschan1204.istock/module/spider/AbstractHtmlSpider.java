@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public abstract class AbstractSpider<T> implements Runnable, ISpider {
+public abstract class AbstractHtmlSpider<T> implements Runnable, IHtmlSpider {
     protected ConcurrentLinkedQueue<T> queue;
     protected Map<String, String> cookie;
     protected String referer;

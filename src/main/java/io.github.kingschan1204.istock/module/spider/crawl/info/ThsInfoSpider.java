@@ -5,7 +5,7 @@ import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
-import io.github.kingschan1204.istock.module.spider.AbstractSpider;
+import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -22,13 +22,13 @@ import java.util.List;
  * @create 2019-03-26 14:10
  **/
 @Slf4j
-public class ThsInfoSpider  extends AbstractSpider<Stock> {
+public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
 
     private MongoTemplate mongoTemplate;
     //当前要处理的代码
     private StockCodeInfo currentCodeInfo;
 
-    public ThsInfoSpider(MongoTemplate mongoTemplate,String useAgent){
+    public ThsInfoSpider(MongoTemplate mongoTemplate, String useAgent){
         this.mongoTemplate=mongoTemplate;
         this.useAgent=useAgent;
     }
