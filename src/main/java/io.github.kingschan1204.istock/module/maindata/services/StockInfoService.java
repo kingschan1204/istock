@@ -36,6 +36,27 @@ public class StockInfoService {
      * @return
      */
     public JSONObject getStockInfo(String code) {
+       /* db.stock.aggregate([
+                {
+                        $lookup:
+        {
+            from: "stock_code_info",
+                    localField: "_id",
+                foreignField: "_id",
+                as: "demo"
+        }
+
+   },{
+            $lookup:
+            {
+                from: "stock_company",
+                        localField: "_id",
+                    foreignField: "_id",
+                    as: "demo1"
+            }
+        }
+   ,{ $match : { _id : "000550" } }
+])*/
         //设置lookup
         LookupOperation lookupOperation = LookupOperation.newLookup().from("stock_code_info").localField("_id").foreignField("_id").as("info");
         LookupOperation lookupOperation1 = LookupOperation.newLookup().from("stock_company").localField("_id").foreignField("_id").as("company");
