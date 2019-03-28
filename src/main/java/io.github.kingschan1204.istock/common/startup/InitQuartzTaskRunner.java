@@ -20,23 +20,6 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
-
-
-
-        quartzManager.addJob("stockHoldersTask",
-                "stockHoldersTask-group",
-                "stockHoldersTask-trigger",
-                "stockHoldersTask-trigger-group",
-                StockTopHoldersTask.class,
-                "0/30 * * * * ?");
-
-        quartzManager.addJob("stockCodeTask",
-                "stockCodeTask-group",
-                "stockCodeTask-trigger",
-                "stockCodeTask-trigger-group",
-                StockCodeTask.class,
-                "0 0 0 * * ?");
-
         quartzManager.addJob("stockDividendTask",
                 "stockDividendTask-group",
                 "stockDividendTask-trigger",

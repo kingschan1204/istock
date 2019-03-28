@@ -1,7 +1,7 @@
 package io.github.kingschan1204.istock.module.maindata.services;
 
 import com.alibaba.fastjson.JSONArray;
-import io.github.kingschan1204.istock.common.util.stock.impl.TushareSpider;
+import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
 import io.github.kingschan1204.istock.module.maindata.po.StockCompany;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.List;
 public class StockCompanyService {
 
         @Autowired
-        private TushareSpider tushareSpider;
+        private TushareApi tushareSpider;
         @Autowired
         private MongoTemplate mongoTemplate;
 

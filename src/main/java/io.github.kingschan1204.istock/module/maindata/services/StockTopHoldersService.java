@@ -2,7 +2,7 @@ package io.github.kingschan1204.istock.module.maindata.services;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mongodb.client.result.DeleteResult;
-import io.github.kingschan1204.istock.common.util.stock.impl.TushareSpider;
+import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
 import io.github.kingschan1204.istock.module.maindata.po.StockTopHolders;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class StockTopHoldersService {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private TushareSpider tushareSpider;
+    private TushareApi tushareSpider;
 
     /**
      * 刷新持有人
