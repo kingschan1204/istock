@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class ClearTimerJobImpl implements ITimerJob {
 
     @Override
-    public void execute() throws Exception {
+    public void execute(COMMAND command) throws Exception {
         MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         File f = new File("./data/");
         if(!f.exists()){return;}

@@ -49,6 +49,23 @@ public class TradingDateUtil {
         return false;
     }
 
+    /**
+     * 今天是否是交易日
+     * @return
+     * @throws Exception
+     */
+    public  boolean isTradingDay(){
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String day = dtf.format(dateTime);
+        try {
+            return isTradingDay(day);
+        } catch (Exception e) {
+            log.error("{}",e);
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /**
      * 是否为交易日

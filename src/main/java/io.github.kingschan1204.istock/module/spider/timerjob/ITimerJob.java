@@ -8,10 +8,15 @@ package io.github.kingschan1204.istock.module.spider.timerjob;
  **/
 public interface ITimerJob {
 
+    public enum COMMAND{
+        START,STOP
+    }
+
     /**
      * 执行
+     * @param command 命令
      * @throws Exception
      */
-    void execute()throws Exception;
+    void execute(COMMAND command)throws Exception;
 
 }

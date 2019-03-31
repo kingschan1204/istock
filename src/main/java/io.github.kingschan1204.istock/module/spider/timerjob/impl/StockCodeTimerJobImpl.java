@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StockCodeTimerJobImpl implements ITimerJob {
 
     @Override
-    public void execute() throws Exception {
+    public void execute(COMMAND command) throws Exception {
         StockCodeInfoService stockCodeInfoService = SpringContextUtil.getBean(StockCodeInfoService.class);
         StockCompanyService stockCompanyService = SpringContextUtil.getBean(StockCompanyService.class);
         Long start = System.currentTimeMillis();
