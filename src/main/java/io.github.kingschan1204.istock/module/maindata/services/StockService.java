@@ -245,7 +245,7 @@ public class StockService {
      * @param spider
      * @throws Exception
      */
-    public void updateStockPrice(List<String> codes, StockSpider spider) throws Exception {
+  /*  public void updateStockPrice(List<String> codes, StockSpider spider) throws Exception {
         JSONArray jsons = spider.getStockPrice(codes.toArray(new String[]{}));
         List<Stock> stocks = JSON.parseArray(jsons.toJSONString(), Stock.class);
         stocks.stream().forEach(stock -> {
@@ -264,7 +264,7 @@ public class StockService {
                     "stock"
             );
         });
-    }
+    }*/
 
     /**
      * 计算过去5年连续分红的平均股票股息

@@ -32,7 +32,7 @@ public class TradingDateSpider implements Callable<Map<String,Boolean>>{
     @Override
     public Map<String, Boolean> call() throws Exception {
         WebPage webPage= JsoupUitl.getWebPage(url, Connection.Method.GET,
-                4000,null,"http://www.szse.cn/disclosure/index.html");
+                8000,null,"http://www.szse.cn/disclosure/index.html");
         Optional.ofNullable(webPage).map(webPage1 -> webPage1.getDocument().text()).orElseThrow(()->new Exception("web page null"));
         JSONObject json = JSON.parseObject(webPage.getDocument().text());
         JSONArray jsonArray = json.getJSONArray("data");

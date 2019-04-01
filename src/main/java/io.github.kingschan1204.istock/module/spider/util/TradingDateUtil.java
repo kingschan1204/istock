@@ -93,7 +93,7 @@ public class TradingDateUtil {
                 return true;
             }
         }else if(hour>=13&&hour<=15){
-            if(hour==15&&minute>30){
+            if(hour==15&&minute>=1){
                 return false;
             }
             //下午1点到3点

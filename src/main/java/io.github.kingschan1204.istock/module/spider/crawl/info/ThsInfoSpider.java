@@ -1,6 +1,7 @@
 package io.github.kingschan1204.istock.module.spider.crawl.info;
 
 import com.mongodb.client.result.UpdateResult;
+import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
@@ -14,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+
 import java.util.List;
 
 /**
@@ -24,13 +26,15 @@ import java.util.List;
 @Slf4j
 public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
 
-    private MongoTemplate mongoTemplate;
     //当前要处理的代码
     private StockCodeInfo currentCodeInfo;
 
-    public ThsInfoSpider(MongoTemplate mongoTemplate, String useAgent){
-        this.mongoTemplate=mongoTemplate;
+    public ThsInfoSpider(String useAgent){
         this.useAgent=useAgent;
+    }
+
+    public MongoTemplate getMongoTemp(){
+        return SpringContextUtil.getBean(MongoTemplate.class);
     }
 
     /**
@@ -44,7 +48,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         Criteria c2 = Criteria.where("infoDate").exists(false);
         Query query = new Query(cr.orOperator(c1,c2));
         query.limit(1);
-        List<StockCodeInfo> list = mongoTemplate.find(query, StockCodeInfo.class);
+        List<StockCodeInfo> list = getMongoTemp().find(query, StockCodeInfo.class);
         if(null!=list&&list.size()>0){
             this.currentCodeInfo=list.get(0);
         }
@@ -85,7 +89,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
             jzcsyl = tds1.get(14).select("span").get(1).text();
         }
 
-        UpdateResult updateResult = mongoTemplate.upsert(
+        UpdateResult updateResult = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
                 new Update()
                         .set("_id", currentCodeInfo.getCode())
@@ -100,7 +104,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                 //,
                 "stock"
         );
-        UpdateResult updateResult2 = mongoTemplate.upsert(
+        UpdateResult updateResult2 = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
                 new Update().set("infoDate", StockDateUtil.getCurrentDateNumber()),"stock_code_info");
         log.info("代码{}受影响行数:{}",currentCodeInfo.getCode(),updateResult.getModifiedCount()+updateResult2.getModifiedCount());

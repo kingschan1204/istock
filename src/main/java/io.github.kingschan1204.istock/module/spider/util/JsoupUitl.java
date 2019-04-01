@@ -78,7 +78,7 @@ public class JsoupUitl {
         }
         try {
             Long start = System.currentTimeMillis();
-            log.info(pageUrl);
+            log.debug(pageUrl);
             Connection.Response response = connection.execute();
             Document document = response.parse();
             webPage = new WebPage(System.currentTimeMillis() - start, pageUrl, document, document.html());

@@ -47,7 +47,7 @@ public class Application {
 //        indexCrawlJob=new IndexCrawlJob(stockCodeInfoService,template);
 //        Thread thread=new Thread(indexCrawlJob);
 //        infoCrawlJob = new InfoCrawlJob(template);
-        scheduleJob=new ScheduleJob(template);
+        scheduleJob=new ScheduleJob();
         Thread thread=new Thread(scheduleJob);
         thread.setDaemon(true);
         thread.start();
@@ -75,5 +75,8 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class,args);
+        Thread thread=new Thread(new ScheduleJob());
+        thread.setDaemon(true);
+        thread.start();
     }
 }

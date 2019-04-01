@@ -45,8 +45,6 @@ public class TencentIndexSpider extends AbstractHtmlSpider<Stock> {
 
         String content = webPage.getDocument().text();
         List<String> rows = Arrays.asList(content.split(";"));
-        JSONArray jsonArray = new JSONArray();
-        JSONObject json;
         for (int i = 0; i < rows.size(); i++) {
             String[] item = rows.get(i).replaceAll("v_.*=|\"", "").split("~");
             Stock stock = new Stock();

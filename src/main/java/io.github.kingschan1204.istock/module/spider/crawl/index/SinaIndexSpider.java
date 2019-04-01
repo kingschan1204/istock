@@ -43,8 +43,6 @@ public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
     @Override
     public void parsePage(WebPage webPage) throws Exception{
         String[] line = webPage.getDocument().text().split(";");
-        JSONArray rows = new JSONArray();
-        JSONObject json;
         for (String s : line) {
             String row = s.trim().replaceAll("^var\\D+|\"", "").replace("=", ",");
             String data[] = row.split(",");
@@ -56,11 +54,13 @@ public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
             double zf = (xj - zs) / zs * 100;
             double todayMax = StockSpider.mathFormat(data[5]);
             double todayMin = StockSpider.mathFormat(data[6]);
-            json = new JSONObject();
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+
+            Stock stock =new Stock();
             //一般这种是停牌的
             if (xj == 0) {
                 //波动
-                json.put("fluctuate", 0);
+                stock.setFluctuate(0d);
             } else {
                 NumberFormat nf = NumberFormat.getNumberInstance();
                 // 保留两位小数
@@ -68,10 +68,8 @@ public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
                 // 如果不需要四舍五入，可以使用RoundingMode.DOWN
                 nf.setRoundingMode(RoundingMode.UP);
                 //波动
-                json.put("fluctuate", StockSpider.mathFormat(nf.format(zf)));
+                stock.setFluctuate(StockSpider.mathFormat(nf.format(zf)));
             }
-            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-            Stock stock =new Stock();
             stock.setCode(data[0]);
             stock.setType(StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));
             stock.setName(data[1].replaceAll("\\s", ""));

@@ -161,7 +161,7 @@ public interface StockSpider {
      * @return
      * @throws Exception
      */
-    JSONArray getStockPrice(String[] stockCode) throws Exception;
+//    JSONArray getStockPrice(String[] stockCode) throws Exception;
 
 
     /**

@@ -1,6 +1,7 @@
 package io.github.kingschan1204.istock.module.spider.crawl.index;
 
 import io.github.kingschan1204.istock.common.thread.MyThreadFactory;
+import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
@@ -26,14 +27,10 @@ public class IndexCrawlJob implements Runnable {
     private ScheduledExecutorService scheduledExecutorService ;
     private ScheduledExecutorService scheduledExecutorService2 ;
 
-    private StockCodeInfoService stockCodeInfoService;
-    private MongoTemplate template;
 
-    public IndexCrawlJob(StockCodeInfoService stockCodeInfoService,MongoTemplate template){
+    public IndexCrawlJob(){
         scheduledExecutorService = Executors.newScheduledThreadPool(12, new MyThreadFactory("crawlerJob-index"));
         scheduledExecutorService2 = Executors.newScheduledThreadPool(5, new MyThreadFactory("outJob-index"));
-        this.stockCodeInfoService=stockCodeInfoService;
-        this.template=template;
     }
 
     public void stopTask(){
@@ -45,6 +42,8 @@ public class IndexCrawlJob implements Runnable {
 
     @Override
     public void run() {
+        StockCodeInfoService stockCodeInfoService= SpringContextUtil.getBean(StockCodeInfoService.class);
+        MongoTemplate template=SpringContextUtil.getBean(MongoTemplate.class);
         ConcurrentLinkedQueue<Stock> stockQueue = new ConcurrentLinkedQueue<>();
         //sz
         List<StockCodeInfo> sz_codes = stockCodeInfoService.getSZStockCodes();

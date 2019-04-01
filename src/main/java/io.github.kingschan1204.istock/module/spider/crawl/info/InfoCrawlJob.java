@@ -17,11 +17,9 @@ public class InfoCrawlJob implements Runnable {
 
     private ScheduledExecutorService scheduledExecutorService ;
 
-    private MongoTemplate template;
 
-    public InfoCrawlJob(MongoTemplate template){
+    public InfoCrawlJob(){
         scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("crawlerJob-info"));
-        this.template=template;
     }
 
     public void stopTask(){
@@ -32,7 +30,7 @@ public class InfoCrawlJob implements Runnable {
 
     @Override
     public void run() {
-            ThsInfoSpider infoSpider = new ThsInfoSpider(template,"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36");
+            ThsInfoSpider infoSpider = new ThsInfoSpider("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36");
             scheduledExecutorService.scheduleAtFixedRate(infoSpider, 0, 1, TimeUnit.SECONDS);
     }
 }

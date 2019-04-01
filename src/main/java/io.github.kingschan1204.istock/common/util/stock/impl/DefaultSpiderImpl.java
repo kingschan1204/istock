@@ -42,7 +42,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Value("${xueqiu.token}")
     protected String xueQiuToken;
 
-    @Override
+   /* @Override
     public JSONArray getStockPrice(String[] stockCode) throws Exception {
         StringBuilder queryStr = new StringBuilder();
         for (String code : stockCode) {
@@ -108,7 +108,7 @@ public class DefaultSpiderImpl implements StockSpider {
             rows.add(json);
         }
         return rows;
-    }
+    }*/
 
     @Override
     public JSONObject getStockInfo(String code) throws Exception {
