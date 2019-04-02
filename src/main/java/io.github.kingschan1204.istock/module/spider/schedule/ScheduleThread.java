@@ -34,7 +34,6 @@ public class ScheduleThread implements Runnable {
         switch (dateTime.getHour()) {
             case 0:
                 //晚上12点
-                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INFO).execute(ITimerJob.COMMAND.STOP);
                 if(dateTime.getMinute()==1){
                     ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.CLEAR).execute(null);
                     ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.STOCKCODE).execute(null);

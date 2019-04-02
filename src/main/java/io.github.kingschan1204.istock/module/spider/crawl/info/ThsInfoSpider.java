@@ -8,6 +8,8 @@ import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
+import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
+import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -51,6 +53,14 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         List<StockCodeInfo> list = getMongoTemp().find(query, StockCodeInfo.class);
         if(null!=list&&list.size()>0){
             this.currentCodeInfo=list.get(0);
+        }else{
+            try {
+                log.info("stock info 全部更新完毕，关闭更新线程！");
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INFO).execute(ITimerJob.COMMAND.STOP);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("{}",e);
+            }
         }
     }
 
