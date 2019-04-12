@@ -24,7 +24,6 @@ public class Stock {
     private Double todayMin;
     private Long priceDate;
     private String industry;
-    private String mainBusiness;
     private Double totalValue;
     private Double pb;
     private Double roe;

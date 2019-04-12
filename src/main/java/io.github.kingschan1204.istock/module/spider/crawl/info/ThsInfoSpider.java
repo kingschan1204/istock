@@ -79,7 +79,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         //第一个表格的第一行
         Elements tds = table.get(0).select("tr").get(0).select("td");
         //主营业务
-        String zyyw = tds.get(0).text().replaceAll(regex, "");
+//        String zyyw = tds.get(0).text().replaceAll(regex, "");
         //所属行业
         String sshy = tds.get(1).text().replaceAll(regex, "");
         Elements tds1 = table.get(1).select("td");
@@ -104,7 +104,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                 new Update()
                         .set("_id", currentCodeInfo.getCode())
                         .set("industry", sshy)
-                        .set("mainBusiness", zyyw)
+//                        .set("mainBusiness", zyyw)
                         .set("totalValue", StockSpider.mathFormat(zsz))
                         .set("pb", StockSpider.mathFormat(sjl))
                         .set("roe", StockSpider.mathFormat(jzcsyl))
