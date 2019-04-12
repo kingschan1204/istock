@@ -8,6 +8,7 @@ import io.github.kingschan1204.istock.module.maindata.po.StockTopHolders;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -83,6 +84,9 @@ public class StockInfoService {
         fieldObject.put("code", false);
         Query query = new BasicQuery(dbObject,fieldObject);
         query.addCriteria(Criteria.where("code").is(code));
+        //排序
+        Sort.Direction sortd = Sort.Direction.DESC;
+        query.with(new Sort(sortd, "holdAmount"));
         List<StockTopHolders> holders=  mongoTemplate.find(query, StockTopHolders.class);
         /*Map<String,List<StockTopHolders>> map =holders.stream().collect(Collectors.groupingBy(StockTopHolders::getHolderName));
         holders=new ArrayList<StockTopHolders>();
