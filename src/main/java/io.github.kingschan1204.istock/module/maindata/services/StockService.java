@@ -274,10 +274,10 @@ public class StockService {
     public void calculateFiveYearsDy() {
         int year = StockDateUtil.getCurrentYear();
         int fiveYearAgo = year - 5;
-        String startDate = StockDateUtil.getCurrYearLastDay(fiveYearAgo).toString();
-        String endDate = StockDateUtil.getCurrentDate();
+        /*String startDate = StockDateUtil.getCurrYearFirstDay(fiveYearAgo).toString();
+        String endDate = StockDateUtil.getCurrentDate();*/
         Query query = new Query();
-        query.addCriteria(Criteria.where("releaseDate").gte(startDate).lte(endDate));
+        query.addCriteria(Criteria.where("title").gte(fiveYearAgo));
         MapReduceResults<Document> result = template.mapReduce(query, "stock_dividend",
                 "classpath:/mapreduce/5years_dy/dy5years_map.js", "classpath:/mapreduce/5years_dy/dy5years_reduce.js",
                 new MapReduceOptions().outputCollection("stock_dy_statistics"), Document.class);
@@ -345,7 +345,7 @@ public class StockService {
         if (null != a.getMappedResults()) {
             for (Document doc : a.getMappedResults()) {
                 String key = doc.getString("_id");
-                if (key.isEmpty()) {
+                if (null==key||key.isEmpty()) {
                     continue;
                 }
                 list.add(key);

@@ -11,5 +11,5 @@ function(key, values) {
     if(index<5){
         total=0;
     }
-    return {percent:(total/index).toFixed(2),years:years,size:index};
+    return {percent:(total/5).toFixed(2),years:years,size:index};
 }
