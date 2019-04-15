@@ -268,16 +268,17 @@ public class StockService {
 
     /**
      * 计算过去5年连续分红的平均股票股息
-     *
      * @return
      */
     public void calculateFiveYearsDy() {
         int year = StockDateUtil.getCurrentYear();
         int fiveYearAgo = year - 5;
-        /*String startDate = StockDateUtil.getCurrYearFirstDay(fiveYearAgo).toString();
-        String endDate = StockDateUtil.getCurrentDate();*/
         Query query = new Query();
         query.addCriteria(Criteria.where("title").gte(fiveYearAgo));
+        query.with(Sort.by(
+                Sort.Order.asc("code"),
+                Sort.Order.desc("title")
+        ));
         MapReduceResults<Document> result = template.mapReduce(query, "stock_dividend",
                 "classpath:/mapreduce/5years_dy/dy5years_map.js", "classpath:/mapreduce/5years_dy/dy5years_reduce.js",
                 new MapReduceOptions().outputCollection("stock_dy_statistics"), Document.class);
