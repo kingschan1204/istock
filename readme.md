@@ -22,14 +22,32 @@
  :ballot_box_with_check: 历史数据：市盈率，市净率 ，分红，净资产收益率
  
  :ballot_box_with_check: 公司基本信息、前10大股东信息
+## Demo 效果 
 
-## 2.x版预计更动
+:link: [点我查看效果](http://211.159.182.106/) (demo版) :link:
 
-- 升级至spring boot 2.x
-- 废弃quartz 任务调试 -> 并发编程实现
-- 引入代理ip机制
-- 更丰富的可视化分析
-- 分布式爬虫（看情况）
+## :boom: 效果图 :boom:
+
+![](https://kingschan1204.github.io/istock/readme-res/stock-list.png )
+
+![](https://kingschan1204.github.io/istock/readme-res/company-info.png )
+
+![](https://kingschan1204.github.io/istock/readme-res/top-holders.png )
+
+![](https://kingschan1204.github.io/istock/readme-res/his-dy.png )
+
+![](https://kingschan1204.github.io/istock/readme-res/his-pb-pe.png )
+
+![](https://kingschan1204.github.io/istock/readme-res/his-report.png )
+
+![](https://kingschan1204.github.io/istock/readme-res/his-roe.png )
+
+## 代码分支说明
+
+- develop 正在开发版本（不稳定）
+- master 发布版(稳定)
+- 1.x  1.x版本代码（稳定）
+- 2.x 将要发布的2.0版本，正在开发中（不稳定）
 
 
 
