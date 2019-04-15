@@ -7,16 +7,15 @@ import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
 import io.github.kingschan1204.istock.common.util.file.FileCommonOperactionTool;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
@@ -28,12 +27,11 @@ import java.util.*;
  * @author chenguoxiang
  * @create 2018-01-31 14:02
  **/
-@RefreshScope
+@Slf4j
 @Primary
 @Component("DefaultSpiderImpl")
 public class DefaultSpiderImpl implements StockSpider {
 
-    private static Logger log = LoggerFactory.getLogger(DefaultSpiderImpl.class);
     @Value("${spider.timeout}")
     /**
      * 8s超时
@@ -44,7 +42,7 @@ public class DefaultSpiderImpl implements StockSpider {
     @Value("${xueqiu.token}")
     protected String xueQiuToken;
 
-    @Override
+   /* @Override
     public JSONArray getStockPrice(String[] stockCode) throws Exception {
         StringBuilder queryStr = new StringBuilder();
         for (String code : stockCode) {
@@ -110,7 +108,7 @@ public class DefaultSpiderImpl implements StockSpider {
             rows.add(json);
         }
         return rows;
-    }
+    }*/
 
     @Override
     public JSONObject getStockInfo(String code) throws Exception {

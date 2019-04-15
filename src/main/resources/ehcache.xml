@@ -44,6 +44,8 @@ timeToLiveSeconds=180；
     <cache name="ThsHisYearReportTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" />
     <!--动态股息错误记录  错误超过5次后过一个小时再执行任务-->
     <cache name="XueQiuStockDyTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="3600" memoryStoreEvictionPolicy="LFU" />
+    <!--交易日-->
+    <cache name="TradingDate" eternal="true" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false"  memoryStoreEvictionPolicy="LFU" />
 
 </ehcache>
 

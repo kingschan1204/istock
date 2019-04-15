@@ -1,17 +1,15 @@
 package io.github.kingschan1204.istock.module.maindata.services;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mongodb.WriteResult;
-import io.github.kingschan1204.istock.common.util.stock.impl.TushareSpider;
+import com.mongodb.client.result.DeleteResult;
+import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
 import io.github.kingschan1204.istock.module.maindata.po.StockTopHolders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +18,13 @@ import java.util.List;
  * @author chenguoxiang
  * @create 2018-11-01 10:55
  **/
+@Slf4j
 @Service
 public class StockTopHoldersService {
-    private Logger log = LoggerFactory.getLogger(StockTopHoldersService.class);
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private TushareSpider tushareSpider;
+    private TushareApi tushareSpider;
 
     /**
      * 刷新持有人
@@ -48,9 +46,9 @@ public class StockTopHoldersService {
         }
         String query_code=code.replaceAll("\\D+","");
         //先删除再新增
-        WriteResult wr= mongoTemplate.remove(new Query(Criteria.where("code").is(query_code)),StockTopHolders.class);
+        DeleteResult dr= mongoTemplate.remove(new Query(Criteria.where("code").is(query_code)),StockTopHolders.class);
         mongoTemplate.insertAll(list);
-        log.info("top10 holders :remove {} ,insert {} ",wr.getN(),list.size());
+        log.info("top10 holders :remove {} ,insert {} ",dr.getDeletedCount(),list.size());
     }
 
 }

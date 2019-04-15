@@ -4,8 +4,6 @@
     <head>
         <meta charset="UTF-8">
         <title>股票筛选</title>
-        <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" media="screen" href="/plugs/jqgrid/ui.jqgrid-bootstrap.css"/>
         <style>
             div.header
             　　 {
@@ -16,6 +14,8 @@
                 margin-left: 10px;
             }
         </style>
+        <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" media="screen" href="http://res.51so.info/ui.jqgrid-bootstrap.css"/>
     </head>
     <body style="padding: 20px 0px 0px 10px;overflow: hidden;">
     <div class="row" style="margin-bottom: 10px;">
@@ -58,6 +58,16 @@
                                maxlength="10">
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <select id="industry" class="form-control" placeholder="所属行业">
+                            <option value="">请选择所属行业</option>
+                            <#list industry as text>
+                                <option value="${text}">${text}</option>
+                            </#list>
+                        </select>
+                    </div>
+                </div>
                 <button type="button" class="btn btn-primary" id="search_btn">查询</button>
                 <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
                 <button type="button" class="btn btn-warning" id="baseinfo_btn">基本信息</button>
@@ -78,17 +88,18 @@
             </form>
         </div>
     </div>
-
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
 
     </body>
+        <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!--<script src="/bootstrap/js/bootstrap.min.js"></script>-->
+        <!--<script src="/plugs/jqgrid/grid.locale-cn.js"></script>-->
+        <script src="https://cdn.bootcss.com/jqgrid/4.6.0/js/i18n/grid.locale-cn.js"></script>
+        <script src="http://res.51so.info/jquery.jqGrid.min.js"></script>
+        <!--/plugs/jqgrid/jquery.jqGrid.min.js-->
     </html>
-    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/plugs/jqgrid/grid.locale-cn.js"></script>
-    <script src="/plugs/jqgrid/jquery.jqGrid.min.js"></script>
-    <!--/plugs/jqgrid/jquery.jqGrid.min.js-->
     <script type="text/javascript">
         $(document).ready(function () {
             $("#jqGrid").jqGrid({
@@ -186,9 +197,11 @@
             var type = $("#stockType").val();
             var pb = $("#stockPb").val();
             var dy = $("#dyType").val() + "-" + $("#stockDy").val();
+            var pb = $("#stockPb").val();
+            var industry = $("#industry").val();
             $("#jqGrid").jqGrid('setGridParam', {
                 datatype: 'json',
-                postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy},
+                postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy,'industry':industry},
                 page: 1
             }).trigger("reloadGrid");
         }
@@ -201,6 +214,7 @@
             $("#stockType").val("");
             $("#stockPb").val("");
             $("#stockDy").val("");
+            $("#industry").val("");
             reloadStock();
         });
         $("#dy_btn").click(function () {

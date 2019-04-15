@@ -1,18 +1,17 @@
 package io.github.kingschan1204.istock.module.task;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -30,11 +29,9 @@ import java.util.Set;
  * @author chenguoxiang
  * @create 2018-03-29 14:50
  **/
+@Slf4j
 @Component
 public class StockDividendTask implements Job {
-
-    private Logger log = LoggerFactory.getLogger(StockDividendTask.class);
-
     @Resource(name = "EastmoneySpider")
     private EastmoneySpider eastmoneySpider;
     @Autowired
@@ -105,14 +102,14 @@ public class StockDividendTask implements Job {
                     //save dividend
                     List<StockDividend> stockDividendList = JSONArray.parseArray(dividends.toJSONString(), StockDividend.class);
                     template.remove(new Query(Criteria.where("code").is(stock.getCode())), StockDividend.class);
-                    stockHisDividendRepository.save(stockDividendList);
+                    stockHisDividendRepository.saveAll(stockDividendList);
                     affected = stockDividendList.size();
                 }
             } catch (Exception e) {
                 log.error("error:{}", e);
                 e.printStackTrace();
             }
-            WriteResult wr = template.upsert(
+            UpdateResult updateResult = template.upsert(
                     new Query(Criteria.where("_id").is(stock.getCode())),
                     new Update()
                             .set("_id", stock.getCode())
@@ -121,7 +118,7 @@ public class StockDividendTask implements Job {
                             .set("dividendUpdateDay", dateNumber),
                     "stock"
             );
-            affected += wr.getN();
+            affected += updateResult.getModifiedCount();
             log.info("{}分红抓取,耗时{}ms,获得{}行数据", stock.getCode(), (System.currentTimeMillis() - start), affected);
         }
 

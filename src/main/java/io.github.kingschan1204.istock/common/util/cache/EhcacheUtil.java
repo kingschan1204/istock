@@ -1,5 +1,6 @@
 package io.github.kingschan1204.istock.common.util.cache;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  * @author chenguoxiang
  * @create 2018-07-10 15:02
  **/
+@Slf4j
 @Component
 public class EhcacheUtil {
 
@@ -28,6 +30,19 @@ public class EhcacheUtil {
         return null==em?null:em.getObjectValue();
     }
 
+
+
+    /**
+     * 查询指定缓存是否包含key
+     * @param cacheName
+     * @param key
+     * @return
+     */
+    public boolean contrainKey(String cacheName,String key){
+        Cache cache= ehCacheCacheManager.getCacheManager().getCache(cacheName);
+        return cache.isKeyInCache(key);
+    }
+
     /**
      * 向缓存中写入一个key
      * @param cacheName
@@ -36,6 +51,7 @@ public class EhcacheUtil {
      */
     public void addKey(String cacheName,String key,Object value){
         ehCacheCacheManager.getCacheManager().getCache(cacheName).put(new Element(key,value));
+        log.info("缓存{}新增{}值{}",cacheName,key,value);
     }
 
     /**

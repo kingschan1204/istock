@@ -3,10 +3,8 @@ package io.github.kingschan1204.istock.module.maindata.services;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
@@ -16,9 +14,12 @@ import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import io.github.kingschan1204.istock.module.maindata.vo.StockVo;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -34,6 +35,7 @@ import java.util.Optional;
 
 /**
  * Stock service
+ *
  * @author chenguoxiang
  * @create 2018-03-27 10:27
  **/
@@ -55,19 +57,20 @@ public class StockService {
 
     /**
      * 查询股票
-     * @param pageindex 页码
-     * @param pagesize 显示多少条
-     * @param pcode  代码、名称
-     * @param type   市场
-     * @param pb 市净值
-     * @param dy 股息
+     *
+     * @param pageindex  页码
+     * @param pagesize   显示多少条
+     * @param pcode      代码、名称
+     * @param type       市场
+     * @param pb         市净值
+     * @param dy         股息
      * @param orderfidld 排序字段
-     * @param psort 排序方式
+     * @param psort      排序方式
      * @return
      */
-    public String queryStock(int pageindex, int pagesize, final String pcode,final String type,String pb,String dy, String orderfidld, String psort){
-        DBObject dbObject = new BasicDBObject();
-        DBObject fieldObject = new BasicDBObject();
+    public String queryStock(int pageindex, int pagesize, final String pcode, final String type, String pb, String dy, String industry, String orderfidld, String psort) {
+        Document dbObject = new Document();
+        Document fieldObject = new Document();
         fieldObject.put("todayMax", false);
         fieldObject.put("todayMin", false);
         fieldObject.put("priceDate", false);
@@ -75,131 +78,127 @@ public class StockService {
         fieldObject.put("dyDate", false);
         fieldObject.put("infoDate", false);
         fieldObject.put("dividendUpdateDay", false);
-        Query query = new BasicQuery(dbObject,fieldObject);
-        Optional<String> code =Optional.ofNullable(pcode);
-        if (code.isPresent()){
-            if(pcode.matches("\\d{6}")){
+        Query query = new BasicQuery(dbObject, fieldObject);
+        //Projections.exclude(Arrays.asList("todayMax","todayMin","priceDate","mainBusiness","dyDate","infoDate","dividendUpdateDay"));
+
+        Optional<String> code = Optional.ofNullable(pcode);
+        if (code.isPresent()) {
+            if (pcode.matches("\\d{6}")) {
                 query.addCriteria(Criteria.where("_id").is(pcode));
-            }else if(pcode.matches("\\d+")){
+            } else if (pcode.matches("\\d+")) {
                 query.addCriteria(Criteria.where("_id").regex(pcode));
-            }
-            else{
+            } else {
                 query.addCriteria(Criteria.where("name").regex(pcode));
             }
         }
-        if(null!=type&&type.matches("sz|sh")){
+        if (null != type && type.matches("sz|sh")) {
             query.addCriteria(Criteria.where("type").is(type));
         }
-        if(null!=pb&&pb.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
+        if (null != pb && pb.matches("\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")) {
             double s = Double.parseDouble(pb.split("-")[0]);
             double d = Double.parseDouble(pb.split("-")[1]);
             query.addCriteria(Criteria.where("pb").gte(s).lte(d));
         }
-        if(null!=dy&&dy.matches("(dy|dividend|fiveYearDy)\\-\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")){
-            String field=dy.split("-")[0];
+        if (null != dy && dy.matches("(dy|dividend|fiveYearDy)\\-\\d+(\\.\\d+)?\\-\\d+(\\.\\d+)?")) {
+            String field = dy.split("-")[0];
             double s = Double.parseDouble(dy.split("-")[1]);
             double d = Double.parseDouble(dy.split("-")[2]);
             query.addCriteria(Criteria.where(field).gte(s).lte(d));
         }
+        if (null != industry && !industry.isEmpty()) {
+            query.addCriteria(Criteria.where("industry").is(industry));
+        }
         //记录总数
-        Long total=template.count(query,Stock.class);
+        Long total = template.count(query, Stock.class);
         //分页
-        query.skip((pageindex-1)*pagesize).limit(pagesize);
+        query.skip((pageindex - 1) * pagesize).limit(pagesize);
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        orders.add(new Sort.Order(
-                "asc".equalsIgnoreCase(psort) ?Sort.Direction.ASC:Sort.Direction.DESC
-                ,orderfidld));
-        Sort sort = new Sort(orders);
-        query.with(sort);
+        Sort.Direction sortd = "asc".equalsIgnoreCase(psort) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        query.with(new Sort(sortd, orderfidld));
         //code
-        List<Stock> list =template.find(query,Stock.class);
+        List<Stock> list = template.find(query, Stock.class);
         //原始数据在vo对象里进行格式转换
         List<StockVo> temp = JSON.parseArray(JSON.toJSONString(list), StockVo.class);
-        JSONObject data= new JSONObject();
-        long pagetotal=total%pagesize==0?total/pagesize:total/pagesize+1;
-        data.put("rows",JSONArray.parseArray(JSON.toJSONString(temp)));
+        JSONObject data = new JSONObject();
+        long pagetotal = total % pagesize == 0 ? total / pagesize : total / pagesize + 1;
+        data.put("rows", JSONArray.parseArray(JSON.toJSONString(temp)));
         //有多少页
-        data.put("total",pagetotal);
+        data.put("total", pagetotal);
         // 总共有多少条记录
-        data.put("records",total);
-        data.put("page",pageindex);
+        data.put("records", total);
+        data.put("page", pageindex);
         return data.toJSONString();
     }
 
 
     /**
      * 得到股票历史分红信息
+     *
      * @param code
      * @return
      */
-    public  List<StockDividend> getStockDividend(String code){
+    public List<StockDividend> getStockDividend(String code) {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        orders.add(new Sort.Order(Sort.Direction.ASC,"title"));
-        Sort sort = new Sort(orders);
-        query.with(sort);
+        query.with(new Sort(Sort.Direction.ASC, "title"));
         //code
-        List<StockDividend> list =template.find(query,StockDividend.class);
+        List<StockDividend> list = template.find(query, StockDividend.class);
         return list;
     }
 
 
     /**
      * 得到股票历史roe
+     *
      * @param code
      * @return
      */
-    public List<StockHisRoe> getStockHisRoe(String code){
+    public List<StockHisRoe> getStockHisRoe(String code) {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        orders.add(new Sort.Order(Sort.Direction.ASC,"year"));
-        Sort sort = new Sort(orders);
-        query.with(sort);
+        query.with(new Sort(Sort.Direction.ASC, "year"));
         //code
-        List<StockHisRoe> list =template.find(query,StockHisRoe.class);
-       return list;
+        List<StockHisRoe> list = template.find(query, StockHisRoe.class);
+        return list;
     }
-
 
 
     /**
      * 抓取历史数据
+     *
      * @param code
      * @return
      * @throws Exception
      */
-    public List<String> crawAndSaveHisPbPe(String code)throws Exception{
+    public List<String> crawAndSaveHisPbPe(String code) throws Exception {
 
         StringBuilder price = new StringBuilder();
         StringBuilder pe = new StringBuilder();
         StringBuilder pb = new StringBuilder();
         StringBuilder date = new StringBuilder();
 
-        JSONObject data= jisiluSpilder.crawHisPbPePriceAndReports(code);
-        List<DBObject> list = new ArrayList<>();
-        DBCollection hisdata = template.getCollection("stock_his_pe_pb");
-        DBCollection report = template.getCollection("stock_report");
+        JSONObject data = jisiluSpilder.crawHisPbPePriceAndReports(code);
+        List<Document> list = new ArrayList<Document>();
+        MongoCollection<Document> hisdata = template.getCollection("stock_his_pe_pb");
+        MongoCollection<Document> report = template.getCollection("stock_report");
 
-        JSONArray hisdataJsons=data.getJSONArray("hisdata");
-        for (int i = 0; i <hisdataJsons.size() ; i++) {
+        JSONArray hisdataJsons = data.getJSONArray("hisdata");
+        for (int i = 0; i < hisdataJsons.size(); i++) {
             JSONObject row = hisdataJsons.getJSONObject(i);
-            DBObject object = new BasicDBObject();
-            object.put("code",code);
-            object.put("date",row.getString("date"));
-            object.put("pb",row.getDouble("pb"));
-            object.put("pe",row.getDouble("pe"));
-            object.put("price",row.getDouble("price"));
+            Document object = new Document();
+            object.put("code", code);
+            object.put("date", row.getString("date"));
+            object.put("pb", row.getDouble("pb"));
+            object.put("pe", row.getDouble("pe"));
+            object.put("price", row.getDouble("price"));
             //顺便拼成字符串
             date.append("'").append(row.getString("date")).append("'");
             price.append(row.getDouble("price"));
             pb.append(row.getDouble("pb"));
             pe.append(row.getDouble("pe"));
-            if(i!=hisdataJsons.size()-1){
+            if (i != hisdataJsons.size() - 1) {
                 price.append(",");
                 pb.append(",");
                 pe.append(",");
@@ -207,25 +206,25 @@ public class StockService {
             }
 
             list.add(object);
-            if ((i != 0 && i %1000 == 0)||i==hisdataJsons.size()-1){
-                hisdata.insert(list);
+            if ((i != 0 && i % 1000 == 0) || i == hisdataJsons.size() - 1) {
+                hisdata.insertMany(list);
                 list.clear();
             }
         }
 
 
-        JSONArray reportJsons=data.getJSONArray("reports");
+        JSONArray reportJsons = data.getJSONArray("reports");
         list = new ArrayList<>();
-        for (int i = 0; i <reportJsons.size() ; i++) {
+        for (int i = 0; i < reportJsons.size(); i++) {
             JSONObject row = reportJsons.getJSONObject(i);
-            DBObject object = new BasicDBObject();
-            object.put("code",code);
-            object.put("releaseDay",row.getString("releaseDay"));
-            object.put("link",row.getString("link"));
-            object.put("title",row.getString("title"));
+            Document object = new Document();
+            object.put("code", code);
+            object.put("releaseDay", row.getString("releaseDay"));
+            object.put("link", row.getString("link"));
+            object.put("title", row.getString("title"));
             list.add(object);
-            if ((i != 0 && i %1000 == 0)||i==reportJsons.size()-1){
-                report.insert(list);
+            if ((i != 0 && i % 1000 == 0) || i == reportJsons.size() - 1) {
+                report.insertMany(list);
                 list.clear();
             }
         }
@@ -241,11 +240,12 @@ public class StockService {
 
     /**
      * 更新股票价格
+     *
      * @param codes
      * @param spider
      * @throws Exception
      */
-    public void updateStockPrice(List<String> codes,StockSpider spider) throws Exception {
+  /*  public void updateStockPrice(List<String> codes, StockSpider spider) throws Exception {
         JSONArray jsons = spider.getStockPrice(codes.toArray(new String[]{}));
         List<Stock> stocks = JSON.parseArray(jsons.toJSONString(), Stock.class);
         stocks.stream().forEach(stock -> {
@@ -264,30 +264,35 @@ public class StockService {
                     "stock"
             );
         });
-    }
+    }*/
 
     /**
+     * db.getCollection('stock').update({},{$set : {"fiveYearDy":0}},false,true)
      * 计算过去5年连续分红的平均股票股息
      * @return
      */
     public void calculateFiveYearsDy() {
         int year = StockDateUtil.getCurrentYear();
         int fiveYearAgo = year - 5;
-        String startDate = StockDateUtil.getCurrYearLastDay(fiveYearAgo).toString();
-        String endDate = StockDateUtil.getCurrentDate();
         Query query = new Query();
-        query.addCriteria(Criteria.where("releaseDate").gte(startDate).lte(endDate));
-        MapReduceResults<BasicDBObject> result = template.mapReduce(query, "stock_dividend",
+        query.addCriteria(Criteria.where("title").gte(String.valueOf(fiveYearAgo)));
+        query.with(Sort.by(
+                Sort.Order.asc("code"),
+                Sort.Order.desc("title")
+        ));
+        MapReduceResults<Document> result = template.mapReduce(query, "stock_dividend",
                 "classpath:/mapreduce/5years_dy/dy5years_map.js", "classpath:/mapreduce/5years_dy/dy5years_reduce.js",
-                new MapReduceOptions().outputCollection("stock_dy_statistics"), BasicDBObject.class);
-        Iterator<BasicDBObject> iter = result.iterator();
+                new MapReduceOptions().outputCollection("stock_dy_statistics"), Document.class);
+
+
+        Iterator<Document> iter = result.iterator();
         while (iter.hasNext()) {
-            BasicDBObject item = iter.next();
+            Document item = iter.next();
             String code = item.getString("_id");
-            BasicDBObject value = (BasicDBObject) item.get("value");
-            if (value.containsField("size") && value.getInt("size") > 4) {
+            Document value = (Document) item.get("value");
+            if (value.containsKey("pcalc") && value.getDouble("pcalc") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
-                WriteResult wr = template.upsert(
+                UpdateResult updateResult = template.upsert(
                         new Query(Criteria.where("_id").is(code)),
                         new Update()
                                 .set("_id", code)
@@ -301,23 +306,24 @@ public class StockService {
 
     /**
      * 计算上市超5年的股息roe
+     *
      * @param startYear 开始年份
-     * @param endYear 结束年份
+     * @param endYear   结束年份
      */
-    public void calculateFiveYearsRoe(int startYear,int endYear) {
+    public void calculateFiveYearsRoe(int startYear, int endYear) {
         Query query = new Query();
         query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
-        MapReduceResults<BasicDBObject> result = template.mapReduce(query, "stock_his_roe",
+        MapReduceResults<Document> result = template.mapReduce(query, "stock_his_roe",
                 "classpath:/mapreduce/5years_roe/map.js", "classpath:/mapreduce/5years_roe/reduce.js",
-                new MapReduceOptions().outputCollection("stock_hisroe_statistics"), BasicDBObject.class);
-        Iterator<BasicDBObject> iter = result.iterator();
+                new MapReduceOptions().outputCollection("stock_hisroe_statistics"), Document.class);
+        Iterator<Document> iter = result.iterator();
         while (iter.hasNext()) {
-            BasicDBObject item = iter.next();
+            Document item = iter.next();
             String code = item.getString("_id");
-            BasicDBObject value = (BasicDBObject) item.get("value");
-            if (value.containsField("size") && value.getInt("size") > 4) {
-                double percent = Double.parseDouble(value.getString("percent"));
-                WriteResult wr = template.upsert(
+            Document value = (Document) item.get("value");
+            if (value.containsKey("size") && value.getDouble("size") > 4) {
+                double percent = value.getDouble("percent");
+                template.upsert(
                         new Query(Criteria.where("_id").is(code)),
                         new Update()
                                 .set("_id", code)
@@ -327,6 +333,29 @@ public class StockService {
             }
 
         }
+    }
+
+    /**
+     * 获取所有行业
+     *
+     * @return
+     */
+    public List<String> getAllIntruduce() {
+        AggregationResults<Document> a = template.aggregate(
+                Aggregation.newAggregation(
+                        Aggregation.group("industry").count().as("count"))
+                , Stock.class, Document.class);
+        List<String> list = new ArrayList<String>();
+        if (null != a.getMappedResults()) {
+            for (Document doc : a.getMappedResults()) {
+                String key = doc.getString("_id");
+                if (null==key||key.isEmpty()) {
+                    continue;
+                }
+                list.add(key);
+            }
+        }
+        return list;
     }
 
 }

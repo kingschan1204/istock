@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 代码历史数据控制器
@@ -45,12 +46,12 @@ public class StockHisPageCtrl {
         ModelAndView mav = new ModelAndView(template_path + "his_dy");
         mav.addObject("year", "''");
         mav.addObject("percent", "0");
-        Stock stock = stockRepository.findOne(code);
-        if (null == stock) {
+        Optional<Stock> stock = stockRepository.findById(code);
+        if (!stock.isPresent()) {
             mav.addObject("msg", String.format("代码:%s %s", code, "不存在，或者非A股代码!"));
             return mav;
         }
-        mav.addObject("stock", stock);
+        mav.addObject("stock", stock.get());
         //历年分红
         List<StockDividend> list = stockService.getStockDividend(code);
         if (null != list && list.size() > 0) {
@@ -83,12 +84,12 @@ public class StockHisPageCtrl {
         ModelAndView mav = new ModelAndView(template_path + "his_roe");
         mav.addObject("roe_year", "''");
         mav.addObject("roe_percent", "0");
-        Stock stock = stockRepository.findOne(code);
-        if (null == stock) {
+        Optional<Stock> stock = stockRepository.findById(code);
+        if (!stock.isPresent()) {
             mav.addObject("msg", String.format("代码:%s %s", code, "不存在，或者非A股代码!"));
             return mav;
         }
-        mav.addObject("stock", stock);
+        mav.addObject("stock", stock.get());
         List<StockHisRoe> list = stockService.getStockHisRoe(code);
         if (null == list || list.size() == 0) {
             try {

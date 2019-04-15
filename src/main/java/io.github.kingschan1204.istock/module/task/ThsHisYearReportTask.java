@@ -8,11 +8,10 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisRoeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -27,9 +26,9 @@ import java.util.List;
  * @author chenguoxiang
  * @create 2018-07-09 17:28
  **/
+@Slf4j
 @Component
 public class ThsHisYearReportTask implements Job{
-    private Logger log = LoggerFactory.getLogger(ThsHisYearReportTask.class);
 
     @Autowired
     private StockSpider spider;
@@ -86,7 +85,7 @@ public class ThsHisYearReportTask implements Job{
                 jsons = spider.getHistoryROE(codestr);
                 List<StockHisRoe> lis = JSON.parseArray(jsons.toJSONString(),StockHisRoe.class);
                 template.remove(new Query(Criteria.where("code").is(codestr)),StockHisRoe.class);
-                stockHisRoeRepository.save(lis);
+                stockHisRoeRepository.saveAll(lis);
                 template.upsert(
                         new Query(Criteria.where("_id").is(code.getCode())),
                         new Update().set("yearReportDate", dateNumber),

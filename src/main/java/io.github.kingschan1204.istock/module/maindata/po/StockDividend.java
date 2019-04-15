@@ -1,5 +1,7 @@
 package io.github.kingschan1204.istock.module.maindata.po;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,9 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author chenguoxiang
  * @create 2018-04-12 17:07
  **/
+@NoArgsConstructor
+@Data
 @Document(collection = "stock_dividend")
 public class StockDividend {
-
     @Id
     private String id;
     private String code;
@@ -34,100 +37,4 @@ public class StockDividend {
     private String cxcqr;
     private String progress;
     private String from;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public String getPlan() {
-        return plan;
-    }
-
-    public void setPlan(String plan) {
-        this.plan = plan;
-    }
-
-    public Integer getSgbl() {
-        return sgbl;
-    }
-
-    public void setSgbl(Integer sgbl) {
-        this.sgbl = sgbl;
-    }
-
-    public Integer getZgbl() {
-        return zgbl;
-    }
-
-    public void setZgbl(Integer zgbl) {
-        this.zgbl = zgbl;
-    }
-
-    public Double getPercent() {
-        return percent;
-    }
-
-    public void setPercent(Double percent) {
-        this.percent = percent;
-    }
-
-    public String getGqdjr() {
-        return gqdjr;
-    }
-
-    public void setGqdjr(String gqdjr) {
-        this.gqdjr = gqdjr;
-    }
-
-    public String getCxcqr() {
-        return cxcqr;
-    }
-
-    public void setCxcqr(String cxcqr) {
-        this.cxcqr = cxcqr;
-    }
-
-    public String getProgress() {
-        return progress;
-    }
-
-    public void setProgress(String progress) {
-        this.progress = progress;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
 }

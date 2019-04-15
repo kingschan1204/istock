@@ -1,6 +1,8 @@
 package io.github.kingschan1204.istock.module.maindata.po;
 
 import com.alibaba.fastjson.JSONArray;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author chenguoxiang
  * @create 2018-10-31 14:35
  **/
+@NoArgsConstructor
+@Data
 @Document(collection = "stock_company")
 public class StockCompany {
 
@@ -29,9 +33,6 @@ public class StockCompany {
     private String mainBusiness;
     private String businessScope;
 
-
-    public StockCompany(){}
-
     public StockCompany(JSONArray json){
         this.code=json.getString(0).replaceAll("\\D+","");
         this.chairman=json.getString(1);
@@ -51,128 +52,5 @@ public class StockCompany {
             this.businessScope=json.getString(14).replaceFirst("^主.*\\:","");
         }
 
-    }
-
-
-
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getChairman() {
-        return chairman;
-    }
-
-    public void setChairman(String chairman) {
-        this.chairman = chairman;
-    }
-
-    public String getManager() {
-        return manager;
-    }
-
-    public void setManager(String manager) {
-        this.manager = manager;
-    }
-
-    public String getSecretary() {
-        return secretary;
-    }
-
-    public void setSecretary(String secretary) {
-        this.secretary = secretary;
-    }
-
-    public Double getRegCapital() {
-        return regCapital;
-    }
-
-    public void setRegCapital(Double regCapital) {
-        this.regCapital = regCapital;
-    }
-
-    public String getSetupDate() {
-        return setupDate;
-    }
-
-    public void setSetupDate(String setup_date) {
-        this.setupDate = setup_date;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getOffice() {
-        return office;
-    }
-
-    public void setOffice(String office) {
-        this.office = office;
-    }
-
-    public Integer getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(Integer employees) {
-        this.employees = employees;
-    }
-
-    public String getMainBusiness() {
-        return mainBusiness;
-    }
-
-    public void setMainBusiness(String main_business) {
-        this.mainBusiness = main_business;
-    }
-
-    public String getBusinessScope() {
-        return businessScope;
-    }
-
-    public void setBusinessScope(String businessScope) {
-        this.businessScope = businessScope;
     }
 }

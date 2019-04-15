@@ -8,8 +8,9 @@ function(key, values) {
         index++;
         years+=title+",";
     }
-    if(index<5){
-        total=0;
-    }
-    return {percent:(total/index).toFixed(2),years:years,size:index};
+
+    var max =parseInt(values[0].title);
+    var min=parseInt(values[values.length-1].title);
+    var calc=max-min+1;
+    return {percent:(total/calc).toFixed(2),years:years,size:index,pmin:min,pmax:max,pcalc:calc};
 }

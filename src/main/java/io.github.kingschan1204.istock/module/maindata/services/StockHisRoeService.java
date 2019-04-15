@@ -37,7 +37,7 @@ public class StockHisRoeService {
         JSONArray jsons=spider.getHistoryROE(code);
         List<StockHisRoe> lis = JSON.parseArray(jsons.toJSONString(),StockHisRoe.class);
         template.remove(new Query(Criteria.where("code").is(code)),StockHisRoe.class);
-        repository.save(lis);
+        repository.saveAll(lis);
         return lis;
 
     }

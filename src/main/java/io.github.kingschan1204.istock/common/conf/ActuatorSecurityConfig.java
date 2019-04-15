@@ -20,12 +20,13 @@ public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
     Environment env;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        String contextPath = env.getProperty("management.context-path");
+        String contextPath = env.getProperty("management.endpoints.web.base-path");
         if(StringUtils.isEmpty(contextPath)) {
             contextPath = "";
         }http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/**"+contextPath+"/**").authenticated()
+                .antMatchers("/**"+contextPath+"/**")
+                .authenticated()
                 .anyRequest().permitAll()
                 .and().httpBasic();
     }
