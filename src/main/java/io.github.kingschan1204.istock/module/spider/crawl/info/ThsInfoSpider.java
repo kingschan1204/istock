@@ -67,12 +67,18 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
     @Override
     public WebPage crawlPage() {
         getCodeInfo();
+        if(null==currentCodeInfo){
+            return null;
+        }
         this.pageUrl= String.format("http://basic.10jqka.com.cn/%s/", currentCodeInfo.getCode());
         return super.crawlPage();
     }
 
     @Override
     public void parsePage(WebPage webPage) throws Exception {
+        if(null==webPage){
+            return;
+        }
         String regex = ".*\\：|\\s*";
         Document doc = webPage.getDocument();
         Elements table = doc.getElementsByTag("table");

@@ -24,3 +24,6 @@ db.stock_dividend.mapReduce(
         sort:{"code":1,"title":-1}
     }
 )
+
+// 查找文档不存在某个字段
+db.getCollection('stock_code_info').find({"infoDate":{$exists:false}})

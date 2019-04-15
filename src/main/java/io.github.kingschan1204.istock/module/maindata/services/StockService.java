@@ -267,6 +267,7 @@ public class StockService {
     }*/
 
     /**
+     * db.getCollection('stock').update({},{$set : {"fiveYearDy":0}},false,true)
      * 计算过去5年连续分红的平均股票股息
      * @return
      */
@@ -274,7 +275,7 @@ public class StockService {
         int year = StockDateUtil.getCurrentYear();
         int fiveYearAgo = year - 5;
         Query query = new Query();
-        query.addCriteria(Criteria.where("title").gte(fiveYearAgo));
+        query.addCriteria(Criteria.where("title").gte(String.valueOf(fiveYearAgo)));
         query.with(Sort.by(
                 Sort.Order.asc("code"),
                 Sort.Order.desc("title")
@@ -282,12 +283,14 @@ public class StockService {
         MapReduceResults<Document> result = template.mapReduce(query, "stock_dividend",
                 "classpath:/mapreduce/5years_dy/dy5years_map.js", "classpath:/mapreduce/5years_dy/dy5years_reduce.js",
                 new MapReduceOptions().outputCollection("stock_dy_statistics"), Document.class);
+
+
         Iterator<Document> iter = result.iterator();
         while (iter.hasNext()) {
             Document item = iter.next();
             String code = item.getString("_id");
             Document value = (Document) item.get("value");
-            if (value.containsKey("size") && value.getDouble("size") > 4) {
+            if (value.containsKey("pcalc") && value.getDouble("pcalc") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
                 UpdateResult updateResult = template.upsert(
                         new Query(Criteria.where("_id").is(code)),
