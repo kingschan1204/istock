@@ -1,37 +1,37 @@
 package io.github.kingschan1204.istock;
 
+import io.github.kingschan1204.istock.module.startup.InitQuartzTaskRunner;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/*@Configuration
-//@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-@EnableAutoConfiguration
-@ComponentScan({"io.github.kingschan1204.istock"})*/
+/**
+ * spring boot 启动类
+ * @author kings.chan
+ */
 @Controller
+@EnableCaching
 @SpringBootApplication
-@EnableScheduling
-public class Application  extends SpringBootServletInitializer {
-    @Override
-    protected SpringApplicationBuilder configure(
-            SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
+public class Application {
+
 
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
+
+    @Bean
+    public InitQuartzTaskRunner startupRunner() {
+        return new InitQuartzTaskRunner();
+    }
+
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication sa = new SpringApplication(Application.class);
+        sa.setBannerMode(Banner.Mode.OFF);
+        sa.run( args);
     }
 }

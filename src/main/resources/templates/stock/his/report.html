@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>报表</title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <table class="table table-striped table-hover">
+        <thead>
+        <th>报告期</th>
+        <th>披露日期</th>
+
+        </thead>
+        <#list reports as row>
+            <tr>
+                <td><a href="${row.link}" target="_blank">${row.title}</a></td>
+                <td>${row.releaseDay}</td>
+            </tr>
+        </#list>
+    </table>
+</div>
+</body>
+</html>

@@ -125,7 +125,7 @@
     <!-- root级别 DEBUG -->
     <root>
         <!-- 打印debug级别日志及以上级别日志 -->
-        <level value="debug"/>
+        <level value="info"/>
         <!-- 控制台输出 -->
         <appender-ref ref="console"/>
         <!-- 文件输出 -->
@@ -138,9 +138,9 @@
 
     <logger name="io.github.kingschan1204.istock">
         <!-- 打印debug级别日志及以上级别日志 -->
-        <level value="debug"/>
+        <level value="info"/>
         <!-- 控制台输出 -->
-        <appender-ref ref="console"/>
+        <!--<appender-ref ref="console"/>-->
         <!-- 文件输出 -->
         <appender-ref ref="ERROR"/>
         <appender-ref ref="INFO"/>
@@ -150,26 +150,27 @@
     </logger>
     <logger name="org.apache.commons">
         <level value="ERROR"/>
-        <appender-ref ref="console"/>
     </logger>
     <logger name="org.springframework">
         <level value="ERROR"/>
-        <appender-ref ref="console"/>
     </logger>
     <logger name="org.hibernate">
         <level value="ERROR"/>
-        <appender-ref ref="console"/>
     </logger>
     <logger name="net.sf.ehcache">
         <level value="ERROR"/>
-        <appender-ref ref="console"/>
     </logger>
     <logger name="org.apache.cxf">
         <level value="ERROR"/>
-        <appender-ref ref="console"/>
     </logger>
     <logger name="org.springframework.transaction">
         <level value="DEBUG"/>
-        <appender-ref ref="console"/>
     </logger>
+    <logger name="org.mongodb.driver">
+        <level value="ERROR"/>
+    </logger>
+    <logger name="io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl">
+        <level value="ERROR"/>
+    </logger>
+
 </configuration>

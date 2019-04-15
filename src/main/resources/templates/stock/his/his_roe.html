@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>量化分析-
+        <#if stock??>${stock.name}
+            <#else>${code!""}
+        </#if>
+        历史净资产收益率</title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.0.4/echarts.min.js"></script>
+    <script src="/plugs/echar/infographic.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<#if msg??>
+    <h3 style="color:red;" class="text-center">${msg}</h3>
+</#if>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="roe" style="width: 100%;height:400px;"></div>
+<div class="container">
+    <#if rows??>
+        <table class="table table-striped table-hover">
+            <thead>
+            <th>年度</th>
+            <th>净资产收益率</th>
+            <th>净资产收益率（摊薄）</th>
+            </thead>
+            <#list rows as row>
+                <tr>
+                    <td>${row.year}</td>
+                    <td>
+                        <#if (row.roe==-1)>
+                            --
+                            <#else>
+                                ${row.roe}%
+                        </#if>
+                    </td>
+                    <td>
+                        <#if (row.roetb==-1)>
+                            --
+                            <#else>
+                                ${row.roetb}%
+                        </#if>
+                    </td>
+                </tr>
+            </#list>
+        </table>
+    </#if>
+</div>
+
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var roeChart = echarts.init(document.getElementById('roe'),'infographic');
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '<#if stock??>${stock.name}<#else>${code!""}</#if>-各年度净资产收益率',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['ROE情况']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,
+            data: [${roe_year}]
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} %'
+            }
+        },
+        series: [
+            {
+                name:'年度ROE',
+                type:'line',
+                data:[${roe_percent}],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                },
+                areaStyle: {}
+            }
+
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    roeChart.setOption(option);
+</script>
+</body>
+</html>
