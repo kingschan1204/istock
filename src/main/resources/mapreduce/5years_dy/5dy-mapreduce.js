@@ -16,14 +16,11 @@ db.stock_dividend.mapReduce(
         var max =parseInt(values[0].title);
         var min=parseInt(values[values.length-1].title);
         var calc=max-min+1;
-        return {percent:(total/calc).toFixed(2),years:years,size:index,pmin:min,pmax:max,pcalc:calc};
+        return {percent:(total/calc).toFixed(2),years:years,size:index,pmin:min,pmax:max,pcalc:calc,total:total};
     },   //reduce 函数
     {
-        out: "stock_dy_demo",
+        out: "stock_dy_statistics",
         query:{"title":{$gte:"2014"}},
         sort:{"code":1,"title":-1}
     }
 )
-
-// 查找文档不存在某个字段
-db.getCollection('stock_code_info').find({"infoDate":{$exists:false}})
