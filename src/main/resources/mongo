@@ -1,0 +1,5 @@
+#查找存在某个字段的文档
+db.getCollection('stock_code_info').find({"code":{"$exists":true}})
+
+#删除某个字段
+db.stock.update({},{$unset:{'mainBusiness':''}},false, true)
