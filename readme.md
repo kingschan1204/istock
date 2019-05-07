@@ -106,6 +106,56 @@ spring.security.user.password=
 
 
 
+---
+
+# 运行步骤说明
+
+## step 1 下载代码导入idea
+## step 2 设置配置文件重要参数
+```properties
+spring.data.mongodb.host=你的mongodb服务器地址
+xueqiu.token=上文介绍的雪球token
+eastmoney.token=上文介绍的东方财富token
+tushare.token=上文有介绍
+spring.security.user.password=程序管理密码 自定义
+```
+## step3 创建mongodb 数据库 istock
+![](https://kingschan1204.github.io/istock/readme-res/create-mongo-istock.png )
+## step 4 运行项目
+## step 5 初始化代码
+![](https://kingschan1204.github.io/istock/readme-res/init-code.png )
+操作成功后为初始化A股所有公司代码【效果始下】
+![](https://kingschan1204.github.io/istock/readme-res/code-list.png )
+## step 6 更改windows 时间初始化股票主ipo主数据
+> 因为项目是爬虫项目，是严格按照时间逻辑去执行的，并且频率并发有严格的控制（请求过高，网站有反爬虫
+策略，会封锁ip）,另外istock 项目更新股票价格是在证券交易时间内进行的，也就是说是周一~周五 上午9：30 - 11：30 下
+午 13：00 ~ 15：00 这段时间内才会更新股票价格等指标。所以如果当前时间不是在交易时间内请修改windows时间让程序立马初始化。
+
+### 初始化stock 这张表只需要 3分钟左右 3分钟后就可以改回时间了
+
+## step 7 挂机
+> 让istock 程序挂机运行，所有数据完成初始化一般4个小时左右，第一次数据初始化比较麻烦，往后就好了。
+往后都是自动化，让程序挂在那就好。会每天自动更新数据。
+
+# 常见问题
+## mongodb 要脚本建表吗？
+不用，运行程序自动生成
+## 为什么要用雪球token
+因为有在雪球网爬取数据，雪球网有反爬虫机制，要登录后才能取数据，token就是绕过验证环节
+## 为什么有时候会报403错误
+如果遇到控制台输出dy 403就是雪球token过期了，你重新登录雪球网，换新的token就好。一般一个星期换一次吧。
+## 此项目会一直更新下去吗？
+会的，这个项目我会一直做下去的，只是我业余时间不多，我会尽量多用业余时间多写的。
+
+# 赞赏
+> 如果你觉得此项目还不错，可以随意打赏，收到款项将用于istock 服务器部署费用 。打赏超50元 可加微信回答一切关于istock的问题。
+
+![](https://kingschan1204.github.io/istock/readme-res/alipay.jpg )
+![](https://kingschan1204.github.io/istock/readme-res/wxpay.jpg )
+
+
+
+
 
 
 
