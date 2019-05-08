@@ -120,12 +120,12 @@ tushare.token=上文有介绍
 spring.security.user.password=程序管理密码 自定义
 ```
 ## step3 创建mongodb 数据库 istock
-![](https://kingschan1204.github.io/istock/readme-res/create-mongo-istock.png )
+![](https://raw.githubusercontent.com/kingschan1204/istock/develop/readme-res/create-mongo-istock.png )
 ## step 4 运行项目
 ## step 5 初始化代码
-![](https://kingschan1204.github.io/istock/readme-res/init-code.png )
+![](https://raw.githubusercontent.com/kingschan1204/istock/develop/readme-res/init-code.png )
 操作成功后为初始化A股所有公司代码【效果始下】
-![](https://kingschan1204.github.io/istock/readme-res/code-list.png )
+![](https://raw.githubusercontent.com/kingschan1204/istock/develop/readme-res/code-list.png )
 ## step 6 更改windows 时间初始化股票主ipo主数据
 > 因为项目是爬虫项目，是严格按照时间逻辑去执行的，并且频率并发有严格的控制（请求过高，网站有反爬虫
 策略，会封锁ip）,另外istock 项目更新股票价格是在证券交易时间内进行的，也就是说是周一~周五 上午9：30 - 11：30 下
@@ -150,8 +150,8 @@ spring.security.user.password=程序管理密码 自定义
 # 赞赏
 > 如果你觉得此项目还不错，可以随意打赏，收到款项将用于istock 服务器部署费用 。打赏超50元 可加微信回答一切关于istock的问题。
 
-![](https://kingschan1204.github.io/istock/readme-res/alipay.jpg )
-![](https://kingschan1204.github.io/istock/readme-res/wxpay.jpg )
+![](https://raw.githubusercontent.com/kingschan1204/istock/develop/readme-res/alipay.jpg )
+![](https://raw.githubusercontent.com/kingschan1204/istock/develop/readme-res/wxpay.jpg )
 
 
 
