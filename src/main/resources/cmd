@@ -3,3 +3,12 @@ db.getCollection('stock_code_info').find({"code":{"$exists":true}})
 
 #删除某个字段
 db.stock.update({},{$unset:{'mainBusiness':''}},false, true)
+
+#远程jmx监控
+nohup java -Djava.rmi.server.hostname=ip地址 -Dcom.sun.management.jmxremote.port=12345 -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -jar istock-2.0.0.jar &
+
+#查看是否打开23端口
+netstat -an | grep 23
+
+#查看哪些端口被打开
+netstat -anp
