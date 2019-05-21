@@ -27,7 +27,8 @@ public class IndexCrawlJob implements Runnable {
     private ScheduledExecutorService scheduledExecutorService ;
     private ScheduledExecutorService scheduledExecutorService2 ;
 
-
+    //scheduleAtFixedRate 也就是规定频率为1h，那么好，A任务开始执行，过来一个小时后，不管A是否执行完，都开启B任务
+    //scheduleWithFixedDealy却是需要在A任务执行完后，在经过1小时后再去执行B任务；
     public IndexCrawlJob(){
         scheduledExecutorService = Executors.newScheduledThreadPool(12, new MyThreadFactory("crawlerJob-index"));
         scheduledExecutorService2 = Executors.newScheduledThreadPool(5, new MyThreadFactory("outJob-index"));
@@ -53,7 +54,7 @@ public class IndexCrawlJob implements Runnable {
             if (i > 0 && (i % 300 == 0 || i == sz_codes.size() - 1)) {
                 try {
                     SinaIndexSpider sinaIndexSpider=  new SinaIndexSpider(list.toArray(new String[]{}), stockQueue);
-                    scheduledExecutorService.scheduleAtFixedRate(sinaIndexSpider, 0, 3, TimeUnit.SECONDS);
+                    scheduledExecutorService.scheduleWithFixedDelay(sinaIndexSpider, 0, 20, TimeUnit.SECONDS);
                     list = new ArrayList<>();
                 } catch (Exception ex) {
                     log.error("{}", ex);
@@ -71,7 +72,7 @@ public class IndexCrawlJob implements Runnable {
             if (i > 0 && (i % 300 == 0 || i == sh_codes.size() - 1)) {
                 try {
                     TencentIndexSpider tencentIndexSpider=new TencentIndexSpider(list.toArray(new String[]{}), stockQueue);
-                    scheduledExecutorService.scheduleAtFixedRate(tencentIndexSpider, 0, 3, TimeUnit.SECONDS);
+                    scheduledExecutorService.scheduleWithFixedDelay(tencentIndexSpider, 0, 20, TimeUnit.SECONDS);
                     list = new ArrayList<>();
                     TimeUnit.MILLISECONDS.sleep(800);
                 } catch (Exception ex) {
@@ -89,6 +90,7 @@ public class IndexCrawlJob implements Runnable {
                 while (true && !Thread.currentThread().isInterrupted()) {
                     Stock stock = stockQueue.poll();
                     if (null != stock) {
+                        log.info("stockQueue size {} : ",stockQueue.size());
                         template.upsert(
                                 new Query(Criteria.where("_id").is(stock.getCode())),
                                 new Update()
