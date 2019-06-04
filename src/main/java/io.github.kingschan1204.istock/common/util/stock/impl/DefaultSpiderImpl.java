@@ -15,12 +15,11 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
-import java.math.RoundingMode;
-import java.net.SocketTimeoutException;
-import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 默认爬虫
@@ -32,135 +31,17 @@ import java.util.*;
 @Component("DefaultSpiderImpl")
 public class DefaultSpiderImpl implements StockSpider {
 
-    @Value("${spider.timeout}")
     /**
      * 8s超时
      */
+    @Value("${spider.timeout}")
     protected int timeout;
     @Value("${spider.useagent}")
     protected String useAgent;
     @Value("${xueqiu.token}")
     protected String xueQiuToken;
 
-   /* @Override
-    public JSONArray getStockPrice(String[] stockCode) throws Exception {
-        StringBuilder queryStr = new StringBuilder();
-        for (String code : stockCode) {
-            String resultCode = StockSpider.formatStockCode(code);
-            if (null != resultCode) {
-                queryStr.append(resultCode).append(",");
-            }
-        }
-        String queryCode = queryStr.toString().replaceAll("\\,$", "");
-        String query = String.format("http://hq.sinajs.cn/list=%s", queryCode);
-        log.info(query);
-        String content = null;
-        try {
-            content = Jsoup.connect(query).timeout(timeout).ignoreContentType(true).get().text();
-        } catch (SocketTimeoutException e) {
-            log.error("超时{}", query);
-            return null;
-        }
-        log.debug(content);
-        String[] line = content.split(";");
-        JSONArray rows = new JSONArray();
-        JSONObject json;
-        for (String s : line) {
-            String row = s.trim().replaceAll("^var\\D+|\"", "").replace("=", ",");
-            String data[] = row.split(",");
-            if (data.length < 30) {
-                throw new Exception("代码不存在!");
-            }
-            double xj = StockSpider.mathFormat(data[4]);
-            double zs = StockSpider.mathFormat(data[3]);
-            double zf = (xj - zs) / zs * 100;
-            double todayMax = StockSpider.mathFormat(data[5]);
-            double todayMin = StockSpider.mathFormat(data[6]);
-            json = new JSONObject();
-            //一般这种是停牌的
-            if (xj == 0) {
-                //波动
-                json.put("fluctuate", 0);
-            } else {
-                NumberFormat nf = NumberFormat.getNumberInstance();
-                // 保留两位小数
-                nf.setMaximumFractionDigits(2);
-                // 如果不需要四舍五入，可以使用RoundingMode.DOWN
-                nf.setRoundingMode(RoundingMode.UP);
-                //波动
-                json.put("fluctuate", StockSpider.mathFormat(nf.format(zf)));
-            }
-            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
-            //代码
-            json.put("code", data[0]);
-            json.put("type", StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));
-            //名称
-            json.put("name", data[1].replaceAll("\\s", ""));
-            //现价
-            json.put("price", xj);
-            //今日最高价
-            json.put("todayMax", todayMax);
-            //今日最低价
-            json.put("todayMin", todayMin);
-            //昨收
-            json.put("yesterdayPrice", zs);
-            json.put("priceDate", StockDateUtil.getCurrentDateTimeNumber());
-            rows.add(json);
-        }
-        return rows;
-    }*/
 
-    @Override
-    public JSONObject getStockInfo(String code) throws Exception {
-        String stockCode = code.replaceAll("\\D", "");
-        String regex = ".*\\：|\\s*";
-        String url = String.format("http://basic.10jqka.com.cn/%s/", stockCode);
-        Document doc = Jsoup.connect(url).userAgent(useAgent).timeout(timeout).get();
-        Elements table = doc.getElementsByTag("table");
-        //第一个表格的第一行
-        Elements tds = table.get(0).select("tr").get(0).select("td");
-        //主营业务
-        String zyyw = tds.get(0).text().replaceAll(regex, "");
-        //所属行业
-        String sshy = tds.get(1).text().replaceAll(regex, "");
-        Elements tds1 = table.get(1).select("td");
-        //市盈率(动态)
-        String dtsyl = tds1.get(0).text().replaceAll(regex, "");
-        //市盈率(静态)
-        String sjljt = tds1.get(4).text().replaceAll(regex, "");
-        //市净率
-        String sjl = tds1.get(8).text().replaceAll(regex, "");
-        //总市值
-        String zsz = tds1.get(11).text().replaceAll("\\D+", "");
-        //每股净资产
-        double mgjzc = StockSpider.mathFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));
-        String jzcsyl = "-1";
-        if (tds1.size() > 14) {
-            //净资产收益率
-            jzcsyl = tds1.get(14).select("span").get(1).text();
-        }
-        JSONObject json = new JSONObject();
-        //主营业务
-        json.put("mainBusiness", zyyw);
-        //所属行业
-        json.put("industry", sshy);
-        //市盈率(动态)
-        json.put("ped", StockSpider.mathFormat(dtsyl));
-        //市盈率(静态)
-        json.put("pes", StockSpider.mathFormat(sjljt));
-        //市净率
-        json.put("pb", StockSpider.mathFormat(sjl));
-        //总市值
-        json.put("totalValue", StockSpider.mathFormat(zsz));
-        //净资产收益率
-        json.put("roe", StockSpider.mathFormat(jzcsyl));
-        //每股净资产
-        json.put("bvps", mgjzc);
-        json.put("infoDate", StockDateUtil.getCurrentDateNumber());
-        json.put("code", stockCode);
-        json.put("type", StockSpider.formatStockCode(stockCode).replaceAll("\\d", ""));
-        return json;
-    }
 
     @Override
     public JSONArray getHistoryDividendRate(String code) throws Exception {
@@ -244,25 +125,7 @@ public class DefaultSpiderImpl implements StockSpider {
     }
 
 
-    @Override
-    public List<String> getAllStockCode() throws Exception {
-        String url = "https://touzi.sina.com.cn/api/openapi.php/TzyFreeService.searchStocks";
-        log.info("craw all stock code :{}", url);
-        StockSpider.enableSSLSocket();
-        Document doc = null;
-        List<String> codes = null;
-        try {
-            doc = Jsoup.connect(url).userAgent(useAgent).timeout(timeout).ignoreContentType(true).get();
-            String text = doc.text();
-            JSONObject json = JSON.parseObject(text);
-            JSONArray value = json.getJSONObject("result").getJSONObject("data").getJSONArray("stocks");
-            codes = value.toJavaList(String.class);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return codes;
-    }
 
     /**
      * 得到股票实时股息

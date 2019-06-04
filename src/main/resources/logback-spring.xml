@@ -8,7 +8,7 @@
     <!-- 动态日志级别 -->
     <jmxConfigurator/>
     <!-- 定义日志文件 输出位置 -->
-    <property name="log_dir" value="/applogs/dm/"/>
+    <property name="log_dir" value="/applogs/istock/"/>
     <!-- 日志最大的历史 30天 -->
     <property name="maxHistory" value="30"/>
     <!-- 彩色日志 -->
@@ -131,6 +131,25 @@
         </encoder>
     </appender>
 
+    <appender name="CORE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">               
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${log_dir}/core/%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+             <!-- 日志输出编码 -->
+            <layout class="ch.qos.logback.classic.PatternLayout">
+              <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n </pattern>
+            </layout>
+        </encoder>
+          <!--日志文件最大的大小-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
     <!-- root级别 DEBUG -->
     <root>
         <!-- 打印debug级别日志及以上级别日志 -->
@@ -160,4 +179,7 @@
         <appender-ref ref="TRACE"/>
     </logger>
 
+    <logger name="io.github.kingschan1204.istock.module.spider.schedule.ScheduleThread" level="INFO">
+        <appender-ref ref="CORE_LOG"/>
+    </logger>
 </configuration>

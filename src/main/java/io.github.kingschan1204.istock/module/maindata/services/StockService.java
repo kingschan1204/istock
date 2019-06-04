@@ -290,7 +290,7 @@ public class StockService {
             Document item = iter.next();
             String code = item.getString("_id");
             Document value = (Document) item.get("value");
-            if (value.containsKey("pcalc") && value.getDouble("pcalc") > 4) {
+            if (value.containsKey("key") && value.getDouble("key") > 4) {
                 double percent = Double.parseDouble(value.getString("percent"));
                 UpdateResult updateResult = template.upsert(
                         new Query(Criteria.where("_id").is(code)),

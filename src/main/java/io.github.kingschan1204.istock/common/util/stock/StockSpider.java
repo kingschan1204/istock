@@ -155,23 +155,7 @@ public interface StockSpider {
     }
 
 
-    /**
-     * 得到指定代码的价格
-     * @param stockCode
-     * @return
-     * @throws Exception
-     */
-//    JSONArray getStockPrice(String[] stockCode) throws Exception;
 
-
-    /**
-     * 得到指定代码的基本信息
-     *
-     * @param code
-     * @return
-     * @throws Exception
-     */
-    JSONObject getStockInfo(String code) throws Exception;
 
     /**
      * 得到指定代码历史分红
@@ -193,13 +177,7 @@ public interface StockSpider {
     JSONArray getHistoryROE(String code) throws Exception;
 
 
-    /**
-     * 得到所有代码
-     *
-     * @return
-     * @throws Exception
-     */
-    List<String> getAllStockCode() throws Exception;
+
 
     /**
      * 得到股息

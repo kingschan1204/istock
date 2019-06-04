@@ -6,6 +6,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
 
@@ -90,4 +91,16 @@ public class JsoupUitl {
         return null;
     }
 
+
+    public static void main(String[] args) {
+        String ip="";//119.102.24.179  110.52.235.5
+        int port=9999;
+        String url="http://ip.tool.chinaz.com/";
+        WebPage webPage =getWebPage(
+                url, Connection.Method.GET,
+                10000, "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36", "",
+                null, new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port)),
+                true, true);
+        System.out.println(webPage.getDocument().getElementById("rightinfo").text());
+    }
 }
