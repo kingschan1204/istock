@@ -42,6 +42,26 @@ public class StockVo {
      * 5年平均Roe
      */
     private String fiveYearRoe;
+    /**
+     * 总营业收入
+     */
+    private String totalIncome;
+    /**
+     * 同期对比总营业收入
+     */
+    private String incomeDiff;
+    /**
+     * 净利润
+     */
+    private String totalProfits;
+    /**
+     * 同期对比净利润
+     */
+    private String profitsDiff;
+    /**
+     * 报告期
+     */
+    private String report;
 
     public String getCode() {
         return code;
@@ -221,6 +241,47 @@ public class StockVo {
 
     public void setFiveYearRoe(Double fiveYearRoe) {
         this.fiveYearRoe = -1==fiveYearRoe?"--":String.format("%s%%",fiveYearRoe);
+    }
+
+
+    public String getTotalIncome() {
+        return totalIncome;
+    }
+
+    public void setTotalIncome(Double totalIncome) {
+        this.totalIncome = totalIncome+"亿";
+    }
+
+    public String getIncomeDiff() {
+        return incomeDiff;
+    }
+
+    public void setIncomeDiff(Double incomeDiff) {
+        this.incomeDiff = incomeDiff+"%";
+    }
+
+    public String getTotalProfits() {
+        return totalProfits;
+    }
+
+    public void setTotalProfits(Double totalProfits) {
+        this.totalProfits = totalProfits+"亿";
+    }
+
+    public String getProfitsDiff() {
+        return profitsDiff;
+    }
+
+    public void setProfitsDiff(Double profitsDiff) {
+        this.profitsDiff = profitsDiff+"%";
+    }
+
+    public String getReport() {
+        return report;
+    }
+
+    public void setReport(String report) {
+        this.report = report;
     }
 
     public StockVo() {

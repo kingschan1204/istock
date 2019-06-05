@@ -113,7 +113,9 @@
                 mtype: "GET",
                 styleUI: 'Bootstrap',
                 datatype: "json",
-                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',  '行业'],
+                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',
+                    '营业收入','营收同比增长','净利润','净利同比增长','报告期',
+                    '行业'],
                 colModel: [
 
                     {label: 'code', name: 'code', width: 100},
@@ -130,11 +132,15 @@
                     {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
                     {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
                     {label: 'dy', name: 'dy', width: 70, align: 'right'},
-                    {label: 'dividend', name: 'dividend', width: 170, align: 'right', formatter:sdyFormat},
+                    {label: 'dividend', name: 'dividend', width: 150, align: 'right', formatter:sdyFormat},
                     {label: 'fiveYearDy', name: 'fiveYearDy', width: 90, align: 'right'},
                     {label: 'roe', name: 'roe', width: 75, align: 'right'},
                     {label: 'fiveYearRoe', name: 'fiveYearRoe', width: 96, align: 'right'},
-//                    {label: 'dividendDate', name: 'dividendDate', width: 90},
+                    {label: 'totalIncome', name: 'totalIncome', width: 80, align: 'right'},
+                    {label: 'incomeDiff', name: 'incomeDiff', width: 100, align: 'right'},
+                    {label: 'totalProfits', name: 'totalProfits', width: 70, align: 'right'},
+                    {label: 'profitsDiff', name: 'profitsDiff', width: 100, align: 'right'},
+                    {label: 'report', name: 'report', width: 70, align: 'center'},
                     {label: 'industry', name: 'industry', width: 130}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
                 ],
@@ -173,7 +179,7 @@
 
         function sdyFormat( cellvalue, options, rowObject ){
             if(cellvalue!=''){
-                return cellvalue+'\t('+rowObject.dividendDate+')';
+                return cellvalue+'\t'+rowObject.dividendDate;
             }
             return '--';
         }
