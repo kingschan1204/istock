@@ -113,7 +113,7 @@
                 mtype: "GET",
                 styleUI: 'Bootstrap',
                 datatype: "json",
-                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '股息(静)', '5年平均股息','最新ROE','5年平均ROE', '上次分红', '行业'],
+                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',  '行业'],
                 colModel: [
 
                     {label: 'code', name: 'code', width: 100},
@@ -130,11 +130,11 @@
                     {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
                     {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
                     {label: 'dy', name: 'dy', width: 70, align: 'right'},
-                    {label: 'dividend', name: 'dividend', width: 70, align: 'right'},
+                    {label: 'dividend', name: 'dividend', width: 170, align: 'right', formatter:sdyFormat},
                     {label: 'fiveYearDy', name: 'fiveYearDy', width: 90, align: 'right'},
                     {label: 'roe', name: 'roe', width: 75, align: 'right'},
                     {label: 'fiveYearRoe', name: 'fiveYearRoe', width: 96, align: 'right'},
-                    {label: 'dividendDate', name: 'dividendDate', width: 90},
+//                    {label: 'dividendDate', name: 'dividendDate', width: 90},
                     {label: 'industry', name: 'industry', width: 130}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
                 ],
@@ -169,6 +169,13 @@
                 t = document.documentElement.clientWidth;
                 doResize();
             }
+        }
+
+        function sdyFormat( cellvalue, options, rowObject ){
+            if(cellvalue!=''){
+                return cellvalue+'\t('+rowObject.dividendDate+')';
+            }
+            return '--';
         }
 
         function getPageSize() {
