@@ -143,10 +143,10 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                         .set("bvps", mgjzc)
                         .set("pes", StockSpider.mathFormat(sjljt))
                         .set("ped", StockSpider.mathFormat(dtsyl))
-                        .set("totalProfits",totalProfits)
-                        .set("profitsDiff",profitsDiff)
-                        .set("totalIncome",totalIncome)
-                        .set("incomeDiff",incomeDiff)
+                        .set("totalProfits",Double.parseDouble(totalProfits))
+                        .set("profitsDiff",Double.parseDouble(profitsDiff))
+                        .set("totalIncome",Double.parseDouble(totalIncome))
+                        .set("incomeDiff",Double.parseDouble(incomeDiff))
                         .set("report",report_date)
                 ,
                 //,

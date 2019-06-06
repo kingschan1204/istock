@@ -249,7 +249,9 @@ public class StockVo {
     }
 
     public void setTotalIncome(Double totalIncome) {
-        this.totalIncome = totalIncome+"亿";
+        if(null!=totalIncome){
+            this.totalIncome = totalIncome+"亿";
+        }
     }
 
     public String getIncomeDiff() {
@@ -257,7 +259,10 @@ public class StockVo {
     }
 
     public void setIncomeDiff(Double incomeDiff) {
-        this.incomeDiff = incomeDiff+"%";
+        if(null!=incomeDiff){
+            this.incomeDiff = incomeDiff+"%";
+        }
+
     }
 
     public String getTotalProfits() {
@@ -265,7 +270,9 @@ public class StockVo {
     }
 
     public void setTotalProfits(Double totalProfits) {
-        this.totalProfits = totalProfits+"亿";
+        if(null!=totalProfits){
+            this.totalProfits = totalProfits+"亿";
+        }
     }
 
     public String getProfitsDiff() {
@@ -273,7 +280,9 @@ public class StockVo {
     }
 
     public void setProfitsDiff(Double profitsDiff) {
-        this.profitsDiff = profitsDiff+"%";
+        if(null!=profitsDiff){
+            this.profitsDiff = profitsDiff+"%";
+        }
     }
 
     public String getReport() {
