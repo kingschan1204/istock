@@ -153,10 +153,25 @@
                     var ids = $("#jqGrid").getDataIDs();
                     for (var i = 0; i < ids.length; i++) {
                         var rowData = $("#jqGrid").getRowData(ids[i]);
-                        if (parseFloat(rowData.fluctuate) <= 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td").css("color", "green");
+                        if (parseFloat(rowData.fluctuate) < 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(6)").css("background", "#00FF00");
                         } else {
-                            $("#jqGrid").find('#' + ids[i]).find("td").css("color", "red");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(6)").css("background", "#FF3300");
+                        }
+                        var incomeDiff=parseFloat(rowData.incomeDiff);
+                        if ( incomeDiff < 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("background", "#00FF00");
+                        } else if ( incomeDiff > 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("background", "#FF3300");
+                        }
+                        var profitsDiff=parseFloat(rowData.profitsDiff);
+                        if ( profitsDiff< 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(20)").css("background", "#00FF00");
+                        } else if ( profitsDiff>0){
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(20)").css("background", "#FF3300");
+                        }
+                        if (parseFloat(rowData.fiveYearDy) > 4) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(14)").css("background", "#FF3300");
                         }
                     }
                 },
