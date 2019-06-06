@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
 
@@ -23,6 +25,30 @@ public class TradingDateUtil {
     private final String CACHE_NAME="TradingDate";
     @Autowired
     private EhcacheUtil ehcacheUtil;
+
+
+    /**
+     * 以20190606这种方式返回当前日期
+     * @return
+     */
+    public String getDateYYYYMMdd(){
+        LocalDate localDate=LocalDate.now();
+        return DateTimeFormatter.ofPattern("yyyyMMdd").format(localDate);
+    }
+
+    /**
+     * 当前减传入参数值得到计算后的日期
+     * @param year 减去年份数
+     * @param month 减去月份数
+     * @param day 减去天数
+     * @param dateFormatPattern  格式化后的日期格式 如（yyyyMMdd）
+     * @return
+     */
+    public String minusDate(int year,int month,int day,String dateFormatPattern){
+        DateTimeFormatter sf = DateTimeFormatter.ofPattern(dateFormatPattern);
+        LocalDate localDate=LocalDate.now();
+        return sf.format(localDate.minusYears(year).minusMonths(month).minusDays(day));
+    }
 
     /**
      * 当前是否为交易时间
@@ -120,5 +146,8 @@ public class TradingDateUtil {
     }
 
 
+    public static void main(String[] args) {
+        System.out.println(new TradingDateUtil().getDateYYYYMMdd());
+    }
 
 }

@@ -130,6 +130,30 @@ public class TushareApi {
         JSONArray items =datas.getJSONObject("data").getJSONArray("items");
         return items;
     }
+
+    /**
+     * 股东人数
+     * @param code 代码
+     * @param start_date 开始日期
+     * @param end_date  结束日期
+     * @return
+     */
+    public JSONArray getStockHolderNumber(String code,String start_date,String end_date){
+        JSONObject json = new JSONObject();
+        JSONObject params = new JSONObject();
+        params.put("ts_code",code);
+        params.put("start_date",start_date);
+        params.put("end_date",end_date);
+        //接口名称
+        json.put("api_name","stk_holdernumber");
+        json.put("params",params);
+        String result = post(json);
+        JSONObject datas= JSON.parseObject(result);
+        JSONArray items =datas.getJSONObject("data").getJSONArray("items");
+        return items;
+    }
+
+
     public static void main(String[] args) {
         try {
             //{"date":"2018-11-01 18:06:25","code":200,"address":"湖南省长沙市 电信","ip":"113.246.64.67"}
