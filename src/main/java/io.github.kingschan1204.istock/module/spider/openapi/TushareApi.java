@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -153,9 +154,31 @@ public class TushareApi {
         return items;
     }
 
+    /**
+     * 日线行情
+     * @param code 代码
+     * @param start_date  开始日期
+     * @param end_date  结束日期
+     * @return
+     */
+    public JSONArray getStockDailyPrice(String code,String start_date,String end_date){
+        JSONObject json = new JSONObject();
+        JSONObject params = new JSONObject();
+        params.put("ts_code",code);
+        params.put("start_date",start_date);
+        params.put("end_date",end_date);
+        //接口名称
+        json.put("api_name","daily");
+        json.put("params",params);
+        String result = post(json);
+        JSONObject datas= JSON.parseObject(result);
+        JSONArray items =datas.getJSONObject("data").getJSONArray("items");
+        return items;
+    }
+
 
     public static void main(String[] args) {
-        try {
+       /* try {
             //{"date":"2018-11-01 18:06:25","code":200,"address":"湖南省长沙市 电信","ip":"113.246.64.67"}
             System.setProperty("https.maxRedirects", "50");
             System.getProperties().setProperty("https.proxySet", "true");
@@ -170,6 +193,13 @@ public class TushareApi {
             e.printStackTrace();
         } catch (KeyManagementException e) {
             e.printStackTrace();
+        }*/
+       TradingDateUtil tradingDateUtil= new TradingDateUtil();
+       String startDate= tradingDateUtil.minusDate(10,0,0,"yyyyMMdd");
+       JSONArray data= new TushareApi().getStockDailyPrice(TushareApi.formatCode("600519"),startDate,tradingDateUtil.getDateYYYYMMdd());
+        for (int i = 0; i <data.size() ; i++) {
+            JSONArray ja =data.getJSONArray(i);
+            System.out.println(ja);
         }
     }
 }
