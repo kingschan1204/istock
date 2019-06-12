@@ -176,6 +176,28 @@ public class TushareApi {
         return items;
     }
 
+    /**
+     * 每日指标基本面
+     * @param code 代码
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     * @return
+     */
+    public JSONArray getStockDailyBasic(String code,String start_date,String end_date){
+        JSONObject json = new JSONObject();
+        JSONObject params = new JSONObject();
+        params.put("ts_code",code);
+        params.put("start_date",start_date);
+        params.put("end_date",end_date);
+        //接口名称
+        json.put("api_name","daily_basic");
+        json.put("params",params);
+        String result = post(json);
+        JSONObject datas= JSON.parseObject(result);
+        JSONArray items =datas.getJSONObject("data").getJSONArray("items");
+        return items;
+    }
+
 
     public static void main(String[] args) {
        /* try {
@@ -196,7 +218,7 @@ public class TushareApi {
         }*/
        TradingDateUtil tradingDateUtil= new TradingDateUtil();
        String startDate= tradingDateUtil.minusDate(10,0,0,"yyyyMMdd");
-       JSONArray data= new TushareApi().getStockDailyPrice(TushareApi.formatCode("600519"),startDate,tradingDateUtil.getDateYYYYMMdd());
+       JSONArray data= new TushareApi().getStockDailyBasic(TushareApi.formatCode("600519"),startDate,tradingDateUtil.getDateYYYYMMdd());
         for (int i = 0; i <data.size() ; i++) {
             JSONArray ja =data.getJSONArray(i);
             System.out.println(ja);
