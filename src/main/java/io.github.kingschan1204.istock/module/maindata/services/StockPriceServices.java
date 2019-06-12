@@ -7,6 +7,7 @@ import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -85,6 +86,6 @@ public class StockPriceServices {
      * @return
      */
     public List<StockPriceDaily> getDailyLine(String code){
-        return template.find(new Query(Criteria.where("code").is(code)),StockPriceDaily.class);
+        return template.find(new Query(Criteria.where("code").is(code)).with(new Sort("desc", "tradeDate")),StockPriceDaily.class);
     }
 }
