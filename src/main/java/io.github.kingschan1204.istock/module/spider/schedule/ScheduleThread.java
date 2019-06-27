@@ -31,6 +31,10 @@ public class ScheduleThread implements Runnable {
             ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INDEX).execute(ITimerJob.COMMAND.STOP);
         }
 
+        if (tradingDateUtil.isTradingDay()){
+            ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DAILY_BASIC).execute(ITimerJob.COMMAND.START);
+        }
+
         switch (dateTime.getHour()) {
             case 0:
                 //晚上12点

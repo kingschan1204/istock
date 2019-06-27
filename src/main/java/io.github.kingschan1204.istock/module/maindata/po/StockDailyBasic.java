@@ -18,7 +18,7 @@ public class StockDailyBasic {
      * 当日收盘价
      */
     private String code;
-    private String tradeDate;
+    private Integer tradeDate;
     private Double close;
     /**
      * 市盈率（总市值/净利润）

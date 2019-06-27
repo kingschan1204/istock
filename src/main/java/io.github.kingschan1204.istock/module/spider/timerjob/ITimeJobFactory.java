@@ -1,9 +1,6 @@
 package io.github.kingschan1204.istock.module.spider.timerjob;
 
-import io.github.kingschan1204.istock.module.spider.timerjob.impl.ClearTimerJobImpl;
-import io.github.kingschan1204.istock.module.spider.timerjob.impl.IndexTimerJobImpl;
-import io.github.kingschan1204.istock.module.spider.timerjob.impl.InfoTimerJobImpl;
-import io.github.kingschan1204.istock.module.spider.timerjob.impl.StockCodeTimerJobImpl;
+import io.github.kingschan1204.istock.module.spider.timerjob.impl.*;
 
 import java.util.HashMap;
 
@@ -14,7 +11,7 @@ import java.util.HashMap;
  **/
 public class ITimeJobFactory {
     public enum TIMEJOB{
-        INDEX,CLEAR,STOCKCODE,INFO
+        INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC
     }
     private static HashMap<TIMEJOB,ITimerJob> map;
 
@@ -24,6 +21,7 @@ public class ITimeJobFactory {
         map.put(TIMEJOB.STOCKCODE,new StockCodeTimerJobImpl());
         map.put(TIMEJOB.CLEAR,new ClearTimerJobImpl());
         map.put(TIMEJOB.INFO,new InfoTimerJobImpl());
+        map.put(TIMEJOB.DAILY_BASIC,new DailyBasicTimerJobImpl());
     }
 
     /**
