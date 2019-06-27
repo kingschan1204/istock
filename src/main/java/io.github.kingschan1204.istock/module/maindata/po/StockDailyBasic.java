@@ -14,11 +14,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class StockDailyBasic {
     @Id
     private String id;
+
+    private String code;
+    private Integer tradeDate;
     /**
      * 当日收盘价
      */
-    private String code;
-    private Integer tradeDate;
     private Double close;
     /**
      * 市盈率（总市值/净利润）
