@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.module.maindata.ctrl.api;
 
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
@@ -12,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 /**
  * @author chenguoxiang
@@ -90,7 +91,7 @@ public class StockCtrl {
     @ResponseBody
     @GetMapping(value = "/mapReduce/5years_roe")
     public String fiveYearsRoe() {
-        int endYear = StockDateUtil.getCurrentYear();
+        int endYear = LocalDate.now().getYear();
         int startYear = endYear - 5;
         service.calculateFiveYearsRoe(startYear,endYear);
         return String.format("success:%s - %s", startYear, endYear);

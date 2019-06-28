@@ -1,12 +1,10 @@
 package io.github.kingschan1204.istock.module.spider.crawl.index;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 
@@ -77,7 +75,7 @@ public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
             stock.setTodayMax(todayMax);
             stock.setTodayMin(todayMin);
             stock.setYesterdayPrice(zs);
-            stock.setPriceDate(StockDateUtil.getCurrentDateTimeNumber());
+            stock.setPriceDate(Long.valueOf(TradingDateUtil.getDateTime()));
             queue.offer(stock);
         }
     }

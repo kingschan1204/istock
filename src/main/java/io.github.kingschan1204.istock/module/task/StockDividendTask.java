@@ -2,12 +2,12 @@ package io.github.kingschan1204.istock.module.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mongodb.client.result.UpdateResult;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.impl.DefaultSpiderImpl;
 import io.github.kingschan1204.istock.common.util.stock.impl.EastmoneySpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +72,7 @@ public class StockDividendTask implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber() - 3;
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.getDateYYYYMMdd()) - 3;
         Criteria cr = new Criteria();
         //小于 （3天更新一遍）
         Criteria c1 = Criteria.where("dividendUpdateDay").lt(dateNumber);

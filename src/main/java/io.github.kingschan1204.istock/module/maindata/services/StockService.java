@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
@@ -28,6 +27,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -272,7 +272,7 @@ public class StockService {
      * @return
      */
     public void calculateFiveYearsDy() {
-        int year = StockDateUtil.getCurrentYear();
+        int year = LocalDate.now().getYear();
         int fiveYearAgo = year - 5;
         Query query = new Query();
         query.addCriteria(Criteria.where("title").gte(String.valueOf(fiveYearAgo)));

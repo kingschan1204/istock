@@ -5,7 +5,6 @@ import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.po.StockDailyBasic;
 import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
@@ -40,7 +39,7 @@ public class DailyBasicSpider implements Runnable {
      * @return
      */
     private void getCodeInfo() {
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.getDateYYYYMMdd());
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("dailyDate").lt(dateNumber);
         Criteria c2 = Criteria.where("dailyDate").exists(false);
@@ -66,14 +65,14 @@ public class DailyBasicSpider implements Runnable {
         if (null == currentCodeInfo) {
             return;
         }
-        TradingDateUtil tradingDateUtil = SpringContextUtil.getBean(TradingDateUtil.class);
+//        TradingDateUtil tradingDateUtil = SpringContextUtil.getBean(TradingDateUtil.class);
         TushareApi tushareApi = SpringContextUtil.getBean(TushareApi.class);
         log.info("daily basic ...{}", currentCodeInfo.getCode());
         String startDate =currentCodeInfo.getList_date().toString();
                 //tradingDateUtil.minusDate(3, 0, 0, "yyyyMMdd");
         JSONArray data = tushareApi.getStockDailyBasic(
                 TushareApi.formatCode(currentCodeInfo.getCode()),
-                startDate, tradingDateUtil.getDateYYYYMMdd());
+                startDate, TradingDateUtil.getDateYYYYMMdd());
         DeleteResult deleteResult = null;
         if (data.size() > 0) {
             deleteResult = getMongoTemp().remove(new Query(Criteria.where("code").is(currentCodeInfo.getCode())), "stock_code_info");
@@ -99,7 +98,7 @@ public class DailyBasicSpider implements Runnable {
         BulkWriteResult bulkWriteResult = ops.execute();
         UpdateResult updateResult2 = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
-                new Update().set("dailyDate", StockDateUtil.getCurrentDateNumber()), "stock_code_info");
+                new Update().set("dailyDate", Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())), "stock_code_info");
         log.info("insert: {},update: {} delete: {}", bulkWriteResult.getInsertedCount(), updateResult2.getModifiedCount(), deleteResult.getDeletedCount());
     }
 

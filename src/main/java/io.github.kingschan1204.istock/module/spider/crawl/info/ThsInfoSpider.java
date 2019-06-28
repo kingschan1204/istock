@@ -2,7 +2,6 @@ package io.github.kingschan1204.istock.module.spider.crawl.info;
 
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
@@ -10,12 +9,9 @@ import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
-import io.github.kingschan1204.istock.module.spider.util.JsoupUitl;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -48,7 +44,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
      * @return
      */
     private void getCodeInfo(){
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.getDateYYYYMMdd());
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("infoDate").lt(dateNumber);
         Criteria c2 = Criteria.where("infoDate").exists(false);
@@ -154,7 +150,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         );
         UpdateResult updateResult2 = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
-                new Update().set("infoDate", StockDateUtil.getCurrentDateNumber()),"stock_code_info");
+                new Update().set("infoDate", Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
         log.info("代码{}受影响行数:{}",currentCodeInfo.getCode(),updateResult.getModifiedCount()+updateResult2.getModifiedCount());
     }
 

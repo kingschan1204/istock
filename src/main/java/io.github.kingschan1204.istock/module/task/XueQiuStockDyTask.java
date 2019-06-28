@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDyQueue;
 import io.github.kingschan1204.istock.module.maindata.repository.StockDyQueueRepository;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -40,6 +40,8 @@ public class XueQiuStockDyTask implements Job{
     @Autowired
     EhcacheUtil ehcacheUtil;
     final String cacheName="XueQiuStockDyTask";
+    @Autowired
+    private TradingDateUtil tradingDateUtil;
 
     /**
      * 是否错误次数过多，停止任务
@@ -63,7 +65,7 @@ public class XueQiuStockDyTask implements Job{
     public void uptateDy(JSONObject data) {
         //受影响行
         int affected = 0;
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.getDateYYYYMMdd());
         JSONArray rows = data.getJSONArray("list");
         List<Stock> list = rows.toJavaList(Stock.class);
         for (Stock stock : list) {
@@ -82,9 +84,8 @@ public class XueQiuStockDyTask implements Job{
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        int day = StockDateUtil.getCurrentWeekDay();
-        if (day == 6 || day == 0) {
-            log.debug("非交易时间不执行操作...");
+        if(!tradingDateUtil.isTradingDay()){
+            log.info("今天非交易日...");
             return;
         }
         if(stopTask()){
@@ -93,7 +94,7 @@ public class XueQiuStockDyTask implements Job{
         }
         Long start = System.currentTimeMillis();
         List<StockDyQueue> list = template.find(
-                new Query(Criteria.where("date").is(StockDateUtil.getCurrentDateNumber())), StockDyQueue.class
+                new Query(Criteria.where("date").is(TradingDateUtil.getDateYYYYMMdd())), StockDyQueue.class
         );
         int pageindex = 1;
         int totalpage = 1;
@@ -111,7 +112,7 @@ public class XueQiuStockDyTask implements Job{
             int total = data.getInteger("count");
             int pagesize = total % 100 == 0 ? total / 100 : total / 100 + 1;
             StockDyQueue stockDyQueue = new StockDyQueue();
-            stockDyQueue.setDate(StockDateUtil.getCurrentDateNumber());
+            stockDyQueue.setDate(Integer.valueOf(TradingDateUtil.getDateYYYYMMdd()));
             stockDyQueue.setPageIndex(pageindex);
             stockDyQueue.setTotalPage(pagesize);
             template.save(stockDyQueue, "stock_dy_queue");

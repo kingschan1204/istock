@@ -2,10 +2,10 @@ package io.github.kingschan1204.istock.module.spider.crawl.topholders;
 
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.services.StockTopHoldersService;
 import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,7 +28,7 @@ public class TopHoldersSpider implements Runnable{
      */
     String getCode(MongoTemplate template){
         //3天更新一遍
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber()-3;
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.minusDate(0,0,3,"yyyyMMdd"));
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("holdersDate").lt(dateNumber);
         Criteria c2 = Criteria.where("holdersDate").exists(false);
@@ -50,7 +50,7 @@ public class TopHoldersSpider implements Runnable{
             stockTopHoldersService.refreshTopHolders(TushareApi.formatCode(code));
            UpdateResult updateResult= mongoTemplate.upsert(
                     new Query(Criteria.where("code").is(code)),
-                    new Update().set("holdersDate",StockDateUtil.getCurrentDateNumber()),"stock_code_info");
+                    new Update().set("holdersDate",Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
            log.info("代码{}top holders 更新{}行",code,updateResult.getModifiedCount());
         } catch (Exception e) {
             e.printStackTrace();

@@ -31,9 +31,18 @@ public class TradingDateUtil {
      * 以20190606这种方式返回当前日期
      * @return
      */
-    public String getDateYYYYMMdd(){
+    public static String getDateYYYYMMdd(){
         LocalDate localDate=LocalDate.now();
         return DateTimeFormatter.ofPattern("yyyyMMdd").format(localDate);
+    }
+
+    /**
+     * 得到当前时间以数字形式返回  包含时分秒
+     * @return
+     */
+    public static String getDateTime(){
+        LocalDateTime localDate=LocalDateTime.now();
+        return DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(localDate);
     }
 
     /**
@@ -44,7 +53,7 @@ public class TradingDateUtil {
      * @param dateFormatPattern  格式化后的日期格式 如（yyyyMMdd）
      * @return
      */
-    public String minusDate(int year,int month,int day,String dateFormatPattern){
+    public static String minusDate(int year,int month,int day,String dateFormatPattern){
         DateTimeFormatter sf = DateTimeFormatter.ofPattern(dateFormatPattern);
         LocalDate localDate=LocalDate.now();
         return sf.format(localDate.minusYears(year).minusMonths(month).minusDays(day));
