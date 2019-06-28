@@ -75,7 +75,7 @@ public class DailyBasicSpider implements Runnable {
                 startDate, TradingDateUtil.getDateYYYYMMdd());
         DeleteResult deleteResult = null;
         if (data.size() > 0) {
-            deleteResult = getMongoTemp().remove(new Query(Criteria.where("code").is(currentCodeInfo.getCode())), "stock_code_info");
+            deleteResult = getMongoTemp().remove(new Query(Criteria.where("code").is(currentCodeInfo.getCode())), "stock_daily_basic");
         }
         BulkOperations ops = getMongoTemp().bulkOps(BulkOperations.BulkMode.UNORDERED, "stock_daily_basic");
         StockDailyBasic dailyBasic;

@@ -6,6 +6,7 @@ import io.github.kingschan1204.istock.module.maindata.repository.StockRepository
 import io.github.kingschan1204.istock.module.maindata.services.StockHisRoeService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -126,6 +127,7 @@ public class StockHisPageCtrl {
 
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
+        query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"tradeDate")));
         List<StockDailyBasic> lis = template.find(query, StockDailyBasic.class);
         /*if (null == lis || lis.size() == 0) {
             List<String> data = stockService.crawAndSaveHisPbPe(code);
