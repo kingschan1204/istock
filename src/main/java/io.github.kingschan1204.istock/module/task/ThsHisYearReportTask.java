@@ -3,11 +3,12 @@ package io.github.kingschan1204.istock.module.task;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisRoeRepository;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -66,7 +67,7 @@ public class ThsHisYearReportTask implements Job{
             log.info("错误次数过多，不执行任务!");
             return;
         }
-        Integer dateNumber = StockDateUtil.getCurrentDateNumber();
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.getDateYYYYMMdd());
         Criteria cr = new Criteria();
         //3天更新一把
         Criteria c1 = Criteria.where("yearReportDate").lt(dateNumber-3);

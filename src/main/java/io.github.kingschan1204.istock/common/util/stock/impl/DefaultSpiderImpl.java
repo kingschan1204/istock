@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
 import io.github.kingschan1204.istock.common.util.file.FileCommonOperactionTool;
-import io.github.kingschan1204.istock.common.util.stock.StockDateUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -183,7 +183,7 @@ public class DefaultSpiderImpl implements StockSpider {
         List<String> codes = new ArrayList<>();
         String url = "http://www.szse.cn/szseWeb/ShowReport.szse?SHOWTYPE=xlsx&CATALOGID=1110&tab2PAGENO=1&ENCODE=1&TABKEY=tab2";
         log.info("craw sz codes :{}", url);
-        String filename = String.format("sz_code_%s.xlsx", StockDateUtil.getCurrentDateNumber());
+        String filename = String.format("sz_code_%s.xlsx", TradingDateUtil.getDateYYYYMMdd());
         String path = String.format("./data/%s", filename);
         if (!new File(path).exists()) {
             //下载

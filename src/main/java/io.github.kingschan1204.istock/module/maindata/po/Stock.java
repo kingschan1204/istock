@@ -56,5 +56,25 @@ public class Stock {
      * 5年平均Roe
      */
     private Double fiveYearRoe;
+    /**
+     * 总营业收入
+     */
+    private Double totalIncome;
+    /**
+     * 同期对比总营业收入
+     */
+    private Double incomeDiff;
+    /**
+     * 净利润
+     */
+    private Double totalProfits;
+    /**
+     * 同期对比净利润
+     */
+    private Double profitsDiff;
+    /**
+     * 报告期
+     */
+    private String report;
 
 }

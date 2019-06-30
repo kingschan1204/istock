@@ -55,6 +55,11 @@ public class StockCodeInfo {
     private Integer xlsError;
 
     /**
+     * 每日pb pe 更新
+     */
+    private Integer dailyDate;
+
+    /**
      * data 来源于 tushareSpilder
      * @param data
      */

@@ -71,6 +71,7 @@
                 <button type="button" class="btn btn-primary" id="search_btn">查询</button>
                 <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
                 <button type="button" class="btn btn-warning" id="baseinfo_btn">基本信息</button>
+                <button type="button" class="btn btn-danger" id="daily_btn">过去一年行情</button>
                 <!-- Single button -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
@@ -113,7 +114,9 @@
                 mtype: "GET",
                 styleUI: 'Bootstrap',
                 datatype: "json",
-                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '股息(静)', '5年平均股息','最新ROE','5年平均ROE', '上次分红', '行业'],
+                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',
+                    '营业收入','营收同比增长','净利润','净利同比增长','报告期',
+                    '行业'],
                 colModel: [
 
                     {label: 'code', name: 'code', width: 100},
@@ -130,11 +133,15 @@
                     {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
                     {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
                     {label: 'dy', name: 'dy', width: 70, align: 'right'},
-                    {label: 'dividend', name: 'dividend', width: 70, align: 'right'},
+                    {label: 'dividend', name: 'dividend', width: 150, align: 'right', formatter:sdyFormat},
                     {label: 'fiveYearDy', name: 'fiveYearDy', width: 90, align: 'right'},
                     {label: 'roe', name: 'roe', width: 75, align: 'right'},
                     {label: 'fiveYearRoe', name: 'fiveYearRoe', width: 96, align: 'right'},
-                    {label: 'dividendDate', name: 'dividendDate', width: 90},
+                    {label: 'totalIncome', name: 'totalIncome', width: 80, align: 'right'},
+                    {label: 'incomeDiff', name: 'incomeDiff', width: 100, align: 'right'},
+                    {label: 'totalProfits', name: 'totalProfits', width: 70, align: 'right'},
+                    {label: 'profitsDiff', name: 'profitsDiff', width: 100, align: 'right'},
+                    {label: 'report', name: 'report', width: 70, align: 'center'},
                     {label: 'industry', name: 'industry', width: 130}
 //                {label: 'sVersion', name: 'sVersion', width: 650}
                 ],
@@ -147,10 +154,25 @@
                     var ids = $("#jqGrid").getDataIDs();
                     for (var i = 0; i < ids.length; i++) {
                         var rowData = $("#jqGrid").getRowData(ids[i]);
-                        if (parseFloat(rowData.fluctuate) <= 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td").css("color", "green");
+                        if (parseFloat(rowData.fluctuate) < 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(6)").css("background", "#00FF00");
                         } else {
-                            $("#jqGrid").find('#' + ids[i]).find("td").css("color", "red");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(6)").css("background", "#FF3300");
+                        }
+                        var incomeDiff=parseFloat(rowData.incomeDiff);
+                        if ( incomeDiff < 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("background", "#00FF00");
+                        } else if ( incomeDiff > 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("background", "#FF3300");
+                        }
+                        var profitsDiff=parseFloat(rowData.profitsDiff);
+                        if ( profitsDiff< 0) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(20)").css("background", "#00FF00");
+                        } else if ( profitsDiff>0){
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(20)").css("background", "#FF3300");
+                        }
+                        if (parseFloat(rowData.fiveYearDy) > 4) {
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(14)").css("background", "#FF3300");
                         }
                     }
                 },
@@ -169,6 +191,13 @@
                 t = document.documentElement.clientWidth;
                 doResize();
             }
+        }
+
+        function sdyFormat( cellvalue, options, rowObject ){
+            if(cellvalue!=''){
+                return cellvalue+'\t'+rowObject.dividendDate;
+            }
+            return '--';
         }
 
         function getPageSize() {
@@ -236,6 +265,15 @@
             window.open("/stock/his_roe/" + rowData.code);
         });
 
+        $("#daily_btn").click(function () {
+            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
+            if (null == ids) {
+                alert("请选择要查看的股票!");
+                return;
+            }
+            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
+            window.open("/stock/info/daily/" + rowData.code);
+        });
         $("#his_btn").click(function () {
             var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
             if (null == ids) {
