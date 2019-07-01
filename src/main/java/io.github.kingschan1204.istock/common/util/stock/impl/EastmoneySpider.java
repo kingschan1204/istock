@@ -2,6 +2,7 @@ package io.github.kingschan1204.istock.common.util.stock.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -78,11 +79,11 @@ public class EastmoneySpider extends DefaultSpiderImpl {
             //分配预案
             temp.put("plan", item.getString("AllocationPlan"));
             //送股比例
-            temp.put("sgbl", intFormart(item.getString("SGBL")));
+            temp.put("sgbl", MathFormat.intFormart(item.getString("SGBL")));
             //转股比例
-            temp.put("zgbl", intFormart(item.getString("ZGBL")));
+            temp.put("zgbl", MathFormat.intFormart(item.getString("ZGBL")));
             //股息率
-            temp.put("percent", doubleFormat(item.getString("GXL"), true));
+            temp.put("percent", MathFormat.doubleFormat(item.getString("GXL"), true));
             //股权登记日
             temp.put("gqdjr", item.getString("GQDJR").replaceAll(regex, ""));
             //除息除权日
@@ -98,31 +99,9 @@ public class EastmoneySpider extends DefaultSpiderImpl {
         return jsons;
     }
 
-    public int intFormart(String data) {
-        if (data.matches("\\d+")) {
-            return Integer.valueOf(data);
-        }
-        return 0;
-    }
 
-    /**
-     * 4舍5入 保留两位小数
-     *
-     * @param math
-     * @return
-     */
-    public double doubleFormat(String math, boolean percent) {
-        String regexNumber = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";
-        if (math.matches(regexNumber)) {
-            Double d = Double.parseDouble(math);
-            if (percent) {
-                d = d * 100;
-            }
-            BigDecimal b = new BigDecimal(d);
-            return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        }
-        return 0d;
-    }
+
+
 
 
 }

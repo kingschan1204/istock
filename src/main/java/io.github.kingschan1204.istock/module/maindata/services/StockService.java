@@ -9,7 +9,7 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
+import io.github.kingschan1204.istock.module.maindata.po.StockYearReport;
 import io.github.kingschan1204.istock.module.maindata.repository.StockHisDividendRepository;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
 import io.github.kingschan1204.istock.module.maindata.vo.StockVo;
@@ -46,7 +46,7 @@ public class StockService {
     @Autowired
     private StockHisDividendRepository stockHisDividendRepository;
     @Autowired
-    private StockHisRoeService stockHisRoeService;
+    private StockYearReportService stockYearReportService;
     @Autowired
     private StockSpider spider;
     @Autowired
@@ -154,13 +154,13 @@ public class StockService {
      * @param code
      * @return
      */
-    public List<StockHisRoe> getStockHisRoe(String code) {
+    public List<StockYearReport> getStockHisRoe(String code) {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
         query.with(new Sort(Sort.Direction.ASC, "year"));
         //code
-        List<StockHisRoe> list = template.find(query, StockHisRoe.class);
+        List<StockYearReport> list = template.find(query, StockYearReport.class);
         return list;
     }
 
@@ -313,7 +313,7 @@ public class StockService {
     public void calculateFiveYearsRoe(int startYear, int endYear) {
         Query query = new Query();
         query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
-        MapReduceResults<Document> result = template.mapReduce(query, "stock_his_roe",
+        MapReduceResults<Document> result = template.mapReduce(query, "stock_year_report",
                 "classpath:/mapreduce/5years_roe/map.js", "classpath:/mapreduce/5years_roe/reduce.js",
                 new MapReduceOptions().outputCollection("stock_hisroe_statistics"), Document.class);
         Iterator<Document> iter = result.iterator();

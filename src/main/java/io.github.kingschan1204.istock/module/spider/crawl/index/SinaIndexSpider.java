@@ -4,6 +4,7 @@ import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
+import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
@@ -47,11 +48,11 @@ public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
             if (data.length < 30) {
                 throw new Exception("代码不存在!");
             }
-            double xj = StockSpider.mathFormat(data[4]);
-            double zs = StockSpider.mathFormat(data[3]);
+            double xj = MathFormat.doubleFormat(data[4]);
+            double zs = MathFormat.doubleFormat(data[3]);
             double zf = (xj - zs) / zs * 100;
-            double todayMax = StockSpider.mathFormat(data[5]);
-            double todayMin = StockSpider.mathFormat(data[6]);
+            double todayMax = MathFormat.doubleFormat(data[5]);
+            double todayMin = MathFormat.doubleFormat(data[6]);
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
             Stock stock =new Stock();
@@ -66,7 +67,7 @@ public class SinaIndexSpider extends AbstractHtmlSpider<Stock> {
                 // 如果不需要四舍五入，可以使用RoundingMode.DOWN
                 nf.setRoundingMode(RoundingMode.UP);
                 //波动
-                stock.setFluctuate(StockSpider.mathFormat(nf.format(zf)));
+                stock.setFluctuate(MathFormat.doubleFormat(nf.format(zf)));
             }
             stock.setCode(data[0]);
             stock.setType(StockSpider.formatStockCode(data[0]).replaceAll("\\d", ""));

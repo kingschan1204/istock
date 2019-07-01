@@ -51,7 +51,7 @@ public class TopHoldersSpider implements Runnable{
            UpdateResult updateResult= mongoTemplate.upsert(
                     new Query(Criteria.where("code").is(code)),
                     new Update().set("holdersDate",Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
-           log.info("代码{}top holders 更新{}行",code,updateResult.getModifiedCount());
+           log.info("代码{}top holders 更新{}行",code,updateResult.getMatchedCount());
         } catch (Exception e) {
             e.printStackTrace();
             log.error("{}",e);

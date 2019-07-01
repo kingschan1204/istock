@@ -3,7 +3,7 @@ package io.github.kingschan1204.istock.module.maindata.ctrl;
 import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.module.maindata.po.*;
 import io.github.kingschan1204.istock.module.maindata.repository.StockRepository;
-import io.github.kingschan1204.istock.module.maindata.services.StockHisRoeService;
+import io.github.kingschan1204.istock.module.maindata.services.StockYearReportService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -32,7 +32,7 @@ public class StockHisPageCtrl {
     @Autowired
     private StockService stockService;
     @Autowired
-    private StockHisRoeService stockHisRoeService;
+    private StockYearReportService stockYearReportService;
     private final String template_path = "/stock/his/";
 
     @RequestMapping("/stock/his_dy/{code}")
@@ -84,10 +84,10 @@ public class StockHisPageCtrl {
             return mav;
         }
         mav.addObject("stock", stock.get());
-        List<StockHisRoe> list = stockService.getStockHisRoe(code);
+        List<StockYearReport> list = stockService.getStockHisRoe(code);
         if (null == list || list.size() == 0) {
             try {
-                list = stockHisRoeService.addStockHisRoe(code);
+                list = stockYearReportService.addStockHisRoe(code);
             } catch (Exception e) {
                 e.printStackTrace();
             }

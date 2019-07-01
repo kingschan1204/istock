@@ -9,6 +9,7 @@ import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
+import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -102,7 +103,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         //总市值
         String zsz = tds1.get(11).text().replaceAll("\\D+", "");
         //每股净资产
-        double mgjzc = StockSpider.mathFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));
+        double mgjzc = MathFormat.doubleFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));
         String jzcsyl = "-1";
         if (tds1.size() > 14) {
             //净资产收益率
@@ -133,12 +134,12 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                         .set("_id", currentCodeInfo.getCode())
                         .set("industry", sshy)
 //                        .set("mainBusiness", zyyw)
-                        .set("totalValue", StockSpider.mathFormat(zsz))
-                        .set("pb", StockSpider.mathFormat(sjl))
-                        .set("roe", StockSpider.mathFormat(jzcsyl))
+                        .set("totalValue", MathFormat.doubleFormat(zsz))
+                        .set("pb", MathFormat.doubleFormat(sjl))
+                        .set("roe", MathFormat.doubleFormat(jzcsyl))
                         .set("bvps", mgjzc)
-                        .set("pes", StockSpider.mathFormat(sjljt))
-                        .set("ped", StockSpider.mathFormat(dtsyl))
+                        .set("pes", MathFormat.doubleFormat(sjljt))
+                        .set("ped", MathFormat.doubleFormat(dtsyl))
                         .set("totalProfits",Double.parseDouble(totalProfits))
                         .set("profitsDiff",Double.parseDouble(profitsDiff))
                         .set("totalIncome",Double.parseDouble(totalIncome))

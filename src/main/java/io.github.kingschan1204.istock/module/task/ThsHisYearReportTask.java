@@ -5,10 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import io.github.kingschan1204.istock.common.util.cache.EhcacheUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
-import io.github.kingschan1204.istock.module.maindata.po.StockHisRoe;
-import io.github.kingschan1204.istock.module.maindata.repository.StockHisRoeRepository;
+import io.github.kingschan1204.istock.module.maindata.po.StockYearReport;
+import io.github.kingschan1204.istock.module.maindata.repository.StockYearReportRepository;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -36,7 +35,7 @@ public class ThsHisYearReportTask implements Job{
     @Autowired
     private MongoTemplate template;
     @Autowired
-    private StockHisRoeRepository stockHisRoeRepository;
+    private StockYearReportRepository stockYearReportRepository;
     @Autowired
     EhcacheUtil ehcacheUtil;
     final String cacheName="ThsHisYearReportTask";
@@ -84,9 +83,9 @@ public class ThsHisYearReportTask implements Job{
             String codestr=code.getCode().replaceAll("\\D","");
             try {
                 jsons = spider.getHistoryROE(codestr);
-                List<StockHisRoe> lis = JSON.parseArray(jsons.toJSONString(),StockHisRoe.class);
-                template.remove(new Query(Criteria.where("code").is(codestr)),StockHisRoe.class);
-                stockHisRoeRepository.saveAll(lis);
+                List<StockYearReport> lis = JSON.parseArray(jsons.toJSONString(),StockYearReport.class);
+                template.remove(new Query(Criteria.where("code").is(codestr)),StockYearReport.class);
+                stockYearReportRepository.saveAll(lis);
                 template.upsert(
                         new Query(Criteria.where("_id").is(code.getCode())),
                         new Update().set("yearReportDate", dateNumber),

@@ -1,10 +1,14 @@
 package io.github.kingschan1204.istock.common.util.file;
 
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -26,6 +30,9 @@ public class FileCommonOperactionTool {
      */
     public static String downloadFile(String url,String referrer, String dir, String filename) throws Exception {
         log.info("start download file :{}",url);
+        if(!new File(dir).exists()){
+            FileUtils.forceMkdir(new File(dir));
+        }
         //Open a URL Stream
         Connection.Response resultResponse = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")

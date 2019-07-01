@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.jsoup.Jsoup;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -26,7 +27,6 @@ import java.util.regex.Pattern;
  **/
 public interface StockSpider {
 
-    static final String REGEX_NUMBER = "^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9]+)?)";
 
     /**
      * 将股票代码转换成新浪接口的格式http://hq.sinajs.cn/list=
@@ -116,19 +116,7 @@ public interface StockSpider {
 
     }
 
-    /**
-     * 格式化数据，如果不是数字全部返回-1
-     *
-     * @param value
-     * @return
-     */
-    static Double mathFormat(String value) {
-        String v = value.replaceAll("[^0-9|\\.|\\-]", "");
-        if (v.matches(REGEX_NUMBER)) {
-            return Double.valueOf(v);
-        }
-        return -1D;
-    }
+
 
     /**
      * 启用ssl

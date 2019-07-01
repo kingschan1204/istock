@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
 import io.github.kingschan1204.istock.common.util.file.FileCommonOperactionTool;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -75,7 +76,7 @@ public class DefaultSpiderImpl implements StockSpider {
                 //转股比例
                 json.put("zgbl", 0);
                 //分红率
-                json.put("percent", StockSpider.mathFormat(data[9]));
+                json.put("percent", MathFormat.doubleFormat(data[9]));
                 //股权登记日
                 json.put("gqdjr", data[5]);
                 //除息除权日
@@ -106,19 +107,39 @@ public class DefaultSpiderImpl implements StockSpider {
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
         //报告期 年
         Object[] year = list.get(1);
+        //净利润
+        Object[] profits = list.get(3);
+        //净利润增长率
+        Object[] profits_percent = list.get(4);
+        //营业总收入
+        Object[] operating_income = list.get(7);
+        //营业总收入同比增长率
+        Object[] income_percent = list.get(8);
+        //每股净资产
+        Object[] net_assets = list.get(9);
         //净资产收益率
         Object[] roe = list.get(10);
         //净资产收益率-摊薄
         Object[] roeTb = list.get(11);
+        //资产负债比率
+        Object[] asset_liability = list.get(12);
         JSONArray jsons = new JSONArray();
         JSONObject json;
+        //基数压缩数字以亿为单位
+        int base =100000000;
         for (int i = 1; i < year.length; i++) {
             json = new JSONObject();
             json.put("year", Integer.valueOf(year[i].toString().replaceAll("\\..*", "")));
-            json.put("roe", StockSpider.mathFormat(roe[i].toString()));
-            json.put("roeTb", StockSpider.mathFormat(roeTb[i].toString()));
+            json.put("roe", MathFormat.doubleFormat(roe[i].toString()));
+            json.put("roeTb", MathFormat.doubleFormat(roeTb[i].toString()));
             json.put("code", code);
             json.put("date", new Date());
+            json.put("profits",MathFormat.doubleFormat(profits[i].toString(),base,true));
+            json.put("profits_percent",MathFormat.doubleFormat(profits_percent[i].toString()));
+            json.put("operating_income",MathFormat.doubleFormat(operating_income[i].toString(),base,true));
+            json.put("income_percent",MathFormat.doubleFormat(income_percent[i].toString()));
+            json.put("net_assets",MathFormat.doubleFormat(net_assets[i].toString()));
+            json.put("asset_liability",MathFormat.doubleFormat(asset_liability[i].toString()));
             jsons.add(json);
         }
         return jsons;
@@ -198,6 +219,7 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         return codes;
     }
+
 
 
 }
