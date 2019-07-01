@@ -1,12 +1,10 @@
 package io.github.kingschan1204.istock.module.spider.schedule;
 
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
-import io.github.kingschan1204.istock.module.spider.crawl.info.InfoCrawlJob;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDateTime;
 
 /**
@@ -19,29 +17,35 @@ import java.time.LocalDateTime;
 public class ScheduleThread implements Runnable {
 
 
-
-
     void jobProcess() throws Exception {
-        LocalDateTime dateTime = LocalDateTime.now();
-        TradingDateUtil tradingDateUtil = SpringContextUtil.getBean(TradingDateUtil.class);
 
+        TradingDateUtil tradingDateUtil = SpringContextUtil.getBean(TradingDateUtil.class);
+        boolean tradeday=tradingDateUtil.isTradingDay();
+        if(!tradeday){
+            log.info("not trade day . don't work ~ ");
+            return;
+        }
+        LocalDateTime dateTime = LocalDateTime.now();
+        //
         if (tradingDateUtil.isTradingTimeNow()) {
             ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INDEX).execute(ITimerJob.COMMAND.START);
         } else {
             ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INDEX).execute(ITimerJob.COMMAND.STOP);
         }
 
-        if (tradingDateUtil.isTradingDay()){
-            ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DAILY_BASIC).execute(ITimerJob.COMMAND.START);
-        }
 
         switch (dateTime.getHour()) {
             case 0:
                 //晚上12点
                 if(dateTime.getMinute()==1){
+                    //清理
                     ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.CLEAR).execute(null);
+                    // code company
                     ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.STOCKCODE).execute(null);
                 }
+                break;
+            case 1:
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DAILY_BASIC).execute(ITimerJob.COMMAND.START);
                 break;
             case 9:
                 //早上9点
@@ -55,6 +59,8 @@ public class ScheduleThread implements Runnable {
             case 15:
                 //下午3点  闭市后爬取info信息
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INFO).execute(ITimerJob.COMMAND.START);
+                //top 10 holders
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.TOP_HOLDER).execute(ITimerJob.COMMAND.START);
                 break;
             default:
                 break;
@@ -69,11 +75,6 @@ public class ScheduleThread implements Runnable {
             e.printStackTrace();
         }
 
-    }
-
-    public static void main(String[] args) {
-        LocalDateTime dateTime = LocalDateTime.now();
-        System.out.println(dateTime.getHour());
     }
 
 }

@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 
 /**
@@ -84,7 +84,9 @@ public class JsoupUitl {
             Document document = response.parse();
             webPage = new WebPage(System.currentTimeMillis() - start, pageUrl, document, document.html());
             return webPage;
-        } catch (IOException e) {
+        }catch (SocketTimeoutException ex){
+            log.error("crawlPage {} {}", pageUrl, "网络超时!");
+        }catch (Exception e) {
             log.error("crawlPage {} {}", pageUrl, e);
             e.printStackTrace();
         }

@@ -2,8 +2,6 @@ package io.github.kingschan1204.istock.module.spider.crawl.info;
 
 import io.github.kingschan1204.istock.common.thread.MyThreadFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.MongoTemplate;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 public class InfoCrawlJob implements Runnable {
 
     private ScheduledExecutorService scheduledExecutorService ;
-
 
     public InfoCrawlJob(){
         scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("crawlerJob-info"));
