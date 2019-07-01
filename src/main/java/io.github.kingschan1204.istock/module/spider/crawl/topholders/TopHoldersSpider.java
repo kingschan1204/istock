@@ -5,6 +5,8 @@ import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.maindata.services.StockTopHoldersService;
 import io.github.kingschan1204.istock.module.spider.openapi.TushareApi;
+import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
+import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,7 +28,7 @@ public class TopHoldersSpider implements Runnable{
      * @param template
      * @return
      */
-    String getCode(MongoTemplate template){
+    String getCode(MongoTemplate template) throws Exception {
         //3天更新一遍
         Integer dateNumber = Integer.valueOf(TradingDateUtil.minusDate(0,0,3,"yyyyMMdd"));
         Criteria cr = new Criteria();
@@ -38,15 +40,20 @@ public class TopHoldersSpider implements Runnable{
         if(null!=list&&list.size()>0){
             return list.get(0).getCode();
         }
+        log.info("top holder 更新完毕！关闭作业");
+        ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.TOP_HOLDER).execute(ITimerJob.COMMAND.STOP);
         return null;
     }
 
     @Override
     public void run() {
-        MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
-        StockTopHoldersService stockTopHoldersService=SpringContextUtil.getBean(StockTopHoldersService.class);
-        String code = getCode(mongoTemplate);
         try {
+            MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
+            StockTopHoldersService stockTopHoldersService=SpringContextUtil.getBean(StockTopHoldersService.class);
+            String code = getCode(mongoTemplate);
+            if(null==code){
+                return;
+            }
             stockTopHoldersService.refreshTopHolders(TushareApi.formatCode(code));
            UpdateResult updateResult= mongoTemplate.upsert(
                     new Query(Criteria.where("_id").is(code)),
@@ -55,7 +62,6 @@ public class TopHoldersSpider implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
             log.error("{}",e);
-            ;
         }
     }
 }
