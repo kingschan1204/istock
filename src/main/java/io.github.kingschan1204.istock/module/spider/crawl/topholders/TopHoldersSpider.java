@@ -49,7 +49,7 @@ public class TopHoldersSpider implements Runnable{
         try {
             stockTopHoldersService.refreshTopHolders(TushareApi.formatCode(code));
            UpdateResult updateResult= mongoTemplate.upsert(
-                    new Query(Criteria.where("code").is(code)),
+                    new Query(Criteria.where("_id").is(code)),
                     new Update().set("holdersDate",Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
            log.info("代码{}top holders 更新{}行",code,updateResult.getMatchedCount());
         } catch (Exception e) {

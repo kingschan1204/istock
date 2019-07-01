@@ -71,6 +71,10 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         if(null==currentCodeInfo){
             return null;
         }
+        if(!currentCodeInfo.getCode().matches("\\d+")){
+         log.error("{} 代码错误，不是有效的代码！",currentCodeInfo.getCode());
+         return null;
+        }
         this.pageUrl= String.format("http://basic.10jqka.com.cn/%s/", currentCodeInfo.getCode());
         return super.crawlPage();
     }

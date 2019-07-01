@@ -31,6 +31,12 @@ public class ScheduleThread implements Runnable {
             ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INDEX).execute(ITimerJob.COMMAND.START);
         } else {
             ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INDEX).execute(ITimerJob.COMMAND.STOP);
+            if(dateTime.getHour()>=15){
+                //下午3点  闭市后爬取info信息
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INFO).execute(ITimerJob.COMMAND.START);
+                //top 10 holders
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.TOP_HOLDER).execute(ITimerJob.COMMAND.START);
+            }
         }
 
 
@@ -57,10 +63,6 @@ public class ScheduleThread implements Runnable {
                 //下午1点
                 break;
             case 15:
-                //下午3点  闭市后爬取info信息
-                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INFO).execute(ITimerJob.COMMAND.START);
-                //top 10 holders
-                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.TOP_HOLDER).execute(ITimerJob.COMMAND.START);
                 break;
             default:
                 break;
