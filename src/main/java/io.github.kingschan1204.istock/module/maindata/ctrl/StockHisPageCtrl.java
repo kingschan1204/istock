@@ -73,7 +73,7 @@ public class StockHisPageCtrl {
         return mav;
     }
 
-    @RequestMapping("/stock/his_roe/{code}")
+    @RequestMapping("/stock/financial/{code}")
     public ModelAndView getStockHisRoe(@PathVariable String code) {
         ModelAndView mav = new ModelAndView(template_path + "his_roe");
         mav.addObject("roe_year", "''");

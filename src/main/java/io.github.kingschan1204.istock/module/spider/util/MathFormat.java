@@ -1,8 +1,6 @@
 package io.github.kingschan1204.istock.module.spider.util;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 数字格式化工具类

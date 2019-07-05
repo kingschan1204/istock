@@ -19,13 +19,19 @@
 </#if>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 <div id="roe" style="width: 100%;height:400px;"></div>
-<div class="container">
+<div class="container-fluid">
     <#if rows??>
         <table class="table table-striped table-hover">
             <thead>
             <th>年度</th>
             <th>净资产收益率</th>
             <th>净资产收益率（摊薄）</th>
+            <th>净利润（亿）</th>
+            <th>净利润同比增长率</th>
+            <th>营业总收入（亿）</th>
+            <th>营业总收入同比增长率</th>
+            <th>每股净资产</th>
+            <th>资产负债比率</th>
             </thead>
             <#list rows as row>
                 <tr>
@@ -44,6 +50,14 @@
                                 ${row.roetb}%
                         </#if>
                     </td>
+                    <td>
+                        <#if (row.profits==-1)> --<#else>${row.profits}</#if>
+                    </td>
+                    <td><#if (row.profits_percent==-1)> --<#else>${row.profits_percent}%</#if></td>
+                    <td><#if (row.operating_income==-1)> --<#else>${row.operating_income}</#if></td>
+                    <td><#if (row.income_percent==-1)> --<#else>${row.income_percent}%</#if></td>
+                    <td><#if (row.net_assets==-1)> --<#else>${row.net_assets}</#if></td>
+                    <td><#if (row.asset_liability==-1)> --<#else>${row.asset_liability}%</#if></td>
                 </tr>
             </#list>
         </table>
@@ -59,7 +73,10 @@
     var option = {
         title: {
             text: '<#if stock??>${stock.name}<#else>${code!""}</#if>-各年度净资产收益率',
-            subtext: ''
+            subtext: '',
+            x:'center',
+            y:'top',
+            textAlign:'center'
         },
         tooltip: {
             trigger: 'axis'
