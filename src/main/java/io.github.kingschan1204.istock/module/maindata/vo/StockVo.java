@@ -1,11 +1,15 @@
 package io.github.kingschan1204.istock.module.maindata.vo;
 
+import lombok.Getter;
+
 /**
  * stock 主数据vo
+ *
  * @author chenguoxiang
  * @create 2018-10-16 14:41
  * http://localhost/stock/q?rows=20&page=1&sidx=&sord=asc&
  **/
+@Getter
 public class StockVo {
 
     private String code;
@@ -24,7 +28,15 @@ public class StockVo {
     private String bvps;
     private String pes;
     private String ped;
+    //pe (TTM)
+    private String pettm;
     private Integer infoDate;
+
+    //52周最高
+    private String high52w;
+    //52周最低
+    private String low52w;
+
     /**
      * 静态分红日期
      */
@@ -63,33 +75,21 @@ public class StockVo {
      */
     private String report;
 
-    public String getCode() {
-        return code;
-    }
 
     public void setCode(String code) {
         this.code = code;
     }
 
-    public String getType() {
-        return type;
-    }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public Double getPrice() {
-        return price;
-    }
 
     public void setPrice(Double price) {
         this.price = price;
@@ -103,144 +103,93 @@ public class StockVo {
         this.yesterdayPrice = yesterdayPrice;
     }
 
-    public String getFluctuate() {
-        return fluctuate;
-    }
 
     public void setFluctuate(Double fluctuate) {
-        this.fluctuate = String.format("%s%%",fluctuate);
+        this.fluctuate = String.format("%s%%", fluctuate);
     }
 
-    public Double getTodayMax() {
-        return todayMax;
-    }
 
     public void setTodayMax(Double todayMax) {
         this.todayMax = todayMax;
     }
 
-    public Double getTodayMin() {
-        return todayMin;
-    }
 
     public void setTodayMin(Double todayMin) {
         this.todayMin = todayMin;
     }
 
-    public Long getPriceDate() {
-        return priceDate;
-    }
 
     public void setPriceDate(Long priceDate) {
         this.priceDate = priceDate;
     }
 
-    public String getIndustry() {
-        return industry;
-    }
 
     public void setIndustry(String industry) {
         this.industry = industry;
     }
 
-    public String getTotalValue() {
-        return totalValue;
-    }
 
     public void setTotalValue(Double totalValue) {
-        this.totalValue = -1==totalValue?"--":String.format("%s亿",totalValue);
+        this.totalValue = -1 == totalValue ? "--" : String.format("%s亿", totalValue);
     }
 
-    public String getPb() {
-        return pb;
-    }
 
     public void setPb(Double pb) {
-        this.pb = -1==pb?"--":String.format("%s",pb);
+        this.pb = -1 == pb ? "--" : String.format("%s", pb);
     }
 
-    public String getRoe() {
-        return roe;
-    }
 
     public void setRoe(Double roe) {
-        this.roe = -1==roe?"--":String.format("%s%%",roe);
+        this.roe = -1 == roe ? "--" : String.format("%s%%", roe);
     }
 
-    public String getBvps() {
-        return bvps;
-    }
 
     public void setBvps(Double bvps) {
-        this.bvps =  -1==bvps?"--":String.format("%s",bvps);
+        this.bvps = -1 == bvps ? "--" : String.format("%s", bvps);
     }
 
-    public String getPes() {
-        return pes;
-    }
 
     public void setPes(Double pes) {
-        this.pes = -1==pes?"--":String.format("%s",pes);
+        this.pes = -1 == pes ? "--" : String.format("%s", pes);
     }
 
-    public String getPed() {
-        return ped;
-    }
 
     public void setPed(Double ped) {
-        this.ped = -1==ped?"--":String.format("%s",ped);
+        this.ped = -1 == ped ? "--" : String.format("%s", ped);
     }
 
-    public Integer getInfoDate() {
-        return infoDate;
-    }
 
     public void setInfoDate(Integer infoDate) {
         this.infoDate = infoDate;
     }
 
-    public String getDividendDate() {
-        return dividendDate;
-    }
 
     public void setDividendDate(String dividendDate) {
         this.dividendDate = dividendDate;
     }
 
-    public String getDividend() {
-        return dividend;
-    }
 
     public void setDividend(Double dividend) {
-        if(0==dividend){
-            this.dividend="";
+        if (0 == dividend) {
+            this.dividend = "";
             return;
         }
-        this.dividend =  -1==dividend?"--":String.format("%s%%",dividend);
+        this.dividend = -1 == dividend ? "--" : String.format("%s%%", dividend);
     }
 
-    public String getDy() {
-        return dy;
-    }
 
     public void setDy(Double dy) {
-        this.dy = -1==dy?"--":String.format("%s%%",dy);
+        this.dy = -1 == dy ? "--" : String.format("%s%%", dy);
     }
 
-    public String getFiveYearDy() {
-        return fiveYearDy;
-    }
 
     public void setFiveYearDy(Double fiveYearDy) {
-        this.fiveYearDy = -1==fiveYearDy?"--":String.format("%s%%",fiveYearDy);
+        this.fiveYearDy = -1 == fiveYearDy ? "--" : String.format("%s%%", fiveYearDy);
     }
 
-    public String getFiveYearRoe() {
-        return fiveYearRoe;
-    }
 
     public void setFiveYearRoe(Double fiveYearRoe) {
-        this.fiveYearRoe = -1==fiveYearRoe?"--":String.format("%s%%",fiveYearRoe);
+        this.fiveYearRoe = -1 == fiveYearRoe ? "--" : String.format("%s%%", fiveYearRoe);
     }
 
 
@@ -249,48 +198,48 @@ public class StockVo {
     }
 
     public void setTotalIncome(Double totalIncome) {
-        if(null!=totalIncome){
-            this.totalIncome = totalIncome+"亿";
+        if (null != totalIncome) {
+            this.totalIncome = totalIncome + "亿";
         }
     }
 
-    public String getIncomeDiff() {
-        return incomeDiff;
-    }
 
     public void setIncomeDiff(Double incomeDiff) {
-        if(null!=incomeDiff){
-            this.incomeDiff = incomeDiff+"%";
+        if (null != incomeDiff) {
+            this.incomeDiff = incomeDiff + "%";
         }
 
     }
 
-    public String getTotalProfits() {
-        return totalProfits;
-    }
 
     public void setTotalProfits(Double totalProfits) {
-        if(null!=totalProfits){
-            this.totalProfits = totalProfits+"亿";
+        if (null != totalProfits) {
+            this.totalProfits = totalProfits + "亿";
         }
     }
 
-    public String getProfitsDiff() {
-        return profitsDiff;
-    }
 
     public void setProfitsDiff(Double profitsDiff) {
-        if(null!=profitsDiff){
-            this.profitsDiff = profitsDiff+"%";
+        if (null != profitsDiff) {
+            this.profitsDiff = profitsDiff + "%";
         }
     }
 
-    public String getReport() {
-        return report;
-    }
 
     public void setReport(String report) {
         this.report = report;
+    }
+
+    public void setPettm(String pettm) {
+        this.pettm = "-1".equals(pettm)?"--":pettm;
+    }
+
+    public void setHigh52w(String high52w) {
+        this.high52w = "-1.0".equals(high52w)?"--":high52w;
+    }
+
+    public void setLow52w(String low52w) {
+        this.low52w ="-1.0".equals(low52w)?"--":low52w;
     }
 
     public StockVo() {

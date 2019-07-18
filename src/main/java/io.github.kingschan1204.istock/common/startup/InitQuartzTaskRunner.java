@@ -35,16 +35,6 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 ThsHisYearReportTask.class,
                 "6 * * * * ?");
 
-
-
-        quartzManager.addJob("xueqiuDyTask",
-                "xueqiuDyTask-group",
-                "xueqiuDyTask-trigger",
-                "xueqiuDyTask-trigger-group",
-                XueQiuStockDyTask.class,
-                "0 0/1 * * * ?");
-
-
     }
 
     @Override

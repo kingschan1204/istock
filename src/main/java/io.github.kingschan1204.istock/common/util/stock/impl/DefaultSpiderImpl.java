@@ -1,6 +1,5 @@
 package io.github.kingschan1204.istock.common.util.stock.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.common.util.file.ExcelOperactionTool;
@@ -16,6 +15,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,42 +145,6 @@ public class DefaultSpiderImpl implements StockSpider {
         return jsons;
     }
 
-
-
-
-    /**
-     * 得到股票实时股息
-     *
-     * @param page
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public JSONObject getDy(int page) throws Exception {
-        String url = "https://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=symbol&order=desc&current=ALL&pct=ALL&page=%s&dy=0_19.31&size=100";
-        url = String.format(url, page);
-        log.info("更新dy第{}页", page);
-        StockSpider.enableSSLSocket();
-        Document infoDoc = Jsoup.connect(url).userAgent(useAgent).referrer("https://xueqiu.com/hq/screener")
-                .timeout(timeout)
-                .cookie("xq_a_token", xueQiuToken)
-                .ignoreContentType(true)
-                .get();
-        JSONObject json = JSON.parseObject(infoDoc.text());
-        JSONArray jsons = json.getJSONArray("list");
-        if (null != jsons) {
-            JSONArray items = new JSONArray();
-            for (int i = 0; i < jsons.size(); i++) {
-                JSONObject item = new JSONObject();
-                item.put("code", jsons.getJSONObject(i).getString("symbol").replaceAll("\\D", ""));
-                item.put("dy", jsons.getJSONObject(i).getDoubleValue("dy"));
-                items.add(item);
-            }
-            json.put("list", items);
-            return json;
-        }
-        return null;
-    }
 
     @Override
     public List<String> getStockCodeBySH() throws Exception {

@@ -28,8 +28,16 @@ public class Stock {
     private Double pb;
     private Double roe;
     private Double bvps;
+    //市盈率 动态
     private Double pes;
+    //市盈率 动态
     private Double ped;
+    //市盈率
+    private Double pettm;
+    //high52w
+    private Double high52w;
+    //52周最低
+    private Double low52w;
     private Integer infoDate;
     /**
      * 静态分红日期

@@ -71,7 +71,6 @@
                 <button type="button" class="btn btn-primary" id="search_btn">查询</button>
                 <button type="button" class="btn btn-info" id="refresh_btn">重置</button>
                 <button type="button" class="btn btn-warning" id="baseinfo_btn">基本信息</button>
-                <button type="button" class="btn btn-danger" id="daily_btn">过去一年行情</button>
                 <!-- Single button -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
@@ -114,7 +113,7 @@
                 mtype: "GET",
                 styleUI: 'Bootstrap',
                 datatype: "json",
-                colNames: ['代码', '名称', '市场', '价格', '昨收', '涨幅', 'PE(动)', 'PE(静)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',
+                colNames: ['代码', '名称', '市场', '价格', '昨收','52周最低','52周最高', '涨幅', '市盈率(动)', '市盈率(静)','市盈率(TTM)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',
                     '营业收入','营收同比增长','净利润','净利同比增长','报告期',
                     '行业'],
                 colModel: [
@@ -124,10 +123,14 @@
                     {label: 'type', name: 'type', width: 40},
                     {label: 'price', name: 'price', width: 50, align: 'right'},
                     {label: 'yesterdayPrice', name: 'yesterdayPrice', width: 60, align: 'right'},
+                    {label: 'low52w', name: 'low52w', width: 70, align: 'right'},
+                    {label: 'high52w', name: 'high52w', width: 70, align: 'right'},
+
 
                     {label: 'fluctuate', name: 'fluctuate', width: 70, align: 'right'},
-                    {label: 'ped', name: 'ped', width: 70, align: 'right'},
-                    {label: 'pes', name: 'pes', width: 70, align: 'right'},
+                    {label: 'ped', name: 'ped', width: 80, align: 'right'},
+                    {label: 'pes', name: 'pes', width: 80, align: 'right'},
+                    {label: 'pettm', name: 'pettm', width: 93, align: 'right'},
                     {label: 'pb', name: 'pb', width: 60, align: 'right'},
 
                     {label: 'totalValue', name: 'totalValue', width: 80, align: 'right'},
@@ -155,9 +158,9 @@
                     for (var i = 0; i < ids.length; i++) {
                         var rowData = $("#jqGrid").getRowData(ids[i]);
                         if (parseFloat(rowData.fluctuate) < 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(6)").css("background", "#00FF00");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(8)").css("background", "#00FF00");
                         } else {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(6)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(8)").css("background", "#FF3300");
                         }
                         var incomeDiff=parseFloat(rowData.incomeDiff);
                         if ( incomeDiff < 0) {
@@ -194,7 +197,7 @@
         }
 
         function sdyFormat( cellvalue, options, rowObject ){
-            if(cellvalue!=''){
+            if(cellvalue!=undefined){
                 return cellvalue+'\t'+rowObject.dividendDate;
             }
             return '--';
@@ -265,15 +268,6 @@
             window.open("/stock/financial/" + rowData.code);
         });
 
-        $("#daily_btn").click(function () {
-            var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
-            if (null == ids) {
-                alert("请选择要查看的股票!");
-                return;
-            }
-            var rowData = $("#jqGrid").jqGrid('getRowData', ids);
-            window.open("/stock/info/daily/" + rowData.code);
-        });
         $("#his_btn").click(function () {
             var ids = $("#jqGrid").jqGrid('getGridParam', 'selrow');
             if (null == ids) {

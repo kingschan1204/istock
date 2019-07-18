@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.common.util.spring;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -57,5 +58,22 @@ public class SpringContextUtil implements ApplicationContextAware {
      */
     public static <T> T getBean(String name,Class<T> clazz){
         return getApplicationContext().getBean(name, clazz);
+    }
+
+    /**
+     * 得到spring ioc 容器里的配置
+     * @return
+     */
+    public static Environment getEnv(){
+        return getBean(Environment.class);
+    }
+
+    /**
+     * 得到配置文件里的具体的配置项
+     * @param key properties文件里的key
+     * @return
+     */
+    public static String getProperties(String key ){
+        return getEnv().getProperty(key);
     }
 }

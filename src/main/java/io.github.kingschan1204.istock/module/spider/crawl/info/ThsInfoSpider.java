@@ -1,11 +1,13 @@
 package io.github.kingschan1204.istock.module.spider.crawl.info;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
 import io.github.kingschan1204.istock.module.spider.AbstractHtmlSpider;
+import io.github.kingschan1204.istock.module.spider.dto.XqQuoteDto;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
@@ -14,12 +16,17 @@ import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * 同花顺Info信息爬虫
@@ -132,6 +139,27 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         Elements element =doc.getElementsByAttributeValue("style","margin-top: 4px;margin-right: 10px;color:#666");
         String report_date=null==element?"":element.text().trim().replace("以上为","");
 
+        //xueqiu baseinfo
+        XqQuoteDto dto=new XqQuoteDto();
+        try{
+            String fcode=StockSpider.formatStockCode(currentCodeInfo.getCode());
+            XueQiuInfoSpider xueQiuInfoSpider = new XueQiuInfoSpider(fcode,SpringContextUtil.getProperties("xueqiu.token"));
+            FutureTask<JSONObject> futureTask =new FutureTask<JSONObject>(xueQiuInfoSpider);
+            new Thread(futureTask).start();
+            JSONObject json =futureTask.get(3, TimeUnit.SECONDS);
+            log.info("XueQiu:{}:{}",fcode,json);
+            if(json.containsKey("data")){
+                JSONObject detail=json.getJSONObject("data").getJSONObject("quote");
+                dto = detail.toJavaObject(XqQuoteDto.class);
+            }
+        }catch (TimeoutException timeEx){
+            log.error("XueQiu {}超时",currentCodeInfo.getCode());
+        }catch (Exception ex){
+            log.error("XueQiu info error :{}",ex);
+        }
+
+
+
         UpdateResult updateResult = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
                 new Update()
@@ -149,6 +177,10 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                         .set("totalIncome",Double.parseDouble(totalIncome))
                         .set("incomeDiff",Double.parseDouble(incomeDiff))
                         .set("report",report_date)
+                        .set("pettm",dto.getPe_ttm())
+                        .set("high52w",dto.getHigh52w())
+                        .set("low52w",dto.getLow52w())
+                        .set("dy",dto.getDividend_yield())
                 ,
                 //,
                 "stock"
@@ -157,6 +189,9 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
                 new Update().set("infoDate", Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
         log.info("代码{}受影响行数:{}",currentCodeInfo.getCode(),updateResult.getModifiedCount()+updateResult2.getModifiedCount());
+
+
+
     }
 
 }
