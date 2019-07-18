@@ -38,7 +38,7 @@ public class TushareApi {
      */
     public static String formatCode(String code) {
         //5开头，沪市基金或权证 60开头上证
-        if (code.matches("^60.*|^5.*")) {
+        if (code.matches("^60.*|^68.*|^5.*")) {
             return String.format("%s.SH", code);
         }
         //1开头的，是深市基金 00开头是深圳
