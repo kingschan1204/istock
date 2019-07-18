@@ -85,7 +85,10 @@ public class StockService {
         if (code.isPresent()) {
             if (pcode.matches("\\d{6}")) {
                 query.addCriteria(Criteria.where("_id").is(pcode));
-            } else if (pcode.matches("\\d+")) {
+            }else if (pcode.contains(",")){
+                query.addCriteria(Criteria.where("_id").in(pcode.split(",")));
+            }
+            else if (pcode.matches("\\d+")) {
                 query.addCriteria(Criteria.where("_id").regex(pcode));
             } else {
                 query.addCriteria(Criteria.where("name").regex(pcode));
