@@ -53,10 +53,6 @@ public class Stock {
      */
     private Double dy;
     /**
-     * 实时股息更新时间
-     */
-    private Integer dyDate;
-    /**
      * 5年平均股息
      */
     private Double fiveYearDy;

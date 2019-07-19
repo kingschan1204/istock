@@ -34,6 +34,8 @@ public class ScheduleThread implements Runnable {
             if(dateTime.getHour()>=15){
                 //下午3点  闭市后爬取info信息
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.INFO).execute(ITimerJob.COMMAND.START);
+                //Dy
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DY).execute(ITimerJob.COMMAND.START);
                 //top 10 holders
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.TOP_HOLDER).execute(ITimerJob.COMMAND.START);
             }

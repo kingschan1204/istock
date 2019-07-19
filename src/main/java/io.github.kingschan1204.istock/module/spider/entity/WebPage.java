@@ -20,4 +20,5 @@ public class WebPage implements Serializable {
     private String pageUrl;
     private Document document;
     private String html;
+    private Integer httpCode;
 }

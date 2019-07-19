@@ -139,7 +139,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         Elements element =doc.getElementsByAttributeValue("style","margin-top: 4px;margin-right: 10px;color:#666");
         String report_date=null==element?"":element.text().trim().replace("以上为","");
 
-        //xueqiu baseinfo
+        /*//xueqiu baseinfo
         XqQuoteDto dto=new XqQuoteDto();
         try{
             String fcode=StockSpider.formatStockCode(currentCodeInfo.getCode());
@@ -156,7 +156,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
             log.error("XueQiu {}超时",currentCodeInfo.getCode());
         }catch (Exception ex){
             log.error("XueQiu info error :{}",ex);
-        }
+        }*/
 
 
 
@@ -177,10 +177,10 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                         .set("totalIncome",Double.parseDouble(totalIncome))
                         .set("incomeDiff",Double.parseDouble(incomeDiff))
                         .set("report",report_date)
-                        .set("pettm",dto.getPe_ttm())
-                        .set("high52w",dto.getHigh52w())
-                        .set("low52w",dto.getLow52w())
-                        .set("dy",dto.getDividend_yield())
+//                        .set("pettm",dto.getPe_ttm())
+//                        .set("high52w",dto.getHigh52w())
+//                        .set("low52w",dto.getLow52w())
+//                        .set("dy",dto.getDividend_yield())
                 ,
                 //,
                 "stock"

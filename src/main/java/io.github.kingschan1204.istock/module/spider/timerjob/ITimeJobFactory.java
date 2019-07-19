@@ -11,7 +11,7 @@ import java.util.HashMap;
  **/
 public class ITimeJobFactory {
     public enum TIMEJOB{
-        INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC,TOP_HOLDER
+        INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC,TOP_HOLDER,DY
     }
     private static HashMap<TIMEJOB,ITimerJob> map;
 
@@ -23,6 +23,7 @@ public class ITimeJobFactory {
         map.put(TIMEJOB.INFO,new InfoTimerJobImpl());
         map.put(TIMEJOB.DAILY_BASIC,new DailyBasicTimerJobImpl());
         map.put(TIMEJOB.TOP_HOLDER,new TopHolderTimerJobImpl());
+        map.put(TIMEJOB.DY,new XueQiuDyTimerJobImpl());
 
 
 

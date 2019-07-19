@@ -35,7 +35,10 @@ public class StockCodeInfo {
     private String list_status;
     //上市日期
     private Integer list_date;
-
+    /**
+     * 实时股息更新时间
+     */
+    private Integer dyDate;
 
     /**
      * info 信息更新日

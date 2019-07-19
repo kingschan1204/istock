@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.spider.util;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import java.net.InetSocketAddress;
@@ -77,18 +78,21 @@ public class JsoupUitl {
         if (null != cookie) {
             connection.cookies(cookie);
         }
+        Long start = System.currentTimeMillis();
         try {
-            Long start = System.currentTimeMillis();
             log.debug(pageUrl);
             Connection.Response response = connection.execute();
             Document document = response.parse();
-            webPage = new WebPage(System.currentTimeMillis() - start, pageUrl, document, document.html());
+            webPage = new WebPage(System.currentTimeMillis() - start, pageUrl, document, document.html(),response.statusCode());
             return webPage;
         }catch (SocketTimeoutException ex){
             log.error("crawlPage {} {}", pageUrl, "网络超时!");
-        }catch (Exception e) {
+        }catch (HttpStatusException ex){
+            log.error("crawlPage {} {}", pageUrl, ex);
+            return webPage = new WebPage(System.currentTimeMillis() - start, pageUrl, null, null,ex.getStatusCode());
+        }
+        catch (Exception e) {
             log.error("crawlPage {} {}", pageUrl, e);
-            e.printStackTrace();
         }
         return null;
     }
