@@ -56,6 +56,7 @@ public class ScheduleThread implements Runnable {
                 break;
             case 1:
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DAILY_BASIC).execute(ITimerJob.COMMAND.START);
+                ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DIVIDEND).execute(ITimerJob.COMMAND.START);
                 break;
             case 9:
                 //早上9点

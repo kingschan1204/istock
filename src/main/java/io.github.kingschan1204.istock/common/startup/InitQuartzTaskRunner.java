@@ -1,7 +1,6 @@
 package io.github.kingschan1204.istock.common.startup;
 
 import io.github.kingschan1204.istock.common.util.quartz.QuartzManager;
-import io.github.kingschan1204.istock.module.task.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,12 +19,12 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
-        quartzManager.addJob("stockDividendTask",
+       /* quartzManager.addJob("stockDividendTask",
                 "stockDividendTask-group",
                 "stockDividendTask-trigger",
                 "stockDividendTask-trigger-group",
                 StockDividendTask.class,
-                "6 * * * * ?");
+                "6 * * * * ?");*/
 
 
         /*quartzManager.addJob("hisRepoartTask",
