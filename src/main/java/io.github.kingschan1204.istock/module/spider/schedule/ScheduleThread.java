@@ -50,6 +50,8 @@ public class ScheduleThread implements Runnable {
                     ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.CLEAR).execute(null);
                     // code company
                     ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.STOCKCODE).execute(null);
+                    //year report
+                    ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.YEAR_REPORT).execute(ITimerJob.COMMAND.START);
                 }
                 break;
             case 1:

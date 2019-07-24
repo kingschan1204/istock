@@ -28,12 +28,12 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
                 "6 * * * * ?");
 
 
-        quartzManager.addJob("hisRepoartTask",
+        /*quartzManager.addJob("hisRepoartTask",
                 "hisRepoartTask-group",
                 "hisRepoartTask-trigger",
                 "hisRepoartTask-trigger-group",
                 ThsHisYearReportTask.class,
-                "6 * * * * ?");
+                "6 * * * * ?");*/
 
     }
 
