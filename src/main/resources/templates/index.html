@@ -113,7 +113,7 @@
                 mtype: "GET",
                 styleUI: 'Bootstrap',
                 datatype: "json",
-                colNames: ['代码', '名称', '市场', '价格', '昨收','52周最低','52周最高', '涨幅', '市盈率(动)', '市盈率(静)','市盈率(TTM)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红', '5年平均股息','最新ROE','5年平均ROE',
+                colNames: ['代码', '名称', '市场', '价格', '昨收','52周最低','52周最高', '涨幅', '市盈率(动)', '市盈率(静)','市盈率(TTM)', '市净率', '总市值', '每股净资产', '股息(动)', '上次分红','3年平均股息', '5年平均股息','最新ROE','3年平均ROE','5年平均ROE',
                     '营业收入','营收同比增长','净利润','净利同比增长','报告期',
                     '行业'],
                 colModel: [
@@ -137,8 +137,10 @@
                     {label: 'bvps', name: 'bvps', width: 90, align: 'right'},
                     {label: 'dy', name: 'dy', width: 70, align: 'right'},
                     {label: 'dividend', name: 'dividend', width: 150, align: 'right', formatter:sdyFormat},
+                    {label: 'threeYearDy', name: 'threeYearDy', width: 90, align: 'right'},
                     {label: 'fiveYearDy', name: 'fiveYearDy', width: 90, align: 'right'},
                     {label: 'roe', name: 'roe', width: 75, align: 'right'},
+                    {label: 'threeYearRoe', name: 'threeYearRoe', width: 96, align: 'right'},
                     {label: 'fiveYearRoe', name: 'fiveYearRoe', width: 96, align: 'right'},
                     {label: 'totalIncome', name: 'totalIncome', width: 80, align: 'right'},
                     {label: 'incomeDiff', name: 'incomeDiff', width: 100, align: 'right'},
@@ -164,18 +166,18 @@
                         }
                         var incomeDiff=parseFloat(rowData.incomeDiff);
                         if ( incomeDiff < 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(21)").css("background", "#00FF00");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("background", "#00FF00");
                         } else if ( incomeDiff > 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(21)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("background", "#FF3300");
                         }
                         var profitsDiff=parseFloat(rowData.profitsDiff);
                         if ( profitsDiff< 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("background", "#00FF00");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(25)").css("background", "#00FF00");
                         } else if ( profitsDiff>0){
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(25)").css("background", "#FF3300");
                         }
                         if (parseFloat(rowData.fiveYearDy) > 4) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(17)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("background", "#FF3300");
                         }
                     }
                 },

@@ -57,9 +57,17 @@ public class Stock {
      */
     private Double fiveYearDy;
     /**
+     * 3年平均股息
+     */
+    private Double threeYearDy;
+    /**
      * 5年平均Roe
      */
     private Double fiveYearRoe;
+    /**
+     * 3年平均Roe
+     */
+    private Double threeYearRoe;
     /**
      * 总营业收入
      */

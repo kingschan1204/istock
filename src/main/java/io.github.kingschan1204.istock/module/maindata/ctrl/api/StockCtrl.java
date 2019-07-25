@@ -79,22 +79,20 @@ public class StockCtrl {
         }
     }
 
-    @ApiOperation(value = "刷新5年dy值", notes = "刷新5年平均dy值")
+    @ApiOperation(value = "刷新dy值", notes = "刷新5年平均dy值")
     @ResponseBody
-    @GetMapping(value = "/mapReduce/5years_dy")
-    public String fiveYearsDy() {
-        service.calculateFiveYearsDy();
-        return "success";
+    @GetMapping(value = "/mapReduce/dy/{start}/{end}/{key}")
+    public String fiveYearsDy(@PathVariable("start") Integer start,@PathVariable("end") Integer end ,@PathVariable("key")String key) {
+        service.calculateFiveYearsDy(start,end,key);
+        return String.format("success:%s - %s - %s", start, end,key);
     }
 
-    @ApiOperation(value = "刷新5年roe值", notes = "刷新5年平均roe值")
+    @ApiOperation(value = "刷新roe值", notes = "刷新5年平均roe值")
     @ResponseBody
-    @GetMapping(value = "/mapReduce/5years_roe")
-    public String fiveYearsRoe() {
-        int endYear = LocalDate.now().getYear();
-        int startYear = endYear - 5;
-        service.calculateFiveYearsRoe(startYear,endYear);
-        return String.format("success:%s - %s", startYear, endYear);
+    @GetMapping(value = "/mapReduce/roe/{start}/{end}/{key}")
+    public String fiveYearsRoe(@PathVariable("start") int start,@PathVariable("end") int end ,@PathVariable("key")String key) {
+        service.calculateFiveYearsRoe(start,end,key);
+        return String.format("success:%s - %s - %s", start, end,key);
     }
 
 }

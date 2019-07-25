@@ -8,9 +8,6 @@ function(key, values) {
         index++;
         years+=title+",";
     }
-    if(index<5){
-        total=0;
-    }
     var percent=(total/index).toFixed(2);
     return {percent:parseFloat(percent),years:years,size:index};
 }

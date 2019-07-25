@@ -241,44 +241,17 @@ public class StockService {
         return result;
     }
 
-    /**
-     * 更新股票价格
-     *
-     * @param codes
-     * @param spider
-     * @throws Exception
-     */
-  /*  public void updateStockPrice(List<String> codes, StockSpider spider) throws Exception {
-        JSONArray jsons = spider.getStockPrice(codes.toArray(new String[]{}));
-        List<Stock> stocks = JSON.parseArray(jsons.toJSONString(), Stock.class);
-        stocks.stream().forEach(stock -> {
-            template.upsert(
-                    new Query(Criteria.where("_id").is(stock.getCode())),
-                    new Update()
-                            .set("_id", stock.getCode())
-                            .set("type", stock.getType())
-                            .set("name", stock.getName())
-                            .set("price", stock.getPrice())
-                            .set("yesterdayPrice", stock.getYesterdayPrice())
-                            .set("fluctuate", stock.getFluctuate())
-                            .set("todayMax", stock.getTodayMax())
-                            .set("todayMin", stock.getTodayMin())
-                            .set("priceDate", stock.getPriceDate()),
-                    "stock"
-            );
-        });
-    }*/
 
     /**
      * db.getCollection('stock').update({},{$set : {"fiveYearDy":0}},false,true)
      * 计算过去5年连续分红的平均股票股息
-     * @return
+     * @param startYear 要开始计算的年份
+     * @param endYear 计算哪年为止
+     * @param key 计算结果更新到哪个字段
      */
-    public void calculateFiveYearsDy() {
-        int year = LocalDate.now().getYear();
-        int fiveYearAgo = year - 5;
+    public void calculateFiveYearsDy(int startYear, int endYear,String key) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("title").gte(String.valueOf(fiveYearAgo)));
+        query.addCriteria(Criteria.where("title").gte(String.valueOf(startYear)));
         query.with(Sort.by(
                 Sort.Order.asc("code"),
                 Sort.Order.desc("title")
@@ -287,19 +260,18 @@ public class StockService {
                 "classpath:/mapreduce/5years_dy/dy5years_map.js", "classpath:/mapreduce/5years_dy/dy5years_reduce.js",
                 new MapReduceOptions().outputCollection("stock_dy_statistics"), Document.class);
 
-
         Iterator<Document> iter = result.iterator();
         while (iter.hasNext()) {
             Document item = iter.next();
             String code = item.getString("_id");
             Document value = (Document) item.get("value");
-            if (value.containsKey("key") && value.getDouble("key") > 4) {
+            if (value.containsKey("key") && value.getDouble("key") > (endYear-startYear-1)) {
                 double percent = Double.parseDouble(value.getString("percent"));
                 UpdateResult updateResult = template.upsert(
                         new Query(Criteria.where("_id").is(code)),
                         new Update()
                                 .set("_id", code)
-                                .set("fiveYearDy", percent),
+                                .set(key, percent),
                         "stock"
                 );
             }
@@ -312,10 +284,11 @@ public class StockService {
      *
      * @param startYear 开始年份
      * @param endYear   结束年份
+     * @param key 计算结果更新到哪个字段
      */
-    public void calculateFiveYearsRoe(int startYear, int endYear) {
+    public void calculateFiveYearsRoe(int startYear, int endYear,String key) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
+        query.addCriteria(Criteria.where("year").gte(startYear));
         MapReduceResults<Document> result = template.mapReduce(query, "stock_year_report",
                 "classpath:/mapreduce/5years_roe/map.js", "classpath:/mapreduce/5years_roe/reduce.js",
                 new MapReduceOptions().outputCollection("stock_hisroe_statistics"), Document.class);
@@ -324,13 +297,13 @@ public class StockService {
             Document item = iter.next();
             String code = item.getString("_id");
             Document value = (Document) item.get("value");
-            if (value.containsKey("size") && value.getDouble("size") > 4) {
+            if (value.containsKey("size") && value.getDouble("size") > (endYear-startYear-1)) {
                 double percent = value.getDouble("percent");
                 template.upsert(
                         new Query(Criteria.where("_id").is(code)),
                         new Update()
                                 .set("_id", code)
-                                .set("fiveYearRoe", percent),
+                                .set(key, percent),
                         "stock"
                 );
             }

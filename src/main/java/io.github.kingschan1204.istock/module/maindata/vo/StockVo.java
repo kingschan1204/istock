@@ -50,10 +50,12 @@ public class StockVo {
      * 5年平均股息
      */
     private String fiveYearDy;
+    private String threeYearDy;
     /**
      * 5年平均Roe
      */
     private String fiveYearRoe;
+    private String threeYearRoe;
     /**
      * 总营业收入
      */
@@ -231,7 +233,7 @@ public class StockVo {
     }
 
     public void setPettm(String pettm) {
-        this.pettm = "-1".equals(pettm)?"--":pettm;
+        this.pettm = "-1.0".equals(pettm)?"--":pettm;
     }
 
     public void setHigh52w(String high52w) {
@@ -240,6 +242,14 @@ public class StockVo {
 
     public void setLow52w(String low52w) {
         this.low52w ="-1.0".equals(low52w)?"--":low52w;
+    }
+
+    public void setThreeYearDy(Double threeYearDy) {
+        this.threeYearDy = threeYearDy==-1?"--":threeYearDy+"%";
+    }
+
+    public void setThreeYearRoe(Double threeYearRoe) {
+        this.threeYearRoe = threeYearRoe==-1?"--":threeYearRoe+"%";
     }
 
     public StockVo() {

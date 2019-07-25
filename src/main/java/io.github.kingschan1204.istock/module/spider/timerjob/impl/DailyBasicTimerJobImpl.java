@@ -1,7 +1,6 @@
 package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
 import io.github.kingschan1204.istock.module.spider.crawl.daily.DailyBasicCrawlJob;
-import io.github.kingschan1204.istock.module.spider.crawl.daily.DailyBasicSpider;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import lombok.extern.slf4j.Slf4j;
 
