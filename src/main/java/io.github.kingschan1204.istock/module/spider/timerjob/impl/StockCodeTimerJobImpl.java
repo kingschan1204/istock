@@ -3,7 +3,7 @@ package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
-import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
+import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,7 +13,11 @@ import lombok.extern.slf4j.Slf4j;
  * @create 2019-03-28 0:27
  **/
 @Slf4j
-public class StockCodeTimerJobImpl implements ITimerJob {
+public class StockCodeTimerJobImpl extends AbstractTimeJob {
+
+    public StockCodeTimerJobImpl(){
+        name="A股所有代码更新任务";
+    }
 
     @Override
     public void execute(COMMAND command) throws Exception {

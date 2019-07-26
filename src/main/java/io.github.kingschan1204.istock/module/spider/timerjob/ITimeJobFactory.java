@@ -1,5 +1,7 @@
 package io.github.kingschan1204.istock.module.spider.timerjob;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import io.github.kingschan1204.istock.module.spider.timerjob.impl.*;
 
 import java.util.HashMap;
@@ -11,12 +13,13 @@ import java.util.HashMap;
  **/
 public class ITimeJobFactory {
     public enum TIMEJOB{
-        INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC,TOP_HOLDER,DY,YEAR_REPORT,DIVIDEND
+        CORE_SCHEDULE,INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC,TOP_HOLDER,DY,YEAR_REPORT,DIVIDEND
     }
     private static HashMap<TIMEJOB,ITimerJob> map;
 
     static {
         map= new HashMap<>();
+        map.put(TIMEJOB.CORE_SCHEDULE,new CoreScheduleTimerJobImpl());
         map.put(TIMEJOB.INDEX,new IndexTimerJobImpl());
         map.put(TIMEJOB.STOCKCODE,new StockCodeTimerJobImpl());
         map.put(TIMEJOB.CLEAR,new ClearTimerJobImpl());
@@ -39,6 +42,20 @@ public class ITimeJobFactory {
      */
     public static ITimerJob getJob(TIMEJOB timejob){
         return map.get(timejob);
+    }
+
+    public static JSONArray getTasks(){
+        JSONArray jsonArray = new JSONArray();
+        JSONObject rows;
+        for (TIMEJOB key :map.keySet()) {
+            rows=new JSONObject();
+            AbstractTimeJob job = (AbstractTimeJob) map.get(key);
+            rows.put("id",key);
+            rows.put("name",job.name);
+            rows.put("status",job.status);
+            jsonArray.add(rows);
+        }
+        return jsonArray;
     }
 
 }

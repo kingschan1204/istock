@@ -4,6 +4,7 @@ import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.module.maindata.po.StockHisPbPe;
 import io.github.kingschan1204.istock.module.maindata.po.StockPriceDaily;
 import io.github.kingschan1204.istock.module.maindata.po.StockReport;
+import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,7 +18,11 @@ import java.util.Arrays;
  * @create 2019-03-28 0:27
  **/
 @Slf4j
-public class ClearTimerJobImpl implements ITimerJob {
+public class ClearTimerJobImpl extends AbstractTimeJob {
+
+   public ClearTimerJobImpl(){
+        name="清理任务";
+    }
 
     @Override
     public void execute(COMMAND command) throws Exception {

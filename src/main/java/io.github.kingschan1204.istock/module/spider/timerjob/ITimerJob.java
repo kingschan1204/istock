@@ -8,8 +8,13 @@ package io.github.kingschan1204.istock.module.spider.timerjob;
  **/
 public interface ITimerJob {
 
+
     public enum COMMAND{
         START,STOP
+    }
+
+    public enum STATUS{
+        STOP,RUN,UNKNOW,ERROR
     }
 
     /**
