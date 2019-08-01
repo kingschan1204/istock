@@ -88,5 +88,9 @@ public class Stock {
      * 报告期
      */
     private String report;
+    /**
+     * 股票分类
+     */
+    private String stype;
 
 }

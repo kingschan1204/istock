@@ -14,6 +14,7 @@ import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.core.env.Environment;
@@ -23,6 +24,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import springfox.documentation.spring.web.json.Json;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -103,6 +105,8 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         Elements tds1 = table.get(1).select("td");
         //市盈率(动态)
         String dtsyl = tds1.get(0).text().replaceAll(regex, "");
+        //股票分类
+        String stype = tds1.get(3).text().replaceAll(regex, "");
         //市盈率(静态)
         String sjljt = tds1.get(4).text().replaceAll(regex, "");
         //5 营业总收入
@@ -177,6 +181,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                         .set("totalIncome",Double.parseDouble(totalIncome))
                         .set("incomeDiff",Double.parseDouble(incomeDiff))
                         .set("report",report_date)
+                        .set("stype",stype) //股票分类
 //                        .set("pettm",dto.getPe_ttm())
 //                        .set("high52w",dto.getHigh52w())
 //                        .set("low52w",dto.getLow52w())
@@ -193,5 +198,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
 
 
     }
+
+
 
 }

@@ -76,7 +76,7 @@ public class StockVo {
      * 报告期
      */
     private String report;
-
+    private String stype;
 
     public void setCode(String code) {
         this.code = code;
@@ -250,6 +250,10 @@ public class StockVo {
 
     public void setThreeYearRoe(Double threeYearRoe) {
         this.threeYearRoe = threeYearRoe==-1?"--":threeYearRoe+"%";
+    }
+
+    public void setStype(String stype) {
+        this.stype = stype;
     }
 
     public StockVo() {
