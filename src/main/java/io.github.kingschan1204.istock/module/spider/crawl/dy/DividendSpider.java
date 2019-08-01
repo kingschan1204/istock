@@ -51,7 +51,7 @@ public class DividendSpider implements Runnable {
         EastMoneyDividendSpider eastmoneySpider = new EastMoneyDividendSpider(code, useAgent, 3000);
         FutureTask<JSONArray> futureTask1 = new FutureTask<JSONArray>(eastmoneySpider);
         new Thread(futureTask1).start();
-        JSONArray east = futureTask.get(3, TimeUnit.SECONDS);
+        JSONArray east = futureTask1.get(3, TimeUnit.SECONDS);
 
         if (null == east) {
             east = new JSONArray();
