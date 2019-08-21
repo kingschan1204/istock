@@ -1,9 +1,14 @@
 package io.github.kingschan1204.istock.module.maindata.ctrl.api;
 
+import com.alibaba.fastjson.JSON;
+import com.mongodb.bulk.BulkWriteResult;
+import io.github.kingschan1204.istock.common.db.MyMongoTemplate;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
+import io.github.kingschan1204.istock.module.maindata.po.CsIndexIndustry;
 import io.github.kingschan1204.istock.module.maindata.services.StockCodeInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockCompanyService;
 import io.github.kingschan1204.istock.module.maindata.services.StockService;
+import io.github.kingschan1204.istock.module.spider.crawl.csindex.CsindexIndustrySpider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chenguoxiang
@@ -95,4 +103,17 @@ public class StockCtrl {
         return String.format("success:%s - %s - %s", start, end,key);
     }
 
+    @Autowired
+    private MyMongoTemplate myMongoTemplate;
+
+    @GetMapping(value = "/csindex")
+    public String crawCsindex()throws Exception{
+        CsindexIndustrySpider csindexIndustrySpider = new CsindexIndustrySpider();
+        FutureTask<List<CsIndexIndustry>> task = new FutureTask<>(csindexIndustrySpider);
+        new Thread(task).start();
+        List<CsIndexIndustry> list=task.get();
+        myMongoTemplate.dropCollection(CsIndexIndustry.class);
+        BulkWriteResult bulkWriteResult= myMongoTemplate.save(list,CsIndexIndustry.class);
+        return JSON.toJSONString(bulkWriteResult);
+    }
 }
