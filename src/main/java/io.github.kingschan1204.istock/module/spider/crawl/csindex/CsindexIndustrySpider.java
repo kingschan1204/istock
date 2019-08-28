@@ -38,7 +38,7 @@ public class CsindexIndustrySpider implements Callable<List<CsIndexIndustry>> {
             }
             data.add(new CsIndexIndustry(
                     code,
-                    cell[1].toString(),
+                    cell[1].toString().replaceAll("\\s", ""),
                     cell[5].toString(),
                     cell[8].toString(),
                     cell[11].toString(),

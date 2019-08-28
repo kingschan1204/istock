@@ -11,9 +11,11 @@ import io.github.kingschan1204.istock.module.spider.dto.XqQuoteDto;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
+import io.github.kingschan1204.istock.module.spider.util.JsoupUitl;
 import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -119,6 +121,8 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         String zsz = tds1.get(11).text().replaceAll("\\D+", "");
         //每股净资产
         double mgjzc = MathFormat.doubleFormat(tds1.get(12).text().replaceAll("\\[.*|", ""));
+        //毛利率
+        Double mll =MathFormat.parseMath(tds1.get(13).getElementsByClass("tip f12").text());
         String jzcsyl = "-1";
         if (tds1.size() > 14) {
             //净资产收益率
@@ -182,6 +186,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
                         .set("incomeDiff",Double.parseDouble(incomeDiff))
                         .set("report",report_date)
                         .set("stype",stype) //股票分类
+                        .set("mll",mll)
 //                        .set("pettm",dto.getPe_ttm())
 //                        .set("high52w",dto.getHigh52w())
 //                        .set("low52w",dto.getLow52w())

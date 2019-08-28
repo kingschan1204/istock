@@ -81,6 +81,10 @@ public class Stock {
      */
     private Double totalProfits;
     /**
+     * 毛利率
+     */
+    private Double mll;
+    /**
      * 同期对比净利润
      */
     private Double profitsDiff;

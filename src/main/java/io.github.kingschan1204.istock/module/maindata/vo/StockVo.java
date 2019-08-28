@@ -77,6 +77,10 @@ public class StockVo {
      */
     private String report;
     private String stype;
+    /**
+     * 毛利率
+     */
+    private String mll;
 
     public void setCode(String code) {
         this.code = code;
@@ -254,6 +258,10 @@ public class StockVo {
 
     public void setStype(String stype) {
         this.stype = stype;
+    }
+
+    public void setMll(Double mll) {
+        this.mll = mll+"%";
     }
 
     public StockVo() {

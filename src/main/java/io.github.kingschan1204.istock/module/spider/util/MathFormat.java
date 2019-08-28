@@ -78,13 +78,22 @@ public class MathFormat {
         return math;
     }
 
-    public static void main(String[] args) {
-       /*List<String> maths = Arrays.asList("0","-1","1.00","0.11","2.303827","2.30382E7","-2.03E+08","-2.03EE+08");
-       maths.stream().forEach(s ->{
-           System.out.println(s+" | "+s.matches("^[-+]?([0]{1}(\\.[0-9]+)?|[1-9]{1}\\d*(\\.[0-9E+]+)?)"));
-       });*/
-        System.out.println(Double.parseDouble("-2.03E+08"));
-        System.out.println("-2.03E+08A~34".replaceAll("[^0-9.E+\\-]","*"));
-
+    /**
+     * 从一段字符串里找出数字
+     * @param text
+     * @return
+     */
+    public static Double parseMath(String text){
+        char chars[]=text.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (char c:chars) {
+            String str =String.valueOf(c);
+            if (str.equals("-")||str.matches("\\d")||str.equals(".")){
+                sb.append(str);
+            }
+        }
+        return sb.toString().isEmpty()?0:Double.parseDouble(sb.toString());
     }
+
+
 }
