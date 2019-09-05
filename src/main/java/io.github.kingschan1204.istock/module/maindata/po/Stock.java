@@ -38,7 +38,6 @@ public class Stock {
     private Double high52w;
     //52周最低
     private Double low52w;
-    private Integer infoDate;
     /**
      * 静态分红日期
      */

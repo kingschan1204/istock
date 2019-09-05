@@ -30,7 +30,6 @@ public class StockVo {
     private String ped;
     //pe (TTM)
     private String pettm;
-    private Integer infoDate;
 
     //52周最高
     private String high52w;
@@ -164,10 +163,6 @@ public class StockVo {
         this.ped = -1 == ped ? "--" : String.format("%s", ped);
     }
 
-
-    public void setInfoDate(Integer infoDate) {
-        this.infoDate = infoDate;
-    }
 
 
     public void setDividendDate(String dividendDate) {
