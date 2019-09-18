@@ -20,7 +20,7 @@ public class DyCrawlJob implements Runnable {
     private AtomicInteger error;
 
     public DyCrawlJob(AtomicInteger error) {
-        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("crawlerJob-dy"));
+        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("dy"));
         this.error=error;
     }
 

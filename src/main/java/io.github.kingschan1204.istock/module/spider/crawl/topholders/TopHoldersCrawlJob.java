@@ -19,7 +19,7 @@ public class TopHoldersCrawlJob implements Runnable {
 
 
     public TopHoldersCrawlJob(){
-        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("crawlerJob-topholders"));
+        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("topholders"));
     }
 
     public void stopTask(){

@@ -18,7 +18,7 @@ public class YearReportCrawlJob implements Runnable {
     private AtomicInteger error;
 
     public YearReportCrawlJob(AtomicInteger error) {
-        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("crawlerJob-YearReport"));
+        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("YearReport"));
         this.error=error;
     }
 

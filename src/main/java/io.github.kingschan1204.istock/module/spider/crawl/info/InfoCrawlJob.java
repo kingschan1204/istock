@@ -18,7 +18,7 @@ public class InfoCrawlJob implements Runnable {
     private ScheduledExecutorService scheduledExecutorService;
 
     public InfoCrawlJob() {
-        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("crawlerJob-info"));
+        scheduledExecutorService = Executors.newScheduledThreadPool(4, new MyThreadFactory("ths-info"));
     }
 
     public void stopTask() {
