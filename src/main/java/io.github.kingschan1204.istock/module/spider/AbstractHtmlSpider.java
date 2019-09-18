@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
-
 import java.net.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -21,6 +20,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @AllArgsConstructor
 @Slf4j
 public abstract class AbstractHtmlSpider<T> implements Runnable, IHtmlSpider {
+    //任务执行容器
+    protected IJobExecuteContainer jobExecuteContainer;
     protected ConcurrentLinkedQueue<T> queue;
     protected Map<String, String> cookie;
     protected String referer;
@@ -52,4 +53,5 @@ public abstract class AbstractHtmlSpider<T> implements Runnable, IHtmlSpider {
             log.error("page process error {} {}", pageUrl, ex);
         }
     }
+
 }

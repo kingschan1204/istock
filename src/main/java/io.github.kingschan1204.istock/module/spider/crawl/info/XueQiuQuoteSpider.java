@@ -12,12 +12,9 @@ import io.github.kingschan1204.istock.module.spider.dto.XqQuoteDto;
 import io.github.kingschan1204.istock.module.spider.entity.WebPage;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimeJobFactory;
 import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
-import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.HttpStatusException;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,9 +22,6 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -38,8 +32,8 @@ public class XueQiuQuoteSpider extends AbstractHtmlSpider<Stock> {
     private StockCodeInfo currentCodeInfo;
     private AtomicInteger error;
 
-    public XueQiuQuoteSpider(String useAgent,AtomicInteger error) {
-        this.useAgent = useAgent;
+    public XueQiuQuoteSpider(AtomicInteger error) {
+        this.useAgent = SpringContextUtil.getProperties("spider.useagent");
         this.error=error;
     }
 
@@ -127,8 +121,8 @@ public class XueQiuQuoteSpider extends AbstractHtmlSpider<Stock> {
         UpdateResult updateResult2 = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
                 new Update().set("dyDate", Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())), "stock_code_info");
-        log.info("dy更新，代码{}受影响行数:{}", currentCodeInfo.getCode(), updateResult.getModifiedCount() + updateResult2.getModifiedCount());
-
+        log.info("XueQiu-dy更新，代码{}受影响行数:{} ,top:{}", currentCodeInfo.getCode(), updateResult.getModifiedCount() + updateResult2.getModifiedCount()
+                ,jobExecuteContainer.top());
     }
 
 }

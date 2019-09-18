@@ -1,15 +1,17 @@
 package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
-import io.github.kingschan1204.istock.module.spider.crawl.info.DyCrawlJob;
+import io.github.kingschan1204.istock.module.spider.SimpleTimerJobContainer;
+import io.github.kingschan1204.istock.module.spider.crawl.info.XueQiuQuoteSpider;
 import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class XueQiuDyTimerJobImpl extends AbstractTimeJob {
 
-    private DyCrawlJob dyCrawlJob;
+    private SimpleTimerJobContainer dyCrawlJob;
     private AtomicInteger error=new AtomicInteger(0);
 
     public XueQiuDyTimerJobImpl(){
@@ -27,7 +29,9 @@ public class XueQiuDyTimerJobImpl extends AbstractTimeJob {
                         return;
                     }
                     log.info("开启dy更新线程!");
-                    dyCrawlJob = new DyCrawlJob(error);
+                    XueQiuQuoteSpider xueQiuQuoteSpider = new XueQiuQuoteSpider(error);
+                    dyCrawlJob = new SimpleTimerJobContainer(
+                            xueQiuQuoteSpider,0,1, TimeUnit.SECONDS,"xueqiu-info",4);
                     new Thread(dyCrawlJob, "DyCrawlJob").start();
                     status=STATUS.RUN;
                 }
@@ -35,7 +39,7 @@ public class XueQiuDyTimerJobImpl extends AbstractTimeJob {
             case STOP:
                 if (null != dyCrawlJob) {
                     log.info("关闭Dy更新线程!");
-                    dyCrawlJob.stopTask();
+                    dyCrawlJob.shutDown();
                     dyCrawlJob = null;
                     status=STATUS.STOP;
                 }
