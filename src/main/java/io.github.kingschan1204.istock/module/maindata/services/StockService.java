@@ -184,10 +184,10 @@ public class StockService {
 
         JSONObject data = jisiluSpilder.crawHisPbPePriceAndReports(code);
         List<Document> list = new ArrayList<Document>();
-        MongoCollection<Document> hisdata = template.getCollection("stock_his_pe_pb");
+//        MongoCollection<Document> hisdata = template.getCollection("stock_his_pe_pb");
         MongoCollection<Document> report = template.getCollection("stock_report");
 
-        JSONArray hisdataJsons = data.getJSONArray("hisdata");
+       /* JSONArray hisdataJsons = data.getJSONArray("hisdata");
         for (int i = 0; i < hisdataJsons.size(); i++) {
             JSONObject row = hisdataJsons.getJSONObject(i);
             Document object = new Document();
@@ -213,7 +213,7 @@ public class StockService {
                 hisdata.insertMany(list);
                 list.clear();
             }
-        }
+        }*/
 
 
         JSONArray reportJsons = data.getJSONArray("reports");
