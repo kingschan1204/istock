@@ -1,8 +1,11 @@
 package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
-import io.github.kingschan1204.istock.module.spider.crawl.topholders.TopHoldersCrawlJob;
+import io.github.kingschan1204.istock.module.spider.SimpleTimerJobContainer;
+import io.github.kingschan1204.istock.module.spider.crawl.topholders.TopHoldersSpider;
 import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 股东更新命令封装
@@ -12,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TopHolderTimerJobImpl extends AbstractTimeJob {
 
-    private TopHoldersCrawlJob topHoldersCrawlJob;
+    private SimpleTimerJobContainer topHoldersCrawlJob;
 
     public TopHolderTimerJobImpl(){
         name="前10大股东抓取任务";
@@ -24,7 +27,8 @@ public class TopHolderTimerJobImpl extends AbstractTimeJob {
             case START:
                 if(null==topHoldersCrawlJob){
                     log.info("start topholders job...");
-                    topHoldersCrawlJob=new TopHoldersCrawlJob();
+                    TopHoldersSpider topHoldersSpider = new TopHoldersSpider();
+                    topHoldersCrawlJob=new SimpleTimerJobContainer(topHoldersSpider,0,4, TimeUnit.SECONDS,"topholders",4);
                     Thread thread = new Thread(topHoldersCrawlJob);
                     thread.start();
                     status=STATUS.RUN;
@@ -33,7 +37,7 @@ public class TopHolderTimerJobImpl extends AbstractTimeJob {
             case STOP:
                 if(null!=topHoldersCrawlJob){
                     log.info("stop topholders job !");
-                    topHoldersCrawlJob.stopTask();
+                    topHoldersCrawlJob.shutDown();
                     topHoldersCrawlJob=null;
                     status=STATUS.STOP;
                 }

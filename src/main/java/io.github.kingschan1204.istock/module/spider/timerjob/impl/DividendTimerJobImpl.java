@@ -1,8 +1,11 @@
 package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
-import io.github.kingschan1204.istock.module.spider.crawl.dy.DividendCrawlJob;
+import io.github.kingschan1204.istock.module.spider.SimpleTimerJobContainer;
+import io.github.kingschan1204.istock.module.spider.crawl.dy.DividendSpider;
 import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 代码info信息更新命令封装
@@ -12,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DividendTimerJobImpl extends AbstractTimeJob {
 
-    private DividendCrawlJob dividendCrawlJob;
+    private SimpleTimerJobContainer dividendCrawlJob;
 
     public DividendTimerJobImpl(){
         name="历史分红抓取任务";
@@ -24,7 +27,8 @@ public class DividendTimerJobImpl extends AbstractTimeJob {
             case START:
                 if (null == dividendCrawlJob) {
                     log.info("开启dividendCrawlJob更新线程!");
-                    dividendCrawlJob = new DividendCrawlJob();
+                    DividendSpider dividendSpider = new DividendSpider();
+                    dividendCrawlJob = new SimpleTimerJobContainer(dividendSpider,0,6, TimeUnit.SECONDS,"dividend",4);
                     new Thread(dividendCrawlJob, "dividendCrawlJob").start();
                     status=STATUS.RUN;
                 }
@@ -32,7 +36,7 @@ public class DividendTimerJobImpl extends AbstractTimeJob {
             case STOP:
                 if (null != dividendCrawlJob) {
                     log.info("关闭dividendCrawlJob更新线程!");
-                    dividendCrawlJob.stopTask();
+                    dividendCrawlJob.shutDown();
                     dividendCrawlJob = null;
                     status=STATUS.STOP;
                 }

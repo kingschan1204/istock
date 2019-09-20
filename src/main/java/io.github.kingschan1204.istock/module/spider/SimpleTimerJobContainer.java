@@ -1,11 +1,8 @@
 package io.github.kingschan1204.istock.module.spider;
 
+import io.github.kingschan1204.istock.common.thread.MonitorScheduledThreadPool;
 import io.github.kingschan1204.istock.common.thread.MyThreadFactory;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,13 +15,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class SimpleTimerJobContainer implements Runnable, IJobExecuteContainer {
 
-    private ScheduledExecutorService scheduledExecutorService;
+    private MonitorScheduledThreadPool scheduledExecutorService;
     //线程组名称
     private String threadName;
     //记录错误次数
     private AtomicInteger error;
     //具体的线程任务
-    private AbstractHtmlSpider task;
+    private Runnable task;
     //初始延迟
     private long initialDelay;
     //周期
@@ -34,37 +31,20 @@ public class SimpleTimerJobContainer implements Runnable, IJobExecuteContainer {
     //线程池大小
     private int poolSize;
 
-    public SimpleTimerJobContainer(AbstractHtmlSpider task, long initialDelay, long period, TimeUnit unit, String threadName,int poolSize) {
+    public SimpleTimerJobContainer(Runnable task, long initialDelay, long period, TimeUnit unit, String threadName, int poolSize) {
         this.task = task;
         this.initialDelay = initialDelay;
         this.period = period;
         this.unit = unit;
         this.threadName = threadName;
-        this.poolSize=poolSize;
+        this.poolSize = poolSize;
         error = new AtomicInteger(0);
-        scheduledExecutorService = Executors.newScheduledThreadPool(poolSize, new MyThreadFactory(threadName));
-        task.jobExecuteContainer = this;
+        scheduledExecutorService = new MonitorScheduledThreadPool(poolSize, new MyThreadFactory(threadName));
     }
-
 
     @Override
     public void run() {
         scheduledExecutorService.scheduleAtFixedRate(task, initialDelay, period, unit);
-    }
-
-    @Override
-    public String top() {
-        if (null == scheduledExecutorService) {
-            log.error("执行容器为null !无法捕捉信息！");
-            return null;
-        }
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) scheduledExecutorService;
-        return String.format("总线程数:%s,活动线程数:%s,执行完成线程数:%s,排队线程数:%s",
-                threadPoolExecutor.getTaskCount(),
-                threadPoolExecutor.getActiveCount(),
-                threadPoolExecutor.getCompletedTaskCount(),
-                threadPoolExecutor.getQueue().size()
-        );
     }
 
     @Override

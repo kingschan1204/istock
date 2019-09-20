@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class YearReportSpider implements Runnable {
 
     private AtomicInteger error;
-    YearReportSpider(AtomicInteger error){
+    public YearReportSpider(AtomicInteger error){
         this.error=error;
     }
 

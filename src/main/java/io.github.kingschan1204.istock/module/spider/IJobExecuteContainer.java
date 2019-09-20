@@ -8,12 +8,6 @@ package io.github.kingschan1204.istock.module.spider;
 public interface IJobExecuteContainer {
 
     /**
-     * 线程池情况展示 类似于linux top
-     * @return
-     */
-    String top();
-
-    /**
      * 关闭线程（非强制模式）
      */
     void shutDown();

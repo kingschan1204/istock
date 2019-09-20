@@ -1,15 +1,17 @@
 package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
-import io.github.kingschan1204.istock.module.spider.crawl.report.YearReportCrawlJob;
+import io.github.kingschan1204.istock.module.spider.SimpleTimerJobContainer;
+import io.github.kingschan1204.istock.module.spider.crawl.report.YearReportSpider;
 import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class YearReportTimerJobImpl extends AbstractTimeJob {
 
-    private YearReportCrawlJob yearReportJob;
+    private SimpleTimerJobContainer yearReportJob;
     private AtomicInteger error=new AtomicInteger(0);
 
     public YearReportTimerJobImpl(){
@@ -27,7 +29,8 @@ public class YearReportTimerJobImpl extends AbstractTimeJob {
                         return;
                     }
                     log.info("开启Year Report更新线程!");
-                    yearReportJob = new YearReportCrawlJob(error);
+                    YearReportSpider yearReportSpider = new YearReportSpider(error);
+                    yearReportJob = new SimpleTimerJobContainer(yearReportSpider,0,1, TimeUnit.SECONDS,"YearReport",4);
                     new Thread(yearReportJob, "yearReportJob").start();
                     status=STATUS.RUN;
                 }
@@ -35,7 +38,7 @@ public class YearReportTimerJobImpl extends AbstractTimeJob {
             case STOP:
                 if (null != yearReportJob) {
                     log.info("关闭Year Report 更新线程!");
-                    yearReportJob.stopTask();
+                    yearReportJob.shutDown();
                     yearReportJob = null;
                     status=STATUS.STOP;
                 }

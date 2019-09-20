@@ -1,8 +1,11 @@
 package io.github.kingschan1204.istock.module.spider.timerjob.impl;
 
-import io.github.kingschan1204.istock.module.spider.crawl.daily.DailyBasicCrawlJob;
+import io.github.kingschan1204.istock.module.spider.SimpleTimerJobContainer;
+import io.github.kingschan1204.istock.module.spider.crawl.daily.DailyBasicSpider;
 import io.github.kingschan1204.istock.module.spider.timerjob.AbstractTimeJob;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 代码info信息更新命令封装
@@ -12,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DailyBasicTimerJobImpl extends AbstractTimeJob {
 
-    private DailyBasicCrawlJob dailyBasicCrawlJob;
+    private SimpleTimerJobContainer dailyBasicCrawlJob;
 
     public DailyBasicTimerJobImpl(){
         name="每日股票指标抓取任务";
@@ -24,7 +27,8 @@ public class DailyBasicTimerJobImpl extends AbstractTimeJob {
             case START:
                 if (null == dailyBasicCrawlJob) {
                     log.info("开启basic daily更新线程!");
-                    dailyBasicCrawlJob = new DailyBasicCrawlJob();
+                    DailyBasicSpider dailyBasicSpider = new DailyBasicSpider();
+                    dailyBasicCrawlJob = new SimpleTimerJobContainer(dailyBasicSpider,0,3, TimeUnit.SECONDS,"dailyBasicSpider",4);
                     new Thread(dailyBasicCrawlJob, "DailyBasicCrawlJob").start();
                     status=STATUS.RUN;
                 }
@@ -32,7 +36,7 @@ public class DailyBasicTimerJobImpl extends AbstractTimeJob {
             case STOP:
                 if (null != dailyBasicCrawlJob) {
                     log.info("关闭basic daily更新线程!");
-                    dailyBasicCrawlJob.stopTask();
+                    dailyBasicCrawlJob.shutDown();
                     dailyBasicCrawlJob = null;
                     status=STATUS.STOP;
                 }

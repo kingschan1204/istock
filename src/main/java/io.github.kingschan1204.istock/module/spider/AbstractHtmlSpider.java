@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Slf4j
 public abstract class AbstractHtmlSpider<T> implements Runnable, IHtmlSpider {
     //任务执行容器
-    protected IJobExecuteContainer jobExecuteContainer;
     protected ConcurrentLinkedQueue<T> queue;
     protected Map<String, String> cookie;
     protected String referer;

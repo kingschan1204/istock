@@ -187,7 +187,7 @@ public class ThsInfoSpider extends AbstractHtmlSpider<Stock> {
         UpdateResult updateResult2 = getMongoTemp().upsert(
                 new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
                 new Update().set("infoDate", Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
-        log.info("代码{}受影响行数:{} top:{}",currentCodeInfo.getCode(),updateResult.getModifiedCount()+updateResult2.getModifiedCount(),jobExecuteContainer.top());
+        log.info("代码{}受影响行数:{}",currentCodeInfo.getCode(),updateResult.getModifiedCount()+updateResult2.getModifiedCount());
 
 
 
