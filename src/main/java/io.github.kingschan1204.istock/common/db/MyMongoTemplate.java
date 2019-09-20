@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.common.db;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.bulk.BulkWriteResult;
+import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapreduce.GroupBy;
 import org.springframework.data.mongodb.core.mapreduce.GroupByResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -60,6 +62,7 @@ public class MyMongoTemplate {
         mongoTemplate.dropCollection(clazz);
     }
 
+
     /**
      * 分组
      *
@@ -68,6 +71,7 @@ public class MyMongoTemplate {
      * @return
      */
     public JSONObject groupBy(Criteria criteria, String collection, String... keys) {
+//        Document doc=  mongoTemplate.executeCommand("{'group' : {'ns' : 'task','key' : {'PotNo': true,'jhrw_rwlx':true},'initial' : {'count' : 0},'$reduce' : 'function(doc,prev){prev.count++;}'}}");
         GroupBy gb = new GroupBy(keys).initialDocument("{count:0}").reduceFunction("function(doc, result){result.count++}");
         GroupByResults results = null;
         //没有条件的情况
@@ -131,6 +135,27 @@ public class MyMongoTemplate {
         List<?> list = mongoTemplate.find(query, clazz);
         return list;
     }
+
+    /**
+     *  更新符合条件的第一条数据
+     * @param collection  表名
+     * @param updateObj 更新的数据
+     * @param criteria  条件
+     * @return
+     */
+    public Boolean updateFirst(String collection, JSONObject updateObj, Criteria... criteria) {
+        Query query = new Query();
+        for (Criteria c : criteria) {
+            query.addCriteria(c);
+        }
+        Update update = new Update();
+        for (String key :updateObj.keySet()) {
+            update.set(key,updateObj.get(key));
+        }
+        UpdateResult updateResult = mongoTemplate.updateFirst(query, update, collection);
+        return updateResult.getModifiedCount()>0;
+    }
+
 
 
 }
