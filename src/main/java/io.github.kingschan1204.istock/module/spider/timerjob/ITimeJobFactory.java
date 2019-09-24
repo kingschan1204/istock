@@ -13,7 +13,7 @@ import java.util.HashMap;
  **/
 public class ITimeJobFactory {
     public enum TIMEJOB{
-        CORE_SCHEDULE,INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC,TOP_HOLDER,DY,YEAR_REPORT,DIVIDEND
+        CORE_SCHEDULE,INDEX,CLEAR,STOCKCODE,INFO,DAILY_BASIC,TOP_HOLDER,DY,YEAR_REPORT,DIVIDEND,DYROE
     }
     private static HashMap<TIMEJOB,ITimerJob> map;
 
@@ -29,6 +29,7 @@ public class ITimeJobFactory {
         map.put(TIMEJOB.DY,new XueQiuDyTimerJobImpl());
         map.put(TIMEJOB.YEAR_REPORT,new YearReportTimerJobImpl());
         map.put(TIMEJOB.DIVIDEND,new DividendTimerJobImpl());
+        map.put(TIMEJOB.DYROE,new DyRoeAnalysisJobImpl());
 
 
 
