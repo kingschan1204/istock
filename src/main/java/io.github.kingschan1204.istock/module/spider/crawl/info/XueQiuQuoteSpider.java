@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
+import io.github.kingschan1204.istock.common.util.spring.SpringMailSender;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockCodeInfo;
@@ -95,6 +96,10 @@ public class XueQiuQuoteSpider extends AbstractHtmlSpider<Stock> {
             if(error.addAndGet(1)>10){
                 log.error("错误超过10次，即将关闭dy任务");
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DY).execute(ITimerJob.COMMAND.STOP);
+                //发邮件通知
+                SpringMailSender mailSender = SpringContextUtil.getBean(SpringMailSender.class);
+                String adminMail=SpringContextUtil.getProperties("app.admin.email");
+                mailSender.sendSimpleTextMail(adminMail,"istock爬虫通知","雪球token失效,错误已超10次，线程已关闭，请更新token再重新启动程序！");
             }
             return;
         }
