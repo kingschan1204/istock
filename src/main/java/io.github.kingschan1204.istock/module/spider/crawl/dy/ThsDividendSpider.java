@@ -44,7 +44,7 @@ public class ThsDividendSpider implements Callable<JSONArray>{
                 if ("--".equals(data[6]) || "--".equals(data[9])) {
                     continue;
                 }
-                log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[9]);
+                log.debug("报告期:{},A股除权除息日:{},实施日期:{},分红方案说明:{},分红率:{}", data[0], data[6], data[3], data[4], data[10]);
                 json = new JSONObject();
                 json.put("code", stockCode);
                 //报告期
