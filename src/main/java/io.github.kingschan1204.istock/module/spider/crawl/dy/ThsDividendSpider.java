@@ -35,7 +35,7 @@ public class ThsDividendSpider implements Callable<JSONArray>{
         Element table = doc.getElementById("bonus_table");
         if (null != table) {
             Elements rows = table.getElementsByTag("tr");
-            //报告期	董事会日期	股东大会预案公告日期	实施日期	分红方案说明	A股股权登记日	A股除权除息日	方案进度	股利支付率	分红率
+            //报告期	董事会日期	股东大会预案公告日期	实施公告日	分红方案说明	A股股权登记日	A股除权除息日	分红总额	方案进度	股利支付率	税前分红率
             JSONArray jsons = new JSONArray();
             JSONObject json;
             for (int i = 1; i < rows.size(); i++) {
@@ -58,13 +58,13 @@ public class ThsDividendSpider implements Callable<JSONArray>{
                 //转股比例
                 json.put("zgbl", 0);
                 //分红率
-                json.put("percent", MathFormat.doubleFormat(data[9]));
+                json.put("percent", MathFormat.doubleFormat(data[10]));
                 //股权登记日
                 json.put("gqdjr", data[5]);
                 //除息除权日
                 json.put("cxcqr", data[6]);
                 //方案进度
-                json.put("progress", data[7]);
+                json.put("progress", data[8]);
                 //来源
                 json.put("from", "ths");
                 jsons.add(json);
