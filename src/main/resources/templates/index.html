@@ -13,12 +13,14 @@
             #app span {
                 margin-left: 10px;
             }
+            html { overflow-x: hidden; overflow-y: auto; }
         </style>
         <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" media="screen" href="http://res.51so.info/ui.jqgrid-bootstrap.css"/>
     </head>
-    <body style="padding: 20px 0px 0px 10px;overflow: hidden;">
-    <div class="row" style="margin-bottom: 10px;">
+    <body >
+    <#include  "/pub/menu.ftl"/>
+    <div class="row" style="margin-top: 60px;margin-bottom: 10px;">
         <div class="col-md-12" style="padding-left: 30px;">
             <form class="form-inline" onkeydown="if(event.keyCode==13){reloadStock(); return false;}">
                 <div class="form-group">
@@ -161,24 +163,24 @@
                     for (var i = 0; i < ids.length; i++) {
                         var rowData = $("#jqGrid").getRowData(ids[i]);
                         if (parseFloat(rowData.fluctuate) < 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(8)").css("background", "#00FF00");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(8)").css("color", "#00FF00");
                         } else {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(8)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(8)").css("color", "#FF3300");
                         }
                         var incomeDiff=parseFloat(rowData.incomeDiff);
                         if ( incomeDiff < 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("background", "#00FF00");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("color", "#00FF00");
                         } else if ( incomeDiff > 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(23)").css("color", "#FF3300");
                         }
                         var profitsDiff=parseFloat(rowData.profitsDiff);
                         if ( profitsDiff< 0) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(25)").css("background", "#00FF00");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(25)").css("color", "#00FF00");
                         } else if ( profitsDiff>0){
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(25)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(25)").css("color", "#FF3300");
                         }
                         if (parseFloat(rowData.fiveYearDy) > 4) {
-                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("background", "#FF3300");
+                            $("#jqGrid").find('#' + ids[i]).find("td:eq(18)").css("color", "#FF3300");
                         }
                     }
                 },

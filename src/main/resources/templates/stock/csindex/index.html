@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中证分类表</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="http://res.51so.info/ui.jqgrid-bootstrap.css"/>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/jqgrid/4.6.0/js/i18n/grid.locale-cn.js"></script>
+    <script src="http://res.51so.info/jquery.jqGrid.min.js"></script>
+</head>
+<body>
+<#include "/pub/menu.ftl"/>
+<div class="row" style="margin-top: 50px;"></div>
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#jqGrid").jqGrid({
+            url: "/csindex/list",
+            width: window.screen.availWidth - 20,
+            autowidth: false,
+            shrinkToFit: false,
+            multiselect: false,//复选框
+            rownumbers: true,
+            loadtext: '正在加载数据请稍后...',
+            mtype: "GET",
+            styleUI: 'Bootstrap',
+            datatype: "json",
+            colNames: ['代码', '名称', '一级分类', '二级分类', '三级分类','四级分类','沪深300行业指数'],
+            colModel: [
+                {label: 'code', name: 'code', width: 100},
+                {label: 'name', name: 'name', width: 150},
+                {label: 'lvone', name: 'lvone', width: 150},
+                {label: 'lvtwo', name: 'lvtwo', width: 150},
+                {label: 'lvthree', name: 'lvthree', width: 180},
+                {label: 'lvfour', name: 'lvfour', width: 180},
+                {label: 'hs300index', name: 'hs300index', width: 120}
+            ],
+            viewrecords: true,
+            rowList: [10, 20, 30, 60],
+            sortname: 'code', //要排序的字段 //默认表格加载时根据fca09列排序
+            sortorder:'asc', //默认的排序方式,跟数据库的asc,desc一样 asc 降序 desc 升序
+            sortable:true ,
+            //height: '90%',
+            rowNum: 20,
+            pager: "#jqGridPager",
+            gridComplete: function () {
+                var ids = $("#jqGrid").getDataIDs();
+            },
+            ondblClickRow: function (id) {
+                //双击行
+                /* var rowData = $("#jqGrid").getRowData(id);
+                 window.open("/stock/his_dy/"+rowData.code);*/
+            }
+        });
+        //$("#jqGrid").jqGrid("setFrozenColumns");
+        doResize();
+    });
+    var t = document.documentElement.clientWidth;
+    window.onresize = function () {
+        if (t != document.documentElement.clientWidth) {
+            t = document.documentElement.clientWidth;
+            doResize();
+        }
+    }
+
+    function getPageSize() {
+        var winW, winH;
+        if (window.innerHeight) {// all except IE
+            winW = window.innerWidth;
+            winH = window.innerHeight;
+        } else if (document.documentElement && document.documentElement.clientHeight) {// IE 6 Strict Mode
+            winW = document.documentElement.clientWidth;
+            winH = document.documentElement.clientHeight;
+        } else if (document.body) { // other
+            winW = document.body.clientWidth;
+            winH = document.body.clientHeight;
+        }  // for small pages with total size less then the viewport
+        return {WinW: winW, WinH: winH};
+    }
+
+    function doResize() {
+        var ss = getPageSize();
+        $("#jqGrid").jqGrid('setGridWidth', ss.WinW - 10).jqGrid('setGridHeight', ss.WinH - 200);
+    }
+    //刷新列表
+    function reloadStock() {
+        //此处可以添加对查询数据的合法验证
+        var code = $("#stockCode").val();
+        var type = $("#stockType").val();
+        var pb = $("#stockPb").val();
+        var dy = $("#dyType").val() + "-" + $("#stockDy").val();
+        var pb = $("#stockPb").val();
+        var industry = $("#industry").val();
+        $("#jqGrid").jqGrid('setGridParam', {
+            datatype: 'json',
+            postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy,'industry':industry},
+            page: 1
+        }).trigger("reloadGrid");
+    }
+
+</script>
+</html>

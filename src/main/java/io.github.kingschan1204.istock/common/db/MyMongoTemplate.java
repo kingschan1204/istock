@@ -97,8 +97,10 @@ public class MyMongoTemplate {
      */
     public Page pageQuery(int pageindex, int pagesize, Class clazz, Sort.Direction sort, String sortField, Criteria... criterias) {
         Query query = new Query();
-        for (Criteria where : criterias) {
-            query.addCriteria(where);
+        if(null!=criterias){
+            for (Criteria where : criterias) {
+                query.addCriteria(where);
+            }
         }
         Long total = mongoTemplate.count(query, clazz);
         //分页
@@ -109,7 +111,8 @@ public class MyMongoTemplate {
         }
         //code
         List<?> list = mongoTemplate.find(query, clazz);
-        return new Page(total, pageindex, pagesize, list);
+        long pagetotal = total % pagesize == 0 ? total / pagesize : total / pagesize + 1;
+        return new Page(total,pagetotal, pageindex, pagesize, list);
 
     }
 

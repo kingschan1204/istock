@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 public class Page<T> {
     private Long total;
+    private Long totalPage;
     private Integer pageIndex;
     private Integer pageSize;
     private List<T> data;
