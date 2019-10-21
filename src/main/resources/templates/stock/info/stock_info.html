@@ -55,6 +55,14 @@
             <div class="col-md-2">{{stock.totalValue}}</div>
         </div>
         <div class="row">
+            <div class="col-md-2 info-title">52周最高</div>
+            <div class="col-md-2">{{stock.high52w}}</div>
+            <div class="col-md-2 info-title">52周最低</div>
+            <div class="col-md-2">{{stock.low52w}}</div>
+            <div class="col-md-2 info-title">分类</div>
+            <div class="col-md-2">{{stock.stype}}</div>
+        </div>
+        <div class="row">
             <div class="col-md-2 info-title">市净率</div>
             <div class="col-md-2">{{stock.pb}}</div>
             <div class="col-md-2 info-title">净资产收益率</div>
@@ -77,8 +85,14 @@
             <div class="col-md-2">{{stock.dividendDate}}</div>
         </div>
         <div class="row">
+            <div class="col-md-2 info-title">三年平均股息</div>
+            <div class="col-md-2">{{stock.threeYearDy}}</div>
             <div class="col-md-2 info-title">五年平均股息</div>
             <div class="col-md-2">{{stock.fiveYearDy}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">三年平均ROE</div>
+            <div class="col-md-2">{{stock.threeYearRoe}}</div>
             <div class="col-md-2 info-title">五年平均ROE</div>
             <div class="col-md-2">{{stock.fiveYearRoe}}</div>
         </div>
