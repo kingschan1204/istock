@@ -105,24 +105,34 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
-        //报告期 年
+        //报告期 科目\时间
         Object[] year = list.get(1);
         //净利润
-        Object[] profits = list.get(3);
+        Object[] profits = list.get(2);
         //净利润增长率
-        Object[] profits_percent = list.get(4);
+        Object[] profits_percent = list.get(3);
+        //扣非净利润(元)
+        Object[] kfjlr = list.get(4);
+        //扣非净利润同比增长率
+        Object[] kfjlr_percent = list.get(5);
+
+
         //营业总收入
-        Object[] operating_income = list.get(7);
+        Object[] operating_income = list.get(6);
         //营业总收入同比增长率
-        Object[] income_percent = list.get(8);
+        Object[] income_percent = list.get(7);
         //每股净资产
         Object[] net_assets = list.get(9);
+        //销售净利率
+        Object[] xsjlr = list.get(13);
+        //销售毛利率
+        Object[] xsmlr = list.get(14);
         //净资产收益率
-        Object[] roe = list.get(10);
+        Object[] roe = list.get(15);
         //净资产收益率-摊薄
-        Object[] roeTb = list.get(11);
+        Object[] roeTb = list.get(16);
         //资产负债比率
-        Object[] asset_liability = list.get(12);
+        Object[] asset_liability = list.get(25);
         JSONArray jsons = new JSONArray();
         JSONObject json;
         //基数压缩数字以亿为单位
@@ -140,6 +150,11 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("income_percent",MathFormat.doubleFormat(income_percent[i].toString()));
             json.put("net_assets",MathFormat.doubleFormat(net_assets[i].toString()));
             json.put("asset_liability",MathFormat.doubleFormat(asset_liability[i].toString()));
+            //2019-11-06改版修正
+            json.put("kfjlr",MathFormat.doubleFormat(kfjlr[i].toString()));
+            json.put("kfjlr_percent",MathFormat.doubleFormat(kfjlr_percent[i].toString()));
+            json.put("xsjlr",MathFormat.doubleFormat(xsjlr[i].toString()));
+            json.put("xsmlr",MathFormat.doubleFormat(xsmlr[i].toString()));
             jsons.add(json);
         }
         return jsons;
@@ -183,7 +198,6 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         return codes;
     }
-
 
 
 }
