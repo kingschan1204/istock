@@ -17,10 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 默认爬虫
@@ -105,34 +102,41 @@ public class DefaultSpiderImpl implements StockSpider {
         }
         //读取excel数据
         List<Object[]> list = ExcelOperactionTool.readExcelData(path);
+        Map<String,Object[]> map = new HashMap<>();
+        list.stream().forEach(obj ->{
+            Object[] row = obj;
+            String key =row[0].toString();
+            if(!key.isEmpty()){
+                map.put(row[0].toString(),row);
+            }
+        });
+
         //报告期 科目\时间
-        Object[] year = list.get(1);
+        Object[] year = map.get("科目\\时间");
         //净利润
-        Object[] profits = list.get(2);
+        Object[] profits = map.get("净利润(元)");
         //净利润增长率
-        Object[] profits_percent = list.get(3);
+        Object[] profits_percent = map.get("净利润同比增长率");
         //扣非净利润(元)
-        Object[] kfjlr = list.get(4);
+        Object[] kfjlr = map.get("扣非净利润(元)");
         //扣非净利润同比增长率
-        Object[] kfjlr_percent = list.get(5);
-
-
+        Object[] kfjlr_percent = map.get("扣非净利润同比增长率");
         //营业总收入
-        Object[] operating_income = list.get(6);
+        Object[] operating_income = map.get("营业总收入(元)");
         //营业总收入同比增长率
-        Object[] income_percent = list.get(7);
+        Object[] income_percent = map.get("营业总收入同比增长率");
         //每股净资产
-        Object[] net_assets = list.get(9);
+        Object[] net_assets = map.get("每股净资产(元)");
         //销售净利率
-        Object[] xsjlr = list.get(13);
+        Object[] xsjlr = map.get("销售净利率");
         //销售毛利率
-        Object[] xsmlr = list.get(14);
+        Object[] xsmlr = map.get("销售毛利率");
         //净资产收益率
-        Object[] roe = list.get(15);
+        Object[] roe = map.get("净资产收益率");
         //净资产收益率-摊薄
-        Object[] roeTb = list.get(16);
+        Object[] roeTb = map.get("净资产收益率-摊薄");
         //资产负债比率
-        Object[] asset_liability = list.get(25);
+        Object[] asset_liability = map.get("资产负债比率");
         JSONArray jsons = new JSONArray();
         JSONObject json;
         //基数压缩数字以亿为单位
@@ -144,17 +148,17 @@ public class DefaultSpiderImpl implements StockSpider {
             json.put("roeTb", MathFormat.doubleFormat(roeTb[i].toString()));
             json.put("code", code);
             json.put("date", new Date());
-            json.put("profits",MathFormat.doubleFormat(profits[i].toString(),base,true));
-            json.put("profits_percent",MathFormat.doubleFormat(profits_percent[i].toString()));
-            json.put("operating_income",MathFormat.doubleFormat(operating_income[i].toString(),base,true));
-            json.put("income_percent",MathFormat.doubleFormat(income_percent[i].toString()));
-            json.put("net_assets",MathFormat.doubleFormat(net_assets[i].toString()));
-            json.put("asset_liability",MathFormat.doubleFormat(asset_liability[i].toString()));
+            json.put("profits",null==profits?null:MathFormat.doubleFormat(profits[i].toString(),base,true));
+            json.put("profits_percent",null==profits_percent?null:MathFormat.doubleFormat(profits_percent[i].toString()));
+            json.put("operating_income",null==operating_income?null:MathFormat.doubleFormat(operating_income[i].toString(),base,true));
+            json.put("income_percent",null==income_percent?null:MathFormat.doubleFormat(income_percent[i].toString()));
+            json.put("net_assets",null==net_assets?null:MathFormat.doubleFormat(net_assets[i].toString()));
+            json.put("asset_liability",null==asset_liability?null:MathFormat.doubleFormat(asset_liability[i].toString()));
             //2019-11-06改版修正
-            json.put("kfjlr",MathFormat.doubleFormat(kfjlr[i].toString()));
-            json.put("kfjlr_percent",MathFormat.doubleFormat(kfjlr_percent[i].toString()));
-            json.put("xsjlr",MathFormat.doubleFormat(xsjlr[i].toString()));
-            json.put("xsmlr",MathFormat.doubleFormat(xsmlr[i].toString()));
+            json.put("kfjlr",null==kfjlr?null:MathFormat.doubleFormat(kfjlr[i].toString()));
+            json.put("kfjlr_percent",null==kfjlr_percent?null:MathFormat.doubleFormat(kfjlr_percent[i].toString()));
+            json.put("xsjlr",null==xsjlr?null:MathFormat.doubleFormat(xsjlr[i].toString()));
+            json.put("xsmlr",null==xsmlr?null:MathFormat.doubleFormat(xsmlr[i].toString()));
             jsons.add(json);
         }
         return jsons;
