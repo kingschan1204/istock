@@ -32,32 +32,26 @@
             <th>营业总收入同比增长率</th>
             <th>每股净资产</th>
             <th>资产负债比率</th>
+            <th>扣非净利润(元)</th>
+            <th>扣非净利润同比增长率</th>
+            <th>销售净利率</th>
+            <th>销售毛利率</th>
             </thead>
             <#list rows as row>
                 <tr>
                     <td>${row.year}</td>
-                    <td>
-                        <#if (row.roe==-1)>
-                            --
-                            <#else>
-                                ${row.roe}%
-                        </#if>
-                    </td>
-                    <td>
-                        <#if (row.roetb==-1)>
-                            --
-                            <#else>
-                                ${row.roetb}%
-                        </#if>
-                    </td>
-                    <td>
-                        <#if (row.profits==-1)> --<#else>${row.profits}</#if>
-                    </td>
+                    <td><#if (row.roe==-1)>--<#else>${row.roe}%</#if></td>
+                    <td><#if (row.roetb==-1)>--<#else>${row.roetb}%</#if></td>
+                    <td><#if (row.profits==-1)> --<#else>${row.profits}</#if></td>
                     <td><#if (row.profits_percent==-1)> --<#else>${row.profits_percent}%</#if></td>
                     <td><#if (row.operating_income==-1)> --<#else>${row.operating_income}</#if></td>
                     <td><#if (row.income_percent==-1)> --<#else>${row.income_percent}%</#if></td>
                     <td><#if (row.net_assets==-1)> --<#else>${row.net_assets}</#if></td>
                     <td><#if (row.asset_liability==-1)> --<#else>${row.asset_liability}%</#if></td>
+                    <td><#if (row.kfjlr??)>${row.kfjlr}<#else>--</#if></td>
+                    <td><#if (row.kfjlr_percent??)>${row.kfjlr_percent}%<#else>--</#if></td>
+                    <td><#if (row.xsjlr??)>${row.xsjlr}%<#else>--</#if></td>
+                    <td><#if (row.xsmlr??)>${row.xsmlr}%<#else>--</#if></td>
                 </tr>
             </#list>
         </table>
