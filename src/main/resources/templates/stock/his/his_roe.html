@@ -40,14 +40,14 @@
             <#list rows as row>
                 <tr>
                     <td>${row.year}</td>
-                    <td><#if (row.roe==-1)>--<#else>${row.roe}%</#if></td>
-                    <td><#if (row.roetb==-1)>--<#else>${row.roetb}%</#if></td>
-                    <td><#if (row.profits==-1)> --<#else>${row.profits}</#if></td>
-                    <td><#if (row.profits_percent==-1)> --<#else>${row.profits_percent}%</#if></td>
-                    <td><#if (row.operating_income==-1)> --<#else>${row.operating_income}</#if></td>
-                    <td><#if (row.income_percent==-1)> --<#else>${row.income_percent}%</#if></td>
-                    <td><#if (row.net_assets==-1)> --<#else>${row.net_assets}</#if></td>
-                    <td><#if (row.asset_liability==-1)> --<#else>${row.asset_liability}%</#if></td>
+                    <td><#if (row.roe??)>${row.roe}%<#else>--</#if></td>
+                    <td><#if (row.roetb??)>${row.roetb}%<#else>--</#if></td>
+                    <td><#if (row.profits??)>${row.profits}<#else>--</#if></td>
+                    <td><#if (row.profits_percent??)>${row.profits_percent}%<#else>--</#if></td>
+                    <td><#if (row.operating_income??)>${row.operating_income}<#else>--</#if></td>
+                    <td><#if (row.income_percent??)> ${row.income_percent}%<#else>--</#if></td>
+                    <td><#if (row.net_assets??)> ${row.net_assets}<#else>--</#if></td>
+                    <td><#if (row.asset_liability??)>${row.asset_liability}%<#else>--</#if></td>
                     <td><#if (row.kfjlr??)>${row.kfjlr}<#else>--</#if></td>
                     <td><#if (row.kfjlr_percent??)>${row.kfjlr_percent}%<#else>--</#if></td>
                     <td><#if (row.xsjlr??)>${row.xsjlr}%<#else>--</#if></td>

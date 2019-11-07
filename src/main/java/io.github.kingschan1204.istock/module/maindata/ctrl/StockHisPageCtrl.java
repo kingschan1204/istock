@@ -96,7 +96,7 @@ public class StockHisPageCtrl {
         StringBuffer year = new StringBuffer();
         StringBuffer percent = new StringBuffer();
         list.stream().forEach(item -> {
-            if (item.getRoe() > 0) {
+            if (null!=item.getRoe()&&item.getRoe() > 0) {
                 percent.append(item.getRoe()).append(",");
                 year.append("'").append(item.getYear()).append("',");
             }

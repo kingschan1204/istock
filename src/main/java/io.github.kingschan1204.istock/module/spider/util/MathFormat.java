@@ -23,7 +23,7 @@ public class MathFormat {
     }
 
     /**
-     * 格式化数据，如果不是数字全部返回-1
+     * 格式化数据，如果不是数字全部返回null
      *
      * @param value
      * @return
@@ -34,13 +34,13 @@ public class MathFormat {
         }*/
        String v = value.replaceAll("[^0-9.E+\\-]", "");
        if (v.isEmpty()||v.equals("--")||v.equals("-")){
-           return -1D;
+           return null;
        }
        try{
           return Double.parseDouble(v);
        }catch (Exception e){
            e.printStackTrace();
-           return -1D;
+           return null;
        }
     }
     /**
@@ -51,7 +51,7 @@ public class MathFormat {
      */
     public static double doubleFormat(String math, boolean percent) {
         Double value= doubleFormat(math);
-        if(value==-1){
+        if(null==value){
             return 0d;
         }
         if (percent) {
@@ -65,11 +65,11 @@ public class MathFormat {
      * @param value  字符串
      * @param divisor 除数 当数字比较大时用来压缩数字单位
      * @param rounded 是否四舍五入 (保留两位小数)
-     * @return 如果非数字则返回-1
+     * @return 如果非数字则返回null
      */
    public static Double doubleFormat(String value,int divisor,boolean rounded) {
         Double d= doubleFormat(value);
-        if(d==-1){return -1D;}
+        if(null==d){return null;}
         Double math=d/divisor;
         if (rounded){
             BigDecimal bd= new BigDecimal(math);
