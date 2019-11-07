@@ -23,12 +23,13 @@
             border-bottom: none;
             /*padding: 3px 3px 3px 3px;*/
         }
+        .title{background-color: #996699;color: white;}
     </style>
 </head>
 <body >
     <div class="container"  id="app">
         <div class="row">
-            <div class="col-md-12 text-center"><h3>基本信息</h3></div>
+            <div class="col-md-12 text-center title"><h4>基本信息</h4></div>
         </div>
         <div class="row">
             <div class="col-md-2 info-title">代码</div>
@@ -65,18 +66,35 @@
         <div class="row">
             <div class="col-md-2 info-title">市净率</div>
             <div class="col-md-2">{{stock.pb}}</div>
-            <div class="col-md-2 info-title">净资产收益率</div>
-            <div class="col-md-2">{{stock.roe}}</div>
             <div class="col-md-2 info-title">每股收益</div>
             <div class="col-md-2">{{stock.bvps}}</div>
         </div>
         <div class="row">
+            <div class="col-md-12 text-center title"><h4>估值信息</h4></div>
+        </div>
+        <div class="row">
             <div class="col-md-2 info-title">市盈率(静)</div>
             <div class="col-md-2">{{stock.pes}}</div>
+            <div class="col-md-2 info-title">市盈率(TTM)</div>
+            <div class="col-md-2">{{stock.pettm}}</div>
             <div class="col-md-2 info-title">市盈率(动)</div>
             <div class="col-md-2">{{stock.ped}}</div>
-            <div class="col-md-2 info-title">最新股息</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">净资产收益率</div>
+            <div class="col-md-2">{{stock.roe}}</div>
+            <div class="col-md-2 info-title">三年平均ROE</div>
+            <div class="col-md-2">{{stock.threeYearRoe}}</div>
+            <div class="col-md-2 info-title">五年平均ROE</div>
+            <div class="col-md-2">{{stock.fiveYearRoe}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 info-title">动态股息</div>
             <div class="col-md-2">{{stock.dy}}</div>
+            <div class="col-md-2 info-title">三年平均股息</div>
+            <div class="col-md-2">{{stock.threeYearDy}}</div>
+            <div class="col-md-2 info-title">五年平均股息</div>
+            <div class="col-md-2">{{stock.fiveYearDy}}</div>
         </div>
         <div class="row">
             <div class="col-md-2 info-title">上次分红</div>
@@ -85,20 +103,24 @@
             <div class="col-md-2">{{stock.dividendDate}}</div>
         </div>
         <div class="row">
-            <div class="col-md-2 info-title">三年平均股息</div>
-            <div class="col-md-2">{{stock.threeYearDy}}</div>
-            <div class="col-md-2 info-title">五年平均股息</div>
-            <div class="col-md-2">{{stock.fiveYearDy}}</div>
+            <div class="col-md-12 text-center title"><h4>报告期：{{stock.report}}</h4></div>
         </div>
         <div class="row">
-            <div class="col-md-2 info-title">三年平均ROE</div>
-            <div class="col-md-2">{{stock.threeYearRoe}}</div>
-            <div class="col-md-2 info-title">五年平均ROE</div>
-            <div class="col-md-2">{{stock.fiveYearRoe}}</div>
+            <div class="col-md-2 info-title">营业收入</div>
+            <div class="col-md-2">{{stock.totalIncome}}</div>
+            <div class="col-md-2 info-title">营收同比增长</div>
+            <div class="col-md-2">{{stock.incomeDiff}}</div>
+            <div class="col-md-2 info-title">毛利率</div>
+            <div class="col-md-2">{{stock.mll}}</div>
         </div>
-
         <div class="row">
-            <div class="col-md-12 text-center"><h3>公司信息</h3></div>
+            <div class="col-md-2 info-title">净利润</div>
+            <div class="col-md-2">{{stock.totalProfits}}</div>
+            <div class="col-md-2 info-title">净利润同比增长</div>
+            <div class="col-md-2">{{stock.profitsDiff}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center title"><h4>公司信息</h4></div>
         </div>
         <div class="row">
             <div class="col-md-2 info-title">公司全名</div>
@@ -150,7 +172,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12 text-center"><h3>10大股东</h3></div>
+            <div class="col-md-12 text-center title"><h3>10大股东</h3></div>
         </div>
         <div class="row">
             <table class="table table-hover table-striped">
