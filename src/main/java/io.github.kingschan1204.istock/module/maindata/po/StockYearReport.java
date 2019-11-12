@@ -1,11 +1,9 @@
 package io.github.kingschan1204.istock.module.maindata.po;
 
-import io.github.kingschan1204.istock.module.spider.util.MathFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.Date;
 
 /**
