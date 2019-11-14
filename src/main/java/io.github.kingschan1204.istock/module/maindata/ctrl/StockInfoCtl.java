@@ -6,6 +6,7 @@ import io.github.kingschan1204.istock.module.maindata.po.StockPriceDaily;
 import io.github.kingschan1204.istock.module.maindata.services.StockInfoService;
 import io.github.kingschan1204.istock.module.maindata.services.StockPriceServices;
 import io.github.kingschan1204.istock.module.maindata.vo.StockVo;
+import io.github.kingschan1204.istock.module.spider.openapi.XueQiuApi;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -31,6 +32,8 @@ public class StockInfoCtl {
     private StockPriceServices stockPriceServices;
     @Autowired
     private TradingDateUtil tradingDateUtil;
+    @Autowired
+    private XueQiuApi xueQiuApi;
 
     @RequestMapping("/stock/info/{code}")
     public String stockInfo(@PathVariable String code, Model model) {
@@ -39,6 +42,7 @@ public class StockInfoCtl {
         model.addAttribute("pagetitle",String.format("%s-%s",code,stockVo.getName()));
         model.addAttribute("data",json.toJSONString());
         model.addAttribute("stock", JSON.toJSONString(stockVo));
+        model.addAttribute("holds", JSON.toJSONString(xueQiuApi.getHolders(code)));
         return "/stock/info/stock_info";
     }
 

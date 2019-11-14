@@ -84,3 +84,6 @@ https://stock.xueqiu.com/v5/stock/quote.json?symbol=SH601288&extend=detail
     "error_description": ""
 }
 ```
+
+## 股东人数变化
+https://stock.xueqiu.com/v5/stock/f10/cn/holders.json?symbol=SH601601&extend=true&page=1&size=100

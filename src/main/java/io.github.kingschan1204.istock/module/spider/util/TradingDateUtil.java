@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.FutureTask;
@@ -60,6 +62,18 @@ public class TradingDateUtil {
         DateTimeFormatter sf = DateTimeFormatter.ofPattern(dateFormatPattern);
         LocalDate localDate = LocalDate.now();
         return sf.format(localDate.minusYears(year).minusMonths(month).minusDays(day));
+    }
+
+    /**
+     * long timestap 转换成年月日字符串
+     * @param timestamp
+     * @return
+     */
+    public String dateFormat(Long timestamp){
+            Instant instant = Instant.ofEpochMilli(timestamp);
+            ZoneId zone = ZoneId.systemDefault();
+            LocalDateTime localDate= LocalDateTime.ofInstant(instant, zone);
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
     }
 
     /**
