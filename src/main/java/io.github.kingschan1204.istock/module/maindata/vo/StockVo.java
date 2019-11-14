@@ -1,15 +1,17 @@
 package io.github.kingschan1204.istock.module.maindata.vo;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * stock 主数据vo
  *
  * @author chenguoxiang
- * @create 2018-10-16 14:41
+ * @create 2018null0null6 14:41
  * http://localhost/stock/q?rows=20&page=1&sidx=&sord=asc&
  **/
 @Getter
+@Setter
 public class StockVo {
 
     private String code;
@@ -81,32 +83,7 @@ public class StockVo {
      */
     private String mll;
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getYesterdayPrice() {
-        return yesterdayPrice;
-    }
-
-    public void setYesterdayPrice(Double yesterdayPrice) {
-        this.yesterdayPrice = yesterdayPrice;
-    }
 
 
     public void setFluctuate(Double fluctuate) {
@@ -114,93 +91,62 @@ public class StockVo {
     }
 
 
-    public void setTodayMax(Double todayMax) {
-        this.todayMax = todayMax;
-    }
-
-
-    public void setTodayMin(Double todayMin) {
-        this.todayMin = todayMin;
-    }
-
-
-    public void setPriceDate(Long priceDate) {
-        this.priceDate = priceDate;
-    }
-
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
-
-
     public void setTotalValue(Double totalValue) {
-        this.totalValue = -1 == totalValue ? "--" : String.format("%s亿", totalValue);
+        this.totalValue = null == totalValue ? "--" : String.format("%s 亿", totalValue);
     }
 
 
     public void setPb(Double pb) {
-        this.pb = -1 == pb ? "--" : String.format("%s", pb);
+        this.pb = null == pb ? "--" : String.format("%s", pb);
     }
 
 
     public void setRoe(Double roe) {
-        this.roe = -1 == roe ? "--" : String.format("%s%%", roe);
+        this.roe = null == roe ? "--" : String.format("%s%%", roe);
     }
 
 
     public void setBvps(Double bvps) {
-        this.bvps = -1 == bvps ? "--" : String.format("%s", bvps);
+        this.bvps = null == bvps ? "--" : String.format("%s", bvps);
     }
 
 
     public void setPes(Double pes) {
-        this.pes = -1 == pes ? "--" : String.format("%s", pes);
+        this.pes = null == pes||-1==pes ? "--" : String.format("%s", pes);
     }
 
 
     public void setPed(Double ped) {
-        this.ped = -1 == ped ? "--" : String.format("%s", ped);
+        this.ped = null == ped||-1==ped ? "--" : String.format("%s", ped);
     }
-
-
-
-    public void setDividendDate(String dividendDate) {
-        this.dividendDate = dividendDate;
-    }
-
 
     public void setDividend(Double dividend) {
         if (0 == dividend) {
             this.dividend = "";
             return;
         }
-        this.dividend = -1 == dividend ? "--" : String.format("%s%%", dividend);
+        this.dividend = null == dividend ? "--" : String.format("%s%%", dividend);
     }
 
 
     public void setDy(Double dy) {
-        this.dy = -1 == dy ? "--" : String.format("%s%%", dy);
+        this.dy = (null == dy||dy<=0) ? "--" : String.format("%s%%", dy);
     }
 
 
     public void setFiveYearDy(Double fiveYearDy) {
-        this.fiveYearDy = -1 == fiveYearDy ? "--" : String.format("%s%%", fiveYearDy);
+        this.fiveYearDy = null == fiveYearDy ? "--" : String.format("%s%%", fiveYearDy);
     }
 
 
     public void setFiveYearRoe(Double fiveYearRoe) {
-        this.fiveYearRoe = -1 == fiveYearRoe ? "--" : String.format("%s%%", fiveYearRoe);
+        this.fiveYearRoe = null == fiveYearRoe ? "--" : String.format("%s%%", fiveYearRoe);
     }
 
-
-    public String getTotalIncome() {
-        return totalIncome;
-    }
 
     public void setTotalIncome(Double totalIncome) {
         if (null != totalIncome) {
-            this.totalIncome = totalIncome + "亿";
+            this.totalIncome = totalIncome + " 亿";
         }
     }
 
@@ -215,7 +161,7 @@ public class StockVo {
 
     public void setTotalProfits(Double totalProfits) {
         if (null != totalProfits) {
-            this.totalProfits = totalProfits + "亿";
+            this.totalProfits = totalProfits + " 亿";
         }
     }
 
@@ -226,34 +172,14 @@ public class StockVo {
         }
     }
 
-
-    public void setReport(String report) {
-        this.report = report;
-    }
-
-    public void setPettm(String pettm) {
-        this.pettm = "-1.0".equals(pettm)?"--":pettm;
-    }
-
-    public void setHigh52w(String high52w) {
-        this.high52w = "-1.0".equals(high52w)?"--":high52w;
-    }
-
-    public void setLow52w(String low52w) {
-        this.low52w ="-1.0".equals(low52w)?"--":low52w;
-    }
-
     public void setThreeYearDy(Double threeYearDy) {
-        this.threeYearDy = threeYearDy==-1?"--":threeYearDy+"%";
+        this.threeYearDy = threeYearDy==null?"--":threeYearDy+"%";
     }
 
     public void setThreeYearRoe(Double threeYearRoe) {
-        this.threeYearRoe = threeYearRoe==-1?"--":threeYearRoe+"%";
+        this.threeYearRoe = threeYearRoe==null?"--":threeYearRoe+"%";
     }
 
-    public void setStype(String stype) {
-        this.stype = stype;
-    }
 
     public void setMll(Double mll) {
         this.mll = mll+"%";
