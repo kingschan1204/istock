@@ -298,8 +298,9 @@
     var date_list=[];
     var total_list=[];
     for(var i=holders.length-1;i>=0;i--){
-        date_list.push(holders[i].timestamp)
-        total_list.push(holders[i].ashare_holder)
+        date_list.push(holders[i].timestamp);
+        var vals=null==holders[i].ashare_holder?holders[i].holder_num:holders[i].ashare_holder;
+        total_list.push(vals)
     }
     // 基于准备好的dom，初始化echarts实例
     var myChart1 = echarts.init(document.getElementById('holders_chars1'),'infographic');
