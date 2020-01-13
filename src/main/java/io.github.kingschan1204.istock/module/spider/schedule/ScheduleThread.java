@@ -38,6 +38,10 @@ public class ScheduleThread implements Runnable {
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.DY).execute(ITimerJob.COMMAND.START);
                 //top 10 holders
                 ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.TOP_HOLDER).execute(ITimerJob.COMMAND.START);
+                //基金持股
+                if(ITimeJobFactory.getJobStatus(ITimeJobFactory.TIMEJOB.DY)== ITimerJob.STATUS.STOP){
+                    ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.FUND_HOLDERS).execute(ITimerJob.COMMAND.START);
+                }
             }
         }
 

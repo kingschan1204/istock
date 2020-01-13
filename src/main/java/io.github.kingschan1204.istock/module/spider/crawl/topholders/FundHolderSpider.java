@@ -3,6 +3,7 @@ package io.github.kingschan1204.istock.module.spider.crawl.topholders;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.client.result.UpdateResult;
 import io.github.kingschan1204.istock.common.db.MyMongoTemplate;
 import io.github.kingschan1204.istock.common.util.spring.SpringContextUtil;
 import io.github.kingschan1204.istock.common.util.spring.SpringMailSender;
@@ -20,6 +21,7 @@ import org.jsoup.nodes.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +52,7 @@ public class FundHolderSpider extends AbstractHtmlSpider<Stock> {
      */
     private void getCodeInfo() {
         //3天更新一遍
-        Integer dateNumber = Integer.valueOf(TradingDateUtil.minusDate(0, 0, 3, "yyyyMMdd"));
+        Integer dateNumber = Integer.valueOf(TradingDateUtil.minusDate(0, 0, 4, "yyyyMMdd"));
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("fundHolderDate").lt(dateNumber);
         Criteria c2 = Criteria.where("fundHolderDate").exists(false);
@@ -76,7 +78,7 @@ public class FundHolderSpider extends AbstractHtmlSpider<Stock> {
             return null;
         }
         String fcode = StockSpider.formatStockCode(currentCodeInfo.getCode());
-        this.pageUrl = String.format("https://stock.xueqiu.com/v5/stock/quote.json?symbol=%s&extend=detail", fcode);
+        this.pageUrl = String.format("https://stock.xueqiu.com/v5/stock/f10/cn/org_holding/detail.json?symbol=%s&extend=true", fcode);
         this.cookie = new HashMap<>();
         this.cookie.put("xq_a_token", SpringContextUtil.getProperties("xueqiu.token"));
         this.ignoreContentType = true;
@@ -102,22 +104,30 @@ public class FundHolderSpider extends AbstractHtmlSpider<Stock> {
         }
         Document doc = webPage.getDocument();
         JSONObject json = JSON.parseObject(doc.text());
-        String report = json.getJSONObject("data").getString("chg_date");
-        JSONArray founds = json.getJSONObject("data").getJSONArray("fund_items");
-        List<StockFundHolder> rows = new ArrayList<>();
-        for (int i = 1; i < founds.size(); i++) {
-            rows.add(new StockFundHolder(
-                    currentCodeInfo.getCode(), report,
-                    founds.getJSONObject(i).getString("org_name_or_fund_name"),
-                    founds.getJSONObject(i).getDouble("to_float_shares_ratio"),
-                    founds.getJSONObject(i).getDouble("held_num")
-            ));
+        if(json.getJSONObject("data").containsKey("chg_date")) {
+            String report = json.getJSONObject("data").getString("chg_date");
+            JSONArray founds = json.getJSONObject("data").getJSONArray("fund_items");
+            List<StockFundHolder> rows = new ArrayList<>();
+            for (int i = 1; i < founds.size(); i++) {
+                rows.add(new StockFundHolder(
+                        currentCodeInfo.getCode(), report,
+                        founds.getJSONObject(i).getString("org_name_or_fund_name"),
+                        founds.getJSONObject(i).getDouble("to_float_shares_ratio"),
+                        founds.getJSONObject(i).getDouble("held_num")
+                ));
+            }
+            MyMongoTemplate myMongoTemplate = SpringContextUtil.getBean(MyMongoTemplate.class);
+            long dels = myMongoTemplate.remove(StockFundHolder.class, Criteria.where("code").is(currentCodeInfo.getCode()));
+            log.info("delete StockFundHolder {}", dels);
+            int addnum = myMongoTemplate.save(rows, StockFundHolder.class).getInsertedCount();
+            log.info("add StockFundHolder {}", addnum);
+        }else{
+            log.error("{}无基金持股数据!",currentCodeInfo.getCode());
         }
-        MyMongoTemplate myMongoTemplate = SpringContextUtil.getBean(MyMongoTemplate.class);
-        long dels = myMongoTemplate.remove(StockFundHolder.class, Criteria.where("code").is(currentCodeInfo.getCode()));
-        log.info("delete StockFundHolder {}", dels);
-        int addnum = myMongoTemplate.save(rows, StockFundHolder.class).getInsertedCount();
-        log.info("add StockFundHolder {}", addnum);
+        UpdateResult updateResult= getMongoTemp().upsert(
+                new Query(Criteria.where("_id").is(currentCodeInfo.getCode())),
+                new Update().set("fundHolderDate",Integer.valueOf(TradingDateUtil.getDateYYYYMMdd())),"stock_code_info");
+        log.info(JSON.toJSONString(updateResult));
 
 
     }
