@@ -17,7 +17,6 @@ import io.github.kingschan1204.istock.module.spider.timerjob.ITimerJob;
 import io.github.kingschan1204.istock.module.spider.util.TradingDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -50,14 +49,14 @@ public class FundHolderSpider extends AbstractHtmlSpider<Stock> {
      * @return
      */
     private void getCodeInfo() {
-        MyMongoTemplate mongoTemplate = SpringContextUtil.getBean(MyMongoTemplate.class);
         //3天更新一遍
         Integer dateNumber = Integer.valueOf(TradingDateUtil.minusDate(0, 0, 3, "yyyyMMdd"));
         Criteria cr = new Criteria();
         Criteria c1 = Criteria.where("fundHolderDate").lt(dateNumber);
         Criteria c2 = Criteria.where("fundHolderDate").exists(false);
         Query query = new Query(cr.orOperator(c1, c2));
-        List<StockCodeInfo> list = (List<StockCodeInfo>) mongoTemplate.query(StockCodeInfo.class, Sort.Direction.ASC, "", 1, cr);
+        query.limit(1);
+        List<StockCodeInfo> list =getMongoTemp().find(query, StockCodeInfo.class);
         if (null != list && list.size() > 0) {
             currentCodeInfo = list.get(0);
             return;
