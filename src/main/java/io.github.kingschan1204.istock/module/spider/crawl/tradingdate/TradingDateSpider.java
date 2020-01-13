@@ -17,11 +17,11 @@ import java.util.concurrent.Callable;
  * 交易日列表爬虫
  * @author chenguoxiang
  * @create 2019-03-26 17:57
- *  http://www.szse.cn/api/report/exchange/onepersistentday/monthList?random=0.2812774184280482
+ *  http://www.szse.cn/api/report/exchange/onepersistenthour/monthList?random=0.2812774184280482
  **/
 @Slf4j
 public class TradingDateSpider implements Callable<Map<String,Boolean>>{
-    private final String baseUrl="http://www.szse.cn/api/report/exchange/onepersistentday/monthList";
+    private final String baseUrl="http://www.szse.cn/api/report/exchange/onepersistenthour/monthList";
     private String month;
     private String url;
     public TradingDateSpider(String month){
