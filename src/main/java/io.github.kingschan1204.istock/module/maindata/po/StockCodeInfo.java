@@ -61,6 +61,10 @@ public class StockCodeInfo {
      * 每日pb pe 更新
      */
     private Integer dailyDate;
+    /**
+     * 基金持仓更新时间记录
+     */
+    private Integer fundHolderDate;
 
     /**
      * data 来源于 tushareSpilder

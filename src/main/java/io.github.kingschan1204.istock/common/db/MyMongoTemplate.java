@@ -122,10 +122,11 @@ public class MyMongoTemplate {
      * @param clazz     查询的集合
      * @param sort      是否排序
      * @param sortField 排序的字段名
+     * @param limit 限制显示条数 为null则不限制
      * @param criterias 条件集合
      * @return
      */
-    public List<?> query(Class clazz, Sort.Direction sort, String sortField, Criteria... criterias) {
+    public List<?> query(Class clazz, Sort.Direction sort, String sortField,Integer limit, Criteria... criterias) {
         Query query = new Query();
         for (Criteria where : criterias) {
             query.addCriteria(where);
@@ -133,6 +134,9 @@ public class MyMongoTemplate {
         //排序
         if (Optional.ofNullable(sortField).isPresent()) {
             query.with(new Sort(sort, sortField));
+        }
+        if(null!=limit){
+            query.limit(limit);
         }
         //code
         List<?> list = mongoTemplate.find(query, clazz);
@@ -159,6 +163,20 @@ public class MyMongoTemplate {
         return updateResult.getModifiedCount()>0;
     }
 
+    /**
+     * 删除
+     * @param clazz
+     * @param criteria
+     * @return
+     */
+    public long remove(Class clazz,Criteria... criteria){
+        Query query = new Query();
+        for (Criteria c : criteria) {
+            query.addCriteria(c);
+        }
+        return  mongoTemplate.remove(query,clazz).getDeletedCount();
+
+    }
 
 
 }
