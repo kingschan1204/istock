@@ -64,7 +64,12 @@ public class FundHolderSpider extends AbstractHtmlSpider<Stock> {
             return;
         }
         currentCodeInfo = null;
-
+        log.error("未查到需要更新的数据，即将关闭FUND_HOLDERS任务");
+        try{
+            ITimeJobFactory.getJob(ITimeJobFactory.TIMEJOB.FUND_HOLDERS).execute(ITimerJob.COMMAND.STOP);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     @Override
