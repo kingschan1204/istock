@@ -80,7 +80,7 @@ public class MyMongoTemplate {
         } else {
             results = mongoTemplate.group(criteria, collection, gb, String.class);
         }
-        log.info(results.getRawResults().toJson());
+//        log.info(results.getRawResults().toJson());
         return JSON.parseObject(results.getRawResults().toJson());
     }
 

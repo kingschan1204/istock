@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * ${DESCRIPTION}
  *
  * @author chenguoxiang
  * @create 2019-10-10 16:19
@@ -44,4 +43,5 @@ public class CsIndexCtrl {
         data.put("page", p.getPageIndex());
         return data;
     }
+
 }

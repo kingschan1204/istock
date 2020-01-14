@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;
+import io.github.kingschan1204.istock.common.db.MyMongoTemplate;
 import io.github.kingschan1204.istock.common.util.stock.StockSpider;
 import io.github.kingschan1204.istock.common.util.stock.impl.JisiluSpilder;
+import io.github.kingschan1204.istock.module.maindata.po.CsIndexIndustry;
 import io.github.kingschan1204.istock.module.maindata.po.Stock;
 import io.github.kingschan1204.istock.module.maindata.po.StockDividend;
 import io.github.kingschan1204.istock.module.maindata.po.StockYearReport;
@@ -51,6 +53,8 @@ public class StockService {
     private StockSpider spider;
     @Autowired
     private MongoTemplate template;
+    @Autowired
+    private MyMongoTemplate myMongoTemplate;
     @Autowired
     private JisiluSpilder jisiluSpilder;
 
@@ -109,7 +113,24 @@ public class StockService {
             query.addCriteria(Criteria.where(field).gte(s).lte(d));
         }
         if (null != industry && !industry.isEmpty()) {
-            query.addCriteria(Criteria.where("industry").is(industry));
+            int i_index=industry.lastIndexOf("-");
+            String type_key=industry.replaceAll("\\|\\-+|\\s","");
+            String query_field=null;
+            if(i_index==-1){
+                query_field="lvone";
+            }else if(i_index==2){
+                query_field="lvtwo";
+            }else if(i_index==3){
+                query_field="lvthree";
+            }else {
+                query_field="lvfour";
+            }
+            List<String> code_list=new ArrayList<>();
+            List<CsIndexIndustry> inlist= template.find(Query.query(Criteria.where(query_field).is(type_key)), CsIndexIndustry.class);
+            for (CsIndexIndustry c: inlist) {
+                code_list.add(c.getCode());
+            }
+            query.addCriteria(Criteria.where("_id").in(code_list));
         }
         //记录总数
         Long total = template.count(query, Stock.class);

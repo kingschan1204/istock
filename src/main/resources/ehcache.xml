@@ -46,6 +46,8 @@ timeToLiveSeconds=180；
     <cache name="XueQiuStockDyTask" eternal="false" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false" timeToLiveSeconds="3600" memoryStoreEvictionPolicy="LFU" />
     <!--交易日-->
     <cache name="TradingDate" eternal="true" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false"  memoryStoreEvictionPolicy="LFU" />
+    <!--程序初始化数据-->
+    <cache name="App_init" eternal="true" maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false"  memoryStoreEvictionPolicy="LFU" />
 
 </ehcache>
 

@@ -62,9 +62,9 @@
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <select id="industry" class="form-control" placeholder="所属行业">
+                        <select id="industry" class="form-control" placeholder="中证分类">
                             <option value="">请选择所属行业</option>
-                            <#list industry as text>
+                            <#list zzfl as text>
                                 <option value="${text}">${text}</option>
                             </#list>
                         </select>
@@ -236,6 +236,7 @@
             var dy = $("#dyType").val() + "-" + $("#stockDy").val();
             var pb = $("#stockPb").val();
             var industry = $("#industry").val();
+            var zzfl = $("#zzfl").val();
             $("#jqGrid").jqGrid('setGridParam', {
                 datatype: 'json',
                 postData: {'code': code, 'type': type, 'pb': pb, 'dy': dy,'industry':industry},
