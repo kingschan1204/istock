@@ -108,7 +108,10 @@ public class FundHolderSpider extends AbstractHtmlSpider<Stock> {
             String report = json.getJSONObject("data").getString("chg_date");
             JSONArray founds = json.getJSONObject("data").getJSONArray("fund_items");
             List<StockFundHolder> rows = new ArrayList<>();
-            for (int i = 1; i < founds.size(); i++) {
+            for (int i = 0; i < founds.size(); i++) {
+                if("全部合计".equals(founds.getJSONObject(i).getString("org_name_or_fund_name").trim())){
+                    continue;
+                }
                 rows.add(new StockFundHolder(
                         currentCodeInfo.getCode(), report,
                         founds.getJSONObject(i).getString("org_name_or_fund_name"),
