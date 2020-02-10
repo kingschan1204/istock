@@ -76,7 +76,7 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
         for (int l = 0; l < lvfours.size(); l++) {
             JSONObject lvfour_row = lvfours.getJSONObject(l);
             String industry = lvfour_row.getString("industry");
-            if (industry.trim().isEmpty()) {
+            if (null==industry||industry.trim().isEmpty()) {
                 continue;
             }
             type.add(industry);
