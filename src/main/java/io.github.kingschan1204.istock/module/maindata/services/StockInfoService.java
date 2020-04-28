@@ -86,8 +86,8 @@ public class StockInfoService {
         query.addCriteria(Criteria.where("code").is(code));
         //排序
         Sort.Direction sortd = Sort.Direction.DESC;
-        query.with(new Sort(sortd, "holdAmount"));
-        List<StockTopHolders> holders=  mongoTemplate.find(query, StockTopHolders.class);
+        query.with(Sort.by(sortd, "holdAmount"));
+//        List<StockTopHolders> holders=  mongoTemplate.find(query, StockTopHolders.class);
         /*Map<String,List<StockTopHolders>> map =holders.stream().collect(Collectors.groupingBy(StockTopHolders::getHolderName));
         holders=new ArrayList<StockTopHolders>();
         map.forEach((key, value) ->{
@@ -95,8 +95,8 @@ public class StockInfoService {
         });
 
         System.out.println(map);*/
-        JSONArray jsonHolders=JSONArray.parseArray(JSON.toJSONString(holders));
-        data.put("holders",jsonHolders);
+       /* JSONArray jsonHolders=JSONArray.parseArray(JSON.toJSONString(holders));
+        data.put("holders",jsonHolders);*/
         return data;
 
     }

@@ -25,9 +25,9 @@ import org.springframework.web.client.RestTemplate;
 public class TushareApi {
 
     @Value("${tushare.token}")
-    private String tuToken;
+    private String tuToken="66cdab7a757dcb728f8833f732a928791d67b6f38e1cd8d94bb79a0d";
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate=new RestTemplate();
     final String api = "http://api.tushare.pro";
 
     /**
@@ -204,6 +204,24 @@ public class TushareApi {
         return items;
     }
 
+    /**
+     * https://tushare.pro/document/2?doc_id=128
+     * @param date
+     * @return
+     */
+    public JSONArray index_dailybasic(String date){
+        JSONObject json = new JSONObject();
+        JSONObject params = new JSONObject();
+        params.put("trade_date", date);
+        //接口名称
+        json.put("api_name", "index_dailybasic");
+        json.put("params", params);
+        json.put("fields","ts_code,trade_date,turnover_rate,turnover_rate_f,pe,pe_ttm,pb");
+        String result = post(json);
+        JSONObject datas = JSON.parseObject(result);
+        JSONArray items = datas.getJSONObject("data").getJSONArray("items");
+        return items;
+    }
 
     public static void main(String[] args) {
        /* try {
@@ -223,8 +241,8 @@ public class TushareApi {
             e.printStackTrace();
         }*/
         TradingDateUtil tradingDateUtil = new TradingDateUtil();
-        String startDate = tradingDateUtil.minusDate(10, 0, 0, "yyyyMMdd");
-        JSONArray data = new TushareApi().getStockDailyBasic(TushareApi.formatCode("000001"), startDate, tradingDateUtil.getDateYYYYMMdd());
+//        String startDate = tradingDateUtil.minusDate(10, 0, 0, "yyyyMMdd");
+        JSONArray data = new TushareApi().index_dailybasic("20200205");
         for (int i = 0; i < data.size(); i++) {
             JSONArray ja = data.getJSONArray(i);
             System.out.println(ja);

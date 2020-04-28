@@ -138,7 +138,7 @@ public class StockService {
         query.skip((pageindex - 1) * pagesize).limit(pagesize);
         //排序
         Sort.Direction sortd = "asc".equalsIgnoreCase(psort) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        query.with(new Sort(sortd, orderfidld));
+        query.with(Sort.by(sortd, orderfidld));
         //code
         List<Stock> list = template.find(query, Stock.class);
         //原始数据在vo对象里进行格式转换
@@ -165,7 +165,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        query.with(new Sort(Sort.Direction.ASC, "title"));
+        query.with(Sort.by(Sort.Direction.ASC, "title"));
         //code
         List<StockDividend> list = template.find(query, StockDividend.class);
         return list;
@@ -182,7 +182,7 @@ public class StockService {
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
         //排序
-        query.with(new Sort(Sort.Direction.ASC, "year"));
+        query.with(Sort.by(Sort.Direction.ASC, "year"));
         //code
         List<StockYearReport> list = template.find(query, StockYearReport.class);
         return list;

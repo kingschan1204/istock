@@ -127,7 +127,7 @@ public class StockHisPageCtrl {
 
         Query query = new Query();
         query.addCriteria(Criteria.where("code").is(code));
-        query.with(new Sort(new Sort.Order(Sort.Direction.ASC,"tradeDate")));
+        query.with(Sort.by(new Sort.Order(Sort.Direction.ASC,"tradeDate")));
         List<StockDailyBasic> lis = template.find(query, StockDailyBasic.class);
         /*if (null == lis || lis.size() == 0) {
             List<String> data = stockService.crawAndSaveHisPbPe(code);

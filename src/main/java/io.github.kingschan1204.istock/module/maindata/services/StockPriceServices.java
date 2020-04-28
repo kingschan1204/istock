@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -86,6 +87,6 @@ public class StockPriceServices {
      * @return
      */
     public List<StockPriceDaily> getDailyLine(String code){
-        return template.find(new Query(Criteria.where("code").is(code)).with(new Sort("desc", "tradeDate")),StockPriceDaily.class);
+        return template.find(new Query(Criteria.where("code").is(code)).with(Sort.by(Sort.Direction.DESC, "tradeDate")),StockPriceDaily.class);
     }
 }

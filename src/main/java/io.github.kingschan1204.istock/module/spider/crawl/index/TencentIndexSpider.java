@@ -19,7 +19,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @create 2019-03-07 10:58
  **/
 @Slf4j
-public class TencentIndexSpider extends AbstractHtmlSpider<Stock> {
+public class
+TencentIndexSpider extends AbstractHtmlSpider<Stock> {
 
     public TencentIndexSpider(String[] stockCode, ConcurrentLinkedQueue<Stock> queue) {
         StringBuilder queryStr = new StringBuilder();

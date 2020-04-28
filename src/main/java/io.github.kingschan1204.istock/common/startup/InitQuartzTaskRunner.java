@@ -26,7 +26,7 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        init_ths_type();
+//        init_ths_type();
         init_zzfl();
 
     }
@@ -38,27 +38,26 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
      */
     void init_zzfl() {
         List<String> type = new ArrayList<>();
-        JSONObject temp = mongoTemplate.groupBy(null, "csindex_industry", "lvone");
-        JSONArray lvones = temp.getJSONArray("retval");
+        JSONArray lvones = mongoTemplate.groupBy(null, "csindex_industry", "lvone");
         JSONObject row;
         for (int i = 0; i < lvones.size(); i++) {
             row = lvones.getJSONObject(i);
-            String one_key = row.getString("lvone");
+            String one_key = row.getString("_id");
             type.add(one_key);
-            JSONArray lvtwos = mongoTemplate.groupBy(Criteria.where("lvone").is(one_key), "csindex_industry", "lvtwo").getJSONArray("retval");
+            JSONArray lvtwos = mongoTemplate.groupBy(Criteria.where("lvone").is(one_key), "csindex_industry", "lvtwo");
             for (int j = 0; j < lvtwos.size(); j++) {
                 JSONObject lvtwo_row = lvtwos.getJSONObject(j);
-                String two_key = lvtwo_row.getString("lvtwo");
+                String two_key = lvtwo_row.getString("_id");
                 type.add(String.format("%s %s", "|--", two_key));
-                JSONArray lvthrees = mongoTemplate.groupBy(Criteria.where("lvtwo").is(two_key), "csindex_industry", "lvthree").getJSONArray("retval");
+                JSONArray lvthrees = mongoTemplate.groupBy(Criteria.where("lvtwo").is(two_key), "csindex_industry", "lvthree");
                 for (int k = 0; k < lvthrees.size(); k++) {
                     JSONObject lvthree_row = lvthrees.getJSONObject(k);
-                    String three_key = lvthree_row.getString("lvthree");
+                    String three_key = lvthree_row.getString("_id");
                     type.add(String.format("%s %s", "|---", three_key));
-                    JSONArray lvfours = mongoTemplate.groupBy(Criteria.where("lvthree").is(three_key), "csindex_industry", "lvfour").getJSONArray("retval");
+                    JSONArray lvfours = mongoTemplate.groupBy(Criteria.where("lvthree").is(three_key), "csindex_industry", "lvfour");
                     for (int l = 0; l < lvfours.size(); l++) {
                         JSONObject lvfour_row = lvfours.getJSONObject(l);
-                        String four_key = lvfour_row.getString("lvfour");
+                        String four_key = lvfour_row.getString("_id");
                         type.add(String.format("%s %s", "|----", four_key));
                     }
                 }
@@ -72,7 +71,7 @@ public class InitQuartzTaskRunner implements ApplicationRunner, Ordered {
      */
     void init_ths_type() {
         List<String> type = new ArrayList<>();
-        JSONArray lvfours = mongoTemplate.groupBy(null, "stock", "industry").getJSONArray("retval");
+        JSONArray lvfours = mongoTemplate.groupBy(null, "stock", "industry");
         for (int l = 0; l < lvfours.size(); l++) {
             JSONObject lvfour_row = lvfours.getJSONObject(l);
             String industry = lvfour_row.getString("industry");
