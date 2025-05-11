@@ -30,42 +30,68 @@ public class FileCommonOperactionTool {
      * @param filename 文件名
      * @throws Exception
      */
-    public static String downloadFile(String url,String referrer, String dir, String filename) throws Exception {
-        log.info("start download file :{}",url);
-        if(!new File(dir).exists()){
-            FileUtils.forceMkdir(new File(dir));
-        }
-        //Open a URL Stream
-        Connection.Response resultResponse = Jsoup.connect(url)
-                .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")
-                .referrer(referrer)
-                .ignoreContentType(true).execute();
-        String defaultFileName="";
-        if(resultResponse.statusCode()!=200){
-            log.error("文件下载失败：{}",url);
-            throw new Exception(String.format("文件下载失败：%s 返回码:%s",url,resultResponse.statusCode()));
-        }
-        if(resultResponse.contentType().contains("name")){
-            String[] list =resultResponse.contentType().split(";");
-            defaultFileName = Arrays.stream(list)
-                    .filter(s -> s.startsWith("name")).findFirst().get().replaceAll("name=|\"", "");
-        }
-        // output here
-        String path = dir + (null == filename ? defaultFileName : filename);
-        FileOutputStream out=null;
-       try{
-            out = (new FileOutputStream(new java.io.File(path)));
-           out.write(resultResponse.bodyAsBytes());
-       }catch (Exception ex){
-           log.error("{}",ex);
-           log.error("文件下载失败：{}",url);
-           ex.printStackTrace();
-       }finally {
-           out.close();
-       }
-        return path;
+   public static String downloadFile(String url, String referrer, String dir, String filename) throws Exception {
+    log.info("Start downloading file from: {}", url);
+    
+    // Create directory safely
+    File directory = new File(dir);
+    if (!directory.exists()) {
+        FileUtils.forceMkdir(directory);
     }
-
+    
+    // Validate the target directory is absolute and exists
+    File targetDir = directory.getAbsoluteFile();
+    
+    // Download file
+    Connection.Response resultResponse = Jsoup.connect(url)
+            .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3346.9 Safari/537.36")
+            .referrer(referrer)
+            .ignoreContentType(true)
+            .execute();
+            
+    // Check response
+    if (resultResponse.statusCode() != 200) {
+        String errorMsg = String.format("File download failed: %s (Status code: %d)", url, resultResponse.statusCode());
+        log.error(errorMsg);
+        throw new Exception(errorMsg);
+    }
+    
+    // Determine filename safely
+    String defaultFileName = "";
+    if (resultResponse.contentType().contains("name")) {
+        String[] list = resultResponse.contentType().split(";");
+        defaultFileName = Arrays.stream(list)
+                .filter(s -> s.startsWith("name"))
+                .findFirst()
+                .orElse("name=\"download\"")
+                .replaceAll("name=|\"", "");
+    }
+    
+    // Sanitize filename to prevent path traversal
+    String safeFilename = null == filename ? defaultFileName : filename;
+    safeFilename = new File(safeFilename).getName(); // Get just the filename part, no path
+    
+    // Construct safe path using Path API
+    Path filePath = Paths.get(targetDir.getPath(), safeFilename);
+    
+    // Verify the resolved path is still within our target directory (extra protection)
+    if (!filePath.toFile().getCanonicalPath().startsWith(targetDir.getCanonicalPath())) {
+        String errorMsg = "Security error: File would be written outside the target directory";
+        log.error(errorMsg);
+        throw new SecurityException(errorMsg);
+    }
+    
+    // Save file with proper resource management
+    try (FileOutputStream out = new FileOutputStream(filePath.toFile())) {
+        out.write(resultResponse.bodyAsBytes());
+        log.info("File downloaded successfully to: {}", filePath);
+        return filePath.toString();
+    } catch (IOException ex) {
+        String errorMsg = String.format("Failed to save downloaded file: %s", url);
+        log.error(errorMsg, ex);
+        throw new IOException(errorMsg, ex);
+    }
+}
 
     /**
      * 解压文件
