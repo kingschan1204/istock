@@ -73,50 +73,70 @@ public class FileCommonOperactionTool {
      * @param descDir 指定解压目录
      * @return 解压结果：成功，失败
      */
+   
     @SuppressWarnings("rawtypes")
     public static boolean decompressZip(String zipPath, String descDir) {
         File zipFile = new File(zipPath);
         boolean flag = false;
-        File pathFile = new File(descDir);
-        if(!pathFile.exists()){
-            pathFile.mkdirs();
-        }
-        ZipFile zip = null;
+        
+        // Normalize the destination directory path for security checks
+        File destDirectory = new File(descDir);
+        String canonicalDestDir;
         try {
-
-            zip = new ZipFile(zipFile,"UTF-8");//防止中文目录，乱码
+            canonicalDestDir = destDirectory.getCanonicalPath();
+        } catch (IOException e) {
+            log.error("Failed to get canonical path", e);
+            return false;
+        }
+        
+        if(!destDirectory.exists()){
+            destDirectory.mkdirs();
+        }
+        
+        try (ZipFile zip = new ZipFile(zipFile, "UTF-8")) {
             for(Enumeration entries = zip.getEntries(); entries.hasMoreElements();){
                 ZipEntry entry = (ZipEntry)entries.nextElement();
                 String zipEntryName = entry.getName();
-                InputStream in = zip.getInputStream(entry);
-                //指定解压后的文件夹+当前zip文件的名称
-                String outPath = (descDir+zipEntryName).replace("/", File.separator);
-                //判断路径是否存在,不存在则创建文件路径
-                File file = new File(outPath.substring(0, outPath.lastIndexOf(File.separator)));
-                if(!file.exists()){
-                    file.mkdirs();
+                
+                // Create target file with safe path handling
+                File outputFile = new File(destDirectory, zipEntryName);
+                
+                // Security check - validate path is within destination directory
+                String canonicalOutputPath = outputFile.getCanonicalPath();
+                if (!canonicalOutputPath.startsWith(canonicalDestDir + File.separator)) {
+                    log.warn("Security risk: Zip entry is outside of target directory: {}", zipEntryName);
+                    throw new SecurityException("Zip entry is outside of target directory: " + zipEntryName);
                 }
-                //判断文件全路径是否为文件夹,如果是上面已经上传,不需要解压
-                if(new File(outPath).isDirectory()){
+                
+                if(entry.isDirectory()){
+                    // Create directory if it doesn't exist
+                    outputFile.mkdirs();
                     continue;
                 }
-                //保存文件路径信息（可利用md5.zip名称的唯一性，来判断是否已经解压）
-                log.info("当前zip解压之后的路径为：{}", outPath);
-                OutputStream out = new FileOutputStream(outPath);
-                byte[] buf1 = new byte[2048];
-                int len;
-                while((len=in.read(buf1))>0){
-                    out.write(buf1,0,len);
+                
+                // Create parent directories if needed
+                File parent = outputFile.getParentFile();
+                if(!parent.exists()){
+                    parent.mkdirs();
                 }
-                in.close();
-                out.close();
+                
+                // Extract file with proper resource management
+                try (InputStream in = zip.getInputStream(entry);
+                     FileOutputStream out = new FileOutputStream(outputFile)) {
+                    byte[] buffer = new byte[2048];
+                    int len;
+                    while((len = in.read(buffer)) > 0){
+                        out.write(buffer, 0, len);
+                    }
+                }
+                
+                log.info("File extracted to: {}", outputFile.getPath());
             }
             flag = true;
-            //必须关闭，要不然这个zip文件一直被占用着，要删删不掉，改名也不可以，移动也不行，整多了，系统还崩了。
-            zip.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error decompressing zip file", e);
         }
+        
         return flag;
     }
 }
